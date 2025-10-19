@@ -1,0 +1,14 @@
+selectAll:
+    SELECT * FROM "search_info" WHERE account_id = ? ORDER BY search_id;
+
+selectByQuery:
+    SELECT * FROM "search_info" WHERE query = ? AND account_id = ? ORDER BY search_id;
+
+insertSearchInfo:
+    INSERT INTO "search_info" (query, account_id) VALUES (?, ?);
+
+deleteSearchInfo:
+    DELETE FROM "search_info" WHERE query = ? AND account_id = ?;
+
+deleteAll:
+    DELETE FROM "search_info" WHERE account_id = ?;

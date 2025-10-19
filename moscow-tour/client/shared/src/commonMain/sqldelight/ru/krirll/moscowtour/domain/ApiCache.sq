@@ -1,0 +1,14 @@
+CREATE TABLE ApiCache (
+    cache_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cache_key TEXT UNIQUE NOT NULL,
+    cache_value TEXT NOT NULL
+);
+
+insert:
+    INSERT OR REPLACE INTO ApiCache (cache_key, cache_value) VALUES (?, ?);
+
+deleteByKey:
+    DELETE FROM ApiCache WHERE cache_key = ?;
+
+selectByKey:
+    SELECT * FROM ApiCache WHERE cache_key = ?;

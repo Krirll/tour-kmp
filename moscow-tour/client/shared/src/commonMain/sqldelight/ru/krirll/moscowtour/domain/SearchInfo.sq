@@ -1,0 +1,22 @@
+CREATE TABLE "SearchInfo" (
+	`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`query` TEXT NOT NULL UNIQUE
+);
+
+selectAll:
+    SELECT * FROM SearchInfo;
+
+selectByQuery:
+    SELECT * FROM SearchInfo WHERE query LIKE ?;
+
+selectTop5:
+    SELECT * FROM SearchInfo WHERE query LIKE ? LIMIT 5;
+
+insertSearchInfo:
+    INSERT INTO SearchInfo (query) VALUES (?);
+
+deleteSearchInfo:
+    DELETE FROM SearchInfo WHERE query = ?;
+
+deleteAll:
+    DELETE FROM SearchInfo;

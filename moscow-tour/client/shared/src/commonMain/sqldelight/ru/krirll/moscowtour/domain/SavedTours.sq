@@ -1,0 +1,25 @@
+CREATE TABLE SavedTours (
+  `saved_tour_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `tour_id` INTEGER NOT NULL,
+  `title` TEXT NOT NULL,
+  `description` TEXT NOT NULL,
+  `city_name` TEXT NOT NULL,
+  `country_name` TEXT NOT NULL,
+  `date_begin` TEXT NOT NULL,
+  `date_end` TEXT NOT NULL,
+  `can_buy` INTEGER NOT NULL,
+  `price` REAL NOT NULL,
+  `image_urls` TEXT NOT NULL
+);
+
+selectAll:
+    SELECT * FROM SavedTours;
+
+insertSavedTour:
+    INSERT INTO SavedTours (tour_id, title, description, city_name, country_name, date_begin, date_end, can_buy, price, image_urls) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteSavedTour:
+    DELETE FROM SavedTours WHERE saved_tour_id = ?;
+
+deleteAll:
+    DELETE FROM SavedTours;

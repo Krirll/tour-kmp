@@ -1,0 +1,14 @@
+selectAll:
+    SELECT * FROM "tickets";
+
+selectByAccountId:
+    SELECT * FROM "tickets" WHERE account_id = ?;
+
+selectByTourId:
+    SELECT * FROM "tickets" WHERE tour_id = ?;
+
+insert:
+    INSERT INTO "tickets" (tour_id, account_id, date, download_url) VALUES (?, ?, ?, ?);
+
+remove:
+    DELETE FROM "tickets" WHERE ticket_id = ?;

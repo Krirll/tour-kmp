@@ -1,0 +1,8 @@
+selectAllImagesByTourId:
+    SELECT * FROM "tour_images" WHERE tour_id = ?;
+
+updateImageByTourId:
+    UPDATE "tour_images" SET image_id = ? WHERE tour_id = ?;
+
+removeImageByTourId:
+    DELETE FROM "tour_images" WHERE tour_id = ?;

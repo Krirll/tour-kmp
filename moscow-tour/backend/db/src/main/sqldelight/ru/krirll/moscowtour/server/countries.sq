@@ -1,0 +1,14 @@
+selectAll:
+    SELECT * FROM "countries";
+
+selectByCountryId:
+    SELECT * FROM "countries" WHERE country_id = ?;
+
+insert:
+    INSERT INTO "countries" (name) VALUES (?);
+
+removeById:
+    DELETE FROM "countries" WHERE country_id = ?;
+
+updateById:
+    UPDATE "countries" SET name = ? WHERE country_id = ?;

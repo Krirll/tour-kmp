@@ -1,0 +1,14 @@
+CREATE TABLE HlamerCache (
+	cache_id INTEGER,
+	value BLOB,
+	CONSTRAINT HlamerCache_PK PRIMARY KEY (cache_id)
+);
+
+insert:
+    INSERT INTO HlamerCache (cache_id, value) VALUES (?, ?);
+
+deleteAll:
+    DELETE FROM HlamerCache;
+
+selectByCacheId:
+    SELECT * FROM HlamerCache WHERE cache_id = ?;

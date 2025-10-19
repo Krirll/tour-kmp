@@ -1,0 +1,105 @@
+-- Создание таблицы tours
+
+CREATE TABLE tours (
+  tour_id BIGSERIAL PRIMARY KEY,
+  title VARCHAR(256) NOT NULL,
+  description TEXT NOT NULL,
+  city_id BIGINT NOT NULL,
+  date_begin DATE NOT NULL,
+  date_end DATE NOT NULL,
+  actual_count INT DEFAULT NULL,
+  count_trips INT NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
+  FOREIGN KEY (city_id) REFERENCES cities (city_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- Создание таблицы images
+
+CREATE TABLE images (
+  image_id BIGSERIAL PRIMARY KEY,
+  path TEXT NOT NULL
+);
+
+-- Создание таблицы tour_images
+
+CREATE TABLE tour_images (
+  tour_id BIGINT NOT NULL,
+  image_id BIGINT NOT NULL,
+  PRIMARY KEY (tour_id, image_id),
+  FOREIGN KEY (tour_id) REFERENCES tours (tour_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (image_id) REFERENCES images (image_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+-- Создание таблицы cities
+
+CREATE TABLE cities (
+  city_id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(256) NOT NULL,
+  country_id BIGINT NOT NULL,
+  FOREIGN KEY (country_id) REFERENCES countries (country_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- Создание таблицы countries
+
+CREATE TABLE countries (
+  country_id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(256) NOT NULL
+);
+
+-- Создание таблицы tickets
+
+CREATE TABLE tickets (
+  ticket_id BIGSERIAL PRIMARY KEY,
+  tour_id BIGINT NOT NULL,
+  account_id BIGINT NOT NULL,
+  date DATE NOT NULL,
+  download_url TEXT NOT NULL,
+  FOREIGN KEY (tour_id) REFERENCES tours (tour_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (account_id) REFERENCES accounts (account_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- Создание таблицы accounts
+
+CREATE TABLE accounts (
+  account_id BIGSERIAL PRIMARY KEY,
+  login VARCHAR(256) NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL
+);
+
+-- Создание таблицы saved_tours
+
+CREATE TABLE saved_tours (
+  saved_tour_id BIGSERIAL PRIMARY KEY,
+  tour_id BIGINT NOT NULL,
+  account_id BIGINT NOT NULL,
+  UNIQUE (tour_id, account_id),
+  FOREIGN KEY (tour_id) REFERENCES tours (tour_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (account_id) REFERENCES accounts (account_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- Создание таблицы search_info
+
+CREATE TABLE search_info (
+  search_id BIGSERIAL PRIMARY KEY,
+  query VARCHAR(256) DEFAULT NULL,
+  account_id BIGINT DEFAULT NULL,
+  UNIQUE (query, account_id),
+  FOREIGN KEY (account_id) REFERENCES accounts (account_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);

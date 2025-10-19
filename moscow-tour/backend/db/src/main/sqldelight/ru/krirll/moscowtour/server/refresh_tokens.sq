@@ -1,0 +1,30 @@
+CREATE TABLE refresh_tokens (
+  token_id BIGSERIAL PRIMARY KEY,
+  account_id BIGINT NOT NULL,
+  token_hash TEXT   NOT NULL UNIQUE,
+  expires_at BIGINT NOT NULL,
+  revoked BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (account_id) REFERENCES accounts (account_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+selectByHash:
+    SELECT *
+    FROM refresh_tokens
+    WHERE token_hash = ?;
+
+insertToken:
+    INSERT INTO refresh_tokens(account_id, token_hash, expires_at, revoked)
+    VALUES (?, ?, ?, FALSE)
+    RETURNING token_id;
+
+revokeToken:
+    UPDATE refresh_tokens
+    SET revoked = TRUE
+    WHERE token_id = ?;
+
+revokeAllForAccount:
+    UPDATE refresh_tokens
+    SET revoked = TRUE
+    WHERE account_id = ?;

@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS PrefferedMovie;
+
+CREATE TABLE IF NOT EXISTS SavedMovie (
+  `saved_movie_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `poster_url` TEXT NOT NULL,
+  `description` TEXT NOT NULL,
+  `title` TEXT NOT NULL,
+  `flags` INTEGER NOT NULL
+);

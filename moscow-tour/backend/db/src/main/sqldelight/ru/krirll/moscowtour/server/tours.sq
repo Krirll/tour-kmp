@@ -1,0 +1,33 @@
+selectAllTours:
+    SELECT * FROM "tour_details" ORDER BY tour_id DESC;
+
+selectTourById:
+    SELECT * FROM "tour_details" WHERE tour_id = ?;
+
+insertTour:
+    INSERT INTO "tours" (
+        tour_id,
+        title,
+        description,
+        city_id,
+        date_begin,
+        date_end,
+        actual_count,
+        count_trips,
+        price
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateTour:
+    UPDATE "tours"
+    SET title = ?,
+        description = ?,
+        city_id = ?,
+        date_begin = ?,
+        date_end = ?,
+        actual_count = ?,
+        count_trips = ?,
+        price = ?
+    WHERE tour_id = ?;
+
+removeTour:
+    DELETE FROM "tours" WHERE tour_id = ?;

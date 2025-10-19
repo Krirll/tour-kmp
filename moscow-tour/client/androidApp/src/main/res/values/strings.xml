@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MoscowTour</string>
+    <string name="saved_movies">Сохранённые фильмы</string>
+    <string name="saved_movies_long">Просмотр списка ранее сохранённых фильмов</string>
+</resources>

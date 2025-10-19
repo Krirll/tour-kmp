@@ -1,0 +1,11 @@
+selectByAccountId:
+    SELECT * FROM "saved_tours" WHERE account_id = ? ORDER BY saved_tour_id;
+
+selectByAccountIdAndTourId:
+    SELECT * FROM "saved_tours" WHERE account_id = ? AND tour_id = ?;
+
+addSavedTour:
+    INSERT INTO "saved_tours" (tour_id, account_id) VALUES (?, ?);
+
+removeSavedTour:
+    DELETE FROM "saved_tours" WHERE account_id = ? AND tour_id = ?;

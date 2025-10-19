@@ -1,0 +1,17 @@
+selectAllAccounts:
+    SELECT * FROM "accounts";
+
+selectAccountByLogin:
+    SELECT * FROM "accounts" WHERE login = ? LIMIT 1;
+
+selectAccountByAccountId:
+    SELECT * FROM "accounts" WHERE account_id = ? LIMIT 1;
+
+addAccount:
+    INSERT INTO "accounts" (login, password_hash) VALUES (?, ?);
+
+removeAccount:
+    DELETE FROM "accounts" WHERE login = ?;
+
+updatePassword:
+    UPDATE "accounts" SET password_hash = ? WHERE account_id = ?;

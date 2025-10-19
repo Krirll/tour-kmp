@@ -1,0 +1,11 @@
+selectAllImages:
+    SELECT * FROM "images";
+
+addImage:
+    INSERT INTO "images" (image_id, path) VALUES (?, ?);
+
+removeImage:
+    DELETE FROM "images" WHERE image_id = ?;
+
+updateImage:
+    UPDATE "images" SET path = ? WHERE image_id = ?;

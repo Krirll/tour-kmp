@@ -1,0 +1,157 @@
+[versions]
+activity-compose = "1.11.0"
+
+appcompat = "1.7.1"
+coil-compose = "3.3.0"
+compose-gradle-plugin = "1.9.0"
+desugar_jdk_libs = "2.1.5"
+java-jwt = "4.5.0"
+kotlin-version = "2.2.0"
+agp = "8.12.3"
+
+coroutines-extensions = "1.5.5"
+decompose-version = "3.3.0"
+image-loader = "1.10.0"
+junit = "4.13.2"
+lifecycleCoroutines = "2.5.0"
+material = "1.9.1"
+mockk = "1.14.5"
+jsoup = "1.21.2"
+gradle-plugin = "1.5.5"
+kotlinx-coroutines-core = "1.10.2"
+kotlinx-serialization-json = "1.9.0"
+ktor-plugin = "3.3.0"
+kxml2 = "2.4.1"
+logback-classic = "1.5.18"
+multiplatform-settings = "1.3.0"
+poiOoxml = "5.4.1"
+postgresql = "42.7.7"
+runner = "1.7.0"
+sqlite = "2.6.0"
+sqlite-driver = "2.1.0"
+ui-tooling = "1.9.1"
+essenty = "1.3.0"
+material3 = "1.3.2"
+stately-common = "2.0.6"
+proj-target = "36"
+proj-compile = "36"
+proj-min = "24"
+proj-java = "21"
+proj-server-java = "21"
+proj-version-name = "1.11.0"
+proj-version-code = "20"
+datastore-preferences-core = "1.1.7"
+ksp-version = "2.2.0-2.0.2"
+koin-core = "4.1.1"
+koin-annotations = "2.1.0"
+kotlin-dsl-version = "5.1.2"
+coreKtx = "1.17.0"
+workRuntimeKtx = "2.10.4"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences-core" }
+
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore-preferences-core" }
+androidx-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation" }
+androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
+androidx-sqlite-framework = { module = "androidx.sqlite:sqlite-framework", version.ref = "sqlite" }
+androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil-compose" }
+com-android-application-gradle-plugin = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "agp" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+java-jwt = { module = "com.auth0:java-jwt", version.ref = "java-jwt" }
+jdbc-driver = { module = "app.cash.sqldelight:jdbc-driver", version.ref = "sqlite-driver" }
+koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor-plugin" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
+ktor-server-netty-jvm = { module = "io.ktor:ktor-server-netty-jvm" }
+ktor-serialization-kotlinx-json-jvm = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm" }
+ktor-server-content-negotiation-jvm = { module = "io.ktor:ktor-server-content-negotiation-jvm" }
+ktor-server-status-pages-jvm = { module = "io.ktor:ktor-server-status-pages-jvm" }
+ktor-server-host-common-jvm = { module = "io.ktor:ktor-server-host-common-jvm" }
+ktor-server-core-jvm = { module = "io.ktor:ktor-server-core-jvm" }
+ktor-server-websockets-jvm = { module = "io.ktor:ktor-server-websockets-jvm" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+compose-gradle-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-gradle-plugin" }
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose-version" }
+decompose-extensions = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose-version" }
+decompose-lifecycle-coroutines = { module = "com.arkivanov.essenty:lifecycle-coroutines", version.ref = "lifecycleCoroutines" }
+
+gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "image-loader" }
+junit = { module = "junit:junit", version.ref = "junit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-core" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-core" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-core" }
+
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-version" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-core" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization-json" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor-plugin" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-plugin" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor-plugin" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor-plugin" }
+kxml2 = { module = "com.github.kobjects:kxml2", version.ref = "kxml2" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
+ktor-plugin = { module = "io.ktor.plugin:plugin", version.ref = "ktor-plugin" }
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poiOoxml" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+runner = { module = "androidx.test:runner", version.ref = "runner" }
+android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlite-driver" }
+coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlite-driver" }
+runtime-wasm-js = { module = "app.cash.sqldelight:runtime-wasm-js", version.ref = "sqlite-driver" }
+sql-delight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlite-driver" }
+sql-delight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlite-driver" }
+sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlite-driver" }
+sqldelight-web-driver = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqlite-driver" }
+
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-plugin" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-plugin" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor-plugin" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor-plugin" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor-plugin" }
+ui-compose = { module = "androidx.compose.ui:ui" }
+ui-compose-util = { module = "androidx.compose.ui:ui-util" }
+
+ui-tooling-preview-android = { module = "androidx.compose.ui:ui-tooling-preview-android", version.ref = "ui-tooling" }
+ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "ui-tooling" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
+web-worker-driver-wasm-js = { module = "app.cash.sqldelight:web-worker-driver-wasm-js", version.ref = "sqlite-driver" }
+
+[plugins]
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-gradle-plugin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-version" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-version" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlite-driver" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor-plugin" }
+java-library = { id = "java-library", version = "unspecified" }
+devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-version" }
+
+convention-jvm = { id = "convention.jvm", version = "unspecified" }
+convention-kmp = { id = "convention.kmp", version = "unspecified" }
+convention-ktor-client = { id = "convention.ktor-client", version = "unspecified" }
+convention-compose = { id = "convention.compose", version = "unspecified" }
+convention-serialization = { id = "convention.serialization", version = "unspecified" }
+convention-android-lib = { id = "convention.android-lib", version = "unspecified" }
+convention-sqldelight = { id = "convention.sqldelight", version = "unspecified" }
+convention-koin = { id = "convention.koin", version = "unspecified" }
+convention-android-app = { id = "convention.android-app", version = "unspecified" }

@@ -1,0 +1,14 @@
+selectAll:
+    SELECT * FROM "cities";
+
+selectByCityId:
+    SELECT * FROM "cities" WHERE city_id = ?;
+
+insert:
+    INSERT INTO "cities" (name, country_id) VALUES (?, ?);
+
+removeById:
+    DELETE FROM "cities" WHERE city_id = ?;
+
+updateById:
+    UPDATE "cities" SET name = ?, country_id = ? WHERE city_id = ?;

@@ -1,0 +1,25 @@
+CREATE VIEW tour_details AS
+    SELECT
+        t.tour_id,
+        t.title,
+        t.description,
+        c.name AS city_name,
+        co.name AS country_name,
+        t.date_begin,
+        t.date_end,
+        t.actual_count,
+        t.count_trips,
+        t.price,
+        (t.count_trips - COALESCE(
+            (SELECT COUNT(*) FROM tickets tk WHERE tk.tour_id = t.tour_id),
+            0
+        )) > 0 AS canBuy,
+        (
+            SELECT ARRAY_AGG(i.path)
+            FROM tour_images ti
+            JOIN images i ON ti.image_id = i.image_id
+            WHERE ti.tour_id = t.tour_id
+        ) AS images
+    FROM tours t
+    JOIN cities c ON t.city_id = c.city_id
+    JOIN countries co ON c.country_id = co.country_id;
