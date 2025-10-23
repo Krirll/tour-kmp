@@ -10,6 +10,7 @@ import ru.krirll.moscowtour.backend.data.auth.AuthTokenRepositoryFactory
 import ru.krirll.moscowtour.backend.di.factory.SavedToursRepositoryFactory
 import ru.krirll.moscowtour.backend.di.factory.SearchRepositoryFactory
 import ru.krirll.moscowtour.backend.di.factory.TicketsRepositoryFactory
+import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.EventType
 import ru.krirll.moscowtour.shared.domain.ToursApi
 
@@ -18,7 +19,8 @@ class RoutingEntryPoint(
     val toursApi: ToursApi,
     val searchFactory: SearchRepositoryFactory,
     val savedToursFactory: SavedToursRepositoryFactory,
-    val ticketsFactory: TicketsRepositoryFactory
+    val ticketsFactory: TicketsRepositoryFactory,
+    val dispatcherProvider: DispatcherProvider
 )
 
 @Single

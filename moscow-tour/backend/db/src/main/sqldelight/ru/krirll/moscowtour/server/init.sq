@@ -60,7 +60,7 @@ CREATE TABLE tickets (
   tour_id BIGINT NOT NULL,
   account_id BIGINT NOT NULL,
   date DATE NOT NULL,
-  download_url TEXT NOT NULL,
+  external_path TEXT NOT NULL,
   FOREIGN KEY (tour_id) REFERENCES tours (tour_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,

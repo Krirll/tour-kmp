@@ -25,7 +25,7 @@ sealed interface RemoteEvent {
     data class OnSearch(val millis: Long, override val accountId: Long) : RemoteEvent
 
     @Serializable
-    data class OnTicket(val millis: Long, override val accountId: Long, val tourId: Long) : RemoteEvent
+    data class OnTicket(val millis: Long, override val accountId: Long, val ticketId: Long) : RemoteEvent
 
     @Serializable
     data class OnSaved(override val accountId: Long, val tourId: Long) : RemoteEvent

@@ -4,11 +4,14 @@ selectAll:
 selectByAccountId:
     SELECT * FROM "tickets" WHERE account_id = ?;
 
+selectByTicketId:
+    SELECT * FROM "tickets" WHERE ticket_id = ?;
+
 selectByTourId:
     SELECT * FROM "tickets" WHERE tour_id = ?;
 
 insert:
-    INSERT INTO "tickets" (tour_id, account_id, date, download_url) VALUES (?, ?, ?, ?);
+    INSERT INTO "tickets" (tour_id, account_id, date, external_path) VALUES (?, ?, ?, ?);
 
 remove:
     DELETE FROM "tickets" WHERE ticket_id = ?;

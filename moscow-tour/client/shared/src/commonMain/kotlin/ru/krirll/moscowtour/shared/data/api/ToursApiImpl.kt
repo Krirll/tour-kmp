@@ -14,15 +14,17 @@ class ToursApiImpl(
     private val serverConfigurationProvider: ServerConfigurationRepository
 ) : ToursApi {
 
+    override suspend fun fetchTours(): List<Tour> {
+        return get(ToursApi.TOURS_PATH)
+    }
+
+
+
     private suspend inline fun <reified T> get(path: String): T {
         return httpClient.get(
             path,
             emptyMap(),
             serverConfigurationProvider.getServerConfiguration()
         )
-    }
-
-    override suspend fun fetchTours(): List<Tour> {
-        return get(ToursApi.TOURS_PATH)
     }
 }

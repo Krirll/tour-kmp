@@ -15,7 +15,9 @@ import ru.krirll.moscowtour.shared.domain.AuthTokenRepository
 import ru.krirll.moscowtour.shared.domain.HeathCheck
 
 fun Routing.setupAuthMethods(
-    routingEntryPoint: RoutingEntryPoint, authEntryPoint: AuthEntryPoint
+    routingEntryPoint: RoutingEntryPoint,
+    authEntryPoint: AuthEntryPoint,
+
 ) {
     val default = authEntryPoint.authTokenRepositoryFactory.create()
     post(AuthTokenRepository.REGISTER_PATH) {
@@ -43,6 +45,6 @@ fun Routing.setupAuthMethods(
         }
         setupSearch(routingEntryPoint.searchFactory)
         setupSavedTours(routingEntryPoint.savedToursFactory)
-        setupTickets(routingEntryPoint.ticketsFactory)
+        setupTickets(routingEntryPoint)
     }
 }

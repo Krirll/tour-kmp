@@ -28,7 +28,7 @@ class LogoutUseCase(
         localSavedToursRepository.clear(accountId)
         syncRepository.setRecentlyWatchedSynchronized(false)
         syncRepository.setSearchSynchronized(false)
-        syncRepository.setSavedMovieSynchronized(false)
+        syncRepository.setSavedToursSynchronized(false)
         bearerAuthProvider.clearToken()
     }
 }

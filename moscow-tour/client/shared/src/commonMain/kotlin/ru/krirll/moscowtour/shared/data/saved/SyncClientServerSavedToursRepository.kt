@@ -20,6 +20,26 @@ class SyncClientServerSavedToursRepository(
     private val authTokenCache: TokenStorage
 ) : SavedToursRepository {
 
+    override fun getAll(): Flow<List<SavedTour>> {
+        return flow {
+            RemoteSourceSynchronizer(
+                isSync = { syncRepository.isSavedToursSynchronized() },
+                setSync = { syncRepository.setSavedToursSynchronized(it) },
+                authTokenCache = authTokenCache,
+                queryRemote = { remote.getAll().first() },
+                queryLocal = { local.getAll().first() },
+                writeRemote = { it.forEach { savedTour -> remote.save(savedTour.tour) } },
+                writeLocal = { it.forEach { savedTour -> local.save(savedTour.tour) } }
+            ).syncIfNeeded(false)
+            emitAll(
+                authTokenCache.query(
+                    active = { remote.getAll() },
+                    fallback = { local.getAll() }
+                )
+            )
+        }
+    }
+
     override suspend fun save(tour: Tour) {
         authTokenCache.use(
             active = { remote.save(tour) },
@@ -31,33 +51,6 @@ class SyncClientServerSavedToursRepository(
         authTokenCache.use(
             active = { remote.remove(tourId) },
             fallback = { local.remove(tourId) }
-        )
-    }
-
-    override fun getAll(): Flow<List<SavedTour>> {
-        return flow {
-            RemoteSourceSynchronizer(
-                isSync = { syncRepository.isSavedMovieSynchronized() },
-                setSync = { syncRepository.setSavedMovieSynchronized(it) },
-                authTokenCache = authTokenCache,
-                queryRemote = { remote.getAll().first() },
-                queryLocal = { local.getAll().first() },
-                writeRemote = { remote.saveAll(it) },
-                writeLocal = { local.saveAll(it) }
-            ).syncIfNeeded(false)
-            emitAll(
-                authTokenCache.query(
-                    active = { remote.getAll() },
-                    fallback = { local.getAll() }
-                )
-            )
-        }
-    }
-
-    override suspend fun isSaved(id: Long): Flow<Boolean> {
-        return authTokenCache.query(
-            active = { remote.isSaved(id) },
-            fallback = { local.isSaved(id) }
         )
     }
 }

@@ -9,7 +9,6 @@ interface ToursApi {
     suspend fun fetchTours(): List<Tour>
 
     companion object {
-        const val SEARCH_ARG = "search"
         const val TOURS_PATH = "tours"
     }
 }
