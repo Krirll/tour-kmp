@@ -46,11 +46,11 @@ class RemoteTicketsRepository(
         }
     }
 
-    override suspend fun create(tourId: Long, personData: PersonData) {
+    override suspend fun create(tourId: Long, personData: PersonData, time: Long) {
         tokenCache.token.first() ?: return
         httpClient.post {
             obtainConfig().apply(this, TicketsRepository.CREATE)
-            setJsonBody(CreateTicketRequest(tourId, personData))
+            setJsonBody(CreateTicketRequest(tourId, personData, time))
         }
     }
 

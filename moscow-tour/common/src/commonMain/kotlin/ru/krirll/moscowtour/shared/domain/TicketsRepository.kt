@@ -8,7 +8,7 @@ import ru.krirll.moscowtour.shared.domain.model.Ticket
 interface TicketsRepository {
     suspend fun getAll(): Flow<List<Ticket>>
     suspend fun remove(ticketId: Long)
-    suspend fun create(tourId: Long, personData: PersonData)
+    suspend fun create(tourId: Long, personData: PersonData, time: Long)
     suspend fun getFilePath(ticketId: Long): String
 
     companion object {
@@ -27,7 +27,7 @@ interface TicketsRepository {
 data class RemoveTicketRequest(val ticketId: Long)
 
 @Serializable
-data class CreateTicketRequest(val tourId: Long, val personData: PersonData)
+data class CreateTicketRequest(val tourId: Long, val personData: PersonData, val time: Long)
 
 @Serializable
 data class DownloadUrlResponse(val url: String)

@@ -7,7 +7,7 @@ import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.TicketBuilder
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Tour
-import java.io.FileInputStream
+import java.io.File
 import java.io.FileOutputStream
 import java.util.Date
 
@@ -16,10 +16,17 @@ class TicketBuilderImpl(
     private val dispatcherProvider: DispatcherProvider
 ) : TicketBuilder {
 
-    override suspend fun build(tour: Tour, personData: PersonData): String {
-        //todo надо решить как доставать шаблон и куда сохранять файл
-        withContext(dispatcherProvider.io) {
-            FileInputStream("templatePath").use { fis ->
+    override suspend fun build(tour: Tour, personData: PersonData, time: Long): String {
+        return withContext(dispatcherProvider.io) {
+            val baseDir = File(BASE_DIR_PATH)
+            if (!baseDir.exists()) baseDir.mkdirs()
+
+            val templateFile = javaClass.getResourceAsStream("template.docx")
+                ?: error("Template not found")
+
+            val fileName = "ticket_${System.currentTimeMillis()}.docx"
+
+            templateFile.use { fis ->
                 val doc = XWPFDocument(fis)
 
                 // Проходим по всем таблицам (у тебя их 2)
@@ -47,11 +54,11 @@ class TicketBuilderImpl(
 
                 // 3. Замена текста "Дата приобретения:" на "Дата приобретения: <значение>"
                 for (p in doc.paragraphs) {
-                    if (p.text.contains("Дата приобретения:")) {
+                    if (p.text.contains(DATE_OF_BUY)) {
                         for (run in p.runs) {
                             val newText = p.text.replace(
-                                "Дата приобретения:",
-                                "Дата приобретения: ${Date(System.currentTimeMillis())}"
+                                DATE_OF_BUY,
+                                "$DATE_OF_BUY ${Date(time)}"
                             )
                             run.setText(newText, 0)
                             break
@@ -59,12 +66,19 @@ class TicketBuilderImpl(
                     }
                 }
 
-                FileOutputStream("outputPath").use { fos ->
+                val ticket = File(baseDir, fileName)
+                FileOutputStream(ticket).use { fos ->
                     doc.write(fos)
                 }
 
                 doc.close()
             }
+            fileName
         }
+    }
+
+    companion object {
+        const val BASE_DIR_PATH = "/var/app/files/tickets"
+        const val DATE_OF_BUY = "Дата приобретения:"
     }
 }

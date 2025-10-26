@@ -39,7 +39,7 @@ fun Routing.setupTickets(
     post(TicketsRepository.CREATE) {
         val request = call.receive<CreateTicketRequest>()
         routingEntryPoint.ticketsFactory.create(call.obtainAccountId())
-            .create(request.tourId, request.personData)
+            .create(request.tourId, request.personData, request.time)
         call.respond(HttpStatusCode.OK)
     }
     get(TicketsRepository.GET_DOWNLOAD_URL) {

@@ -15,6 +15,7 @@ import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -56,17 +57,19 @@ class BackendTicketsRepository(
 
     override suspend fun create(
         tourId: Long,
-        personData: PersonData
+        personData: PersonData,
+        time: Long
     ) {
         withContext(dispatcherProvider.io) {
             val dbTour = db.toursQueries.selectTourById(tourId).executeAsOneOrNull()
                 ?: throw IllegalStateException("No tour by id: $tourId")
             val tour = dbTour.toModel()
-            val externalPath = ticketBuilder.build(tour, personData)
+            val externalPath = ticketBuilder.build(tour, personData, time)
             db.ticketsQueries.insert(
                 tourId,
                 accountId,
-                Instant.ofEpochMilli(System.currentTimeMillis())
+                //todo надо понять как сохранять то, что прислал клиент, иначе это ебынь
+                Instant.ofEpochMilli(time)
                     .atZone(ZoneId.of("UTC"))
                     .toLocalDate(),
                 externalPath
