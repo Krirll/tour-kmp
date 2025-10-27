@@ -32,7 +32,7 @@ class RemoteSearchRepository(
     @Named(EventType.SAVED) private val eventListener: RemoteEventListener
 ) : SearchRepository {
 
-    override suspend fun getAll(): Flow<List<String>> {
+    override fun getAll(): Flow<List<String>> {
         return flow {
             emit(getAllSingle())
             emitAll(

@@ -6,7 +6,7 @@ import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
 
 interface TicketsRepository {
-    suspend fun getAll(): Flow<List<Ticket>>
+    fun getAll(): Flow<List<Ticket>>
     suspend fun remove(ticketId: Long)
     suspend fun create(tourId: Long, personData: PersonData, time: Long)
     suspend fun getFilePath(ticketId: Long): String

@@ -28,7 +28,7 @@ class BackendTicketsRepository(
     private val eventHandler: RemoteEventHandler
 ) : TicketsRepository {
 
-    override suspend fun getAll(): Flow<List<Ticket>> {
+    override fun getAll(): Flow<List<Ticket>> {
         val request = db.ticketsQueries.selectByAccountId(accountId)
         return flow {
             emit(request.executeAsList().parse())

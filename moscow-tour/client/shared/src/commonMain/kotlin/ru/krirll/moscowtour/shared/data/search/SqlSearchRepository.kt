@@ -17,7 +17,7 @@ class SqlSearchRepository(
     private val dbProvider: AppDatabaseProvider
 ) : SearchRepository {
 
-    override suspend fun getAll(): Flow<List<String>> {
+    override fun getAll(): Flow<List<String>> {
         return callbackFlow {
             val listener = Query.Listener {
                 launch { send(obtain()) }

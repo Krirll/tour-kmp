@@ -35,7 +35,7 @@ class RemoteTicketsRepository(
     @Named(EventType.TICKETS) private val eventListener: RemoteEventListener
 ) : TicketsRepository {
 
-    override suspend fun getAll(): Flow<List<Ticket>> {
+    override fun getAll(): Flow<List<Ticket>> {
         return flow {
             emit(getAllSingle())
             emitAll(

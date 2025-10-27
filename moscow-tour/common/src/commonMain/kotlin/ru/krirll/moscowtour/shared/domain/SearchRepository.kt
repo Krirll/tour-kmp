@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
 interface SearchRepository {
-    suspend fun getAll(): Flow<List<String>>
+    fun getAll(): Flow<List<String>>
     suspend fun addToSearch(query: String)
     suspend fun addToSearch(query: List<String>) {
         query.forEach { addToSearch(it) }

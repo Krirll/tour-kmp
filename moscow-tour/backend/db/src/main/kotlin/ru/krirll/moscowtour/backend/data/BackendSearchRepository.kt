@@ -18,7 +18,7 @@ class BackendSearchRepository(
     private val eventHandler: RemoteEventHandler
 ) : SearchRepository {
 
-    override suspend fun getAll(): Flow<List<String>> {
+    override fun getAll(): Flow<List<String>> {
         val request = db.searchQueries.selectAll(accountId)
         return flow {
             emit(request.executeAsList().parse())

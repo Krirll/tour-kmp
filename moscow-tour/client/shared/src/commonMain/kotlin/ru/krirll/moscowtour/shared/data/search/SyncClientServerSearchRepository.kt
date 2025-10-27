@@ -18,7 +18,7 @@ class SyncClientServerSearchRepository(
     private val authTokenCache: TokenStorage
 ) : SearchRepository {
 
-    override suspend fun getAll(): Flow<List<String>> {
+    override fun getAll(): Flow<List<String>> {
         return flow {
             RemoteSourceSynchronizer(
                 isSync = { syncRepository.isSearchSynchronized() },
