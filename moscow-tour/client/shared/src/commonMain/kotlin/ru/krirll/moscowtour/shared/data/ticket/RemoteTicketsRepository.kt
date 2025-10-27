@@ -16,7 +16,7 @@ import ru.krirll.moscowtour.shared.data.apply
 import ru.krirll.moscowtour.shared.data.get
 import ru.krirll.moscowtour.shared.data.setJsonBody
 import ru.krirll.moscowtour.shared.domain.CreateTicketRequest
-import ru.krirll.moscowtour.shared.domain.DownloadUrlResponse
+import ru.krirll.moscowtour.shared.domain.GetFileNameResponse
 import ru.krirll.moscowtour.shared.domain.EventType
 import ru.krirll.moscowtour.shared.domain.RemoteEvent
 import ru.krirll.moscowtour.shared.domain.RemoteEventListener
@@ -62,14 +62,14 @@ class RemoteTicketsRepository(
         }
     }
 
-    override suspend fun getFilePath(ticketId: Long): String {
+    override suspend fun getFileName(ticketId: Long): String {
         tokenCache.token.first() ?: throw IllegalStateException("Вы не авторизованы")
-        val response = httpClient.get<DownloadUrlResponse>(
+        val response = httpClient.get<GetFileNameResponse>(
             TicketsRepository.GET_DOWNLOAD_URL,
             mapOf(TicketsRepository.TICKET_ID_ARG to ticketId.toString()),
             obtainConfig()
         )
-        return response.url
+        return response.fileName
     }
 
     private suspend fun getAllSingle(): List<Ticket> {

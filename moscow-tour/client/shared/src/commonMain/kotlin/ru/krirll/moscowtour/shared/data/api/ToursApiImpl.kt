@@ -18,8 +18,6 @@ class ToursApiImpl(
         return get(ToursApi.TOURS_PATH)
     }
 
-
-
     private suspend inline fun <reified T> get(path: String): T {
         return httpClient.get(
             path,

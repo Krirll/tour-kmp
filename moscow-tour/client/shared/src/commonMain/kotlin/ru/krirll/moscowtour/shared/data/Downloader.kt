@@ -38,7 +38,7 @@ class Downloader(
                 serverConfigurationRepository
                     .getServerConfiguration()
                     .apply(this, TicketsRepository.Companion.DOWNLOAD)
-                parameter(TicketsRepository.Companion.FILE_PATH_ARG, filePath)
+                parameter(TicketsRepository.Companion.FILE_NAME_ARG, filePath)
             }
             val channel: ByteReadChannel = rsp.bodyAsChannel()
             val buffer = Buffer()

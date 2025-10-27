@@ -12,7 +12,7 @@ import ru.krirll.moscowtour.shared.domain.ToursApi
 class HttpModule {
 
     @Singleton
-    fun provideVideoApi(
+    fun provideToursApi(
         impl: ToursApiImpl,
         json: Json,
         dbProvider: AppDatabaseProvider

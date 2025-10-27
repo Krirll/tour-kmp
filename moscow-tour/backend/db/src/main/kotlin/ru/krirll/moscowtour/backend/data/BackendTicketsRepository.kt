@@ -14,10 +14,7 @@ import ru.krirll.moscowtour.shared.domain.TicketsRepository
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
 import ru.krirll.moscowtour.shared.domain.model.Tour
-import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneId
 import java.time.ZoneOffset
 
 class BackendTicketsRepository(
@@ -43,7 +40,7 @@ class BackendTicketsRepository(
                 ticketId = ticket.ticket_id,
                 tour = tour.toModel(),
                 accountId = ticket.account_id,
-                date = ticket.date.toEpochSecond(LocalTime.now(), ZoneOffset.UTC)
+                date = ticket.date
             )
         }
     }
@@ -68,16 +65,13 @@ class BackendTicketsRepository(
             db.ticketsQueries.insert(
                 tourId,
                 accountId,
-                //todo надо понять как сохранять то, что прислал клиент, иначе это ебынь
-                Instant.ofEpochMilli(time)
-                    .atZone(ZoneId.of("UTC"))
-                    .toLocalDate(),
+                time,
                 externalPath
             )
         }
     }
 
-    override suspend fun getFilePath(ticketId: Long): String {
+    override suspend fun getFileName(ticketId: Long): String {
         return withContext(dispatcherProvider.io) {
             db.ticketsQueries
                 .selectByTicketId(ticketId)

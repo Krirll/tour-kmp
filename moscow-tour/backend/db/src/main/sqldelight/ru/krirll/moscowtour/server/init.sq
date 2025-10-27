@@ -15,7 +15,7 @@ CREATE TABLE tours (
     ON UPDATE CASCADE
 );
 
-INSERT INTO tours (title, desctiption, city_id, date_begin, date_end, actual_count, count_trips, price) VALUES
+INSERT INTO tours (title, description, city_id, date_begin, date_end, actual_count, count_trips, price) VALUES
 ('', '', 0, 0, 0, 0, 0, 0),
 ('', '', 0, 0, 0, 0, 0, 0);
 
@@ -92,7 +92,7 @@ CREATE TABLE tickets (
   ticket_id BIGSERIAL PRIMARY KEY,
   tour_id BIGINT NOT NULL,
   account_id BIGINT NOT NULL,
-  date DATE NOT NULL,
+  date BIGINT NOT NULL,
   external_path TEXT NOT NULL,
   FOREIGN KEY (tour_id) REFERENCES tours (tour_id)
     ON DELETE CASCADE

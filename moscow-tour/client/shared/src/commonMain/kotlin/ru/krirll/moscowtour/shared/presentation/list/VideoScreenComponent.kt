@@ -35,7 +35,7 @@ class VideoScreenComponent(
     fun load() {
         componentScope.launch(dispatcherProvider.main + exceptionHandler) {
             snapshot.errorCode.emit(null)
-            val rsp = toursApi.fetchTours(search)
+            val rsp = toursApi.toursFlow(search)
             snapshot.items.emit(rsp.items)
         }
     }

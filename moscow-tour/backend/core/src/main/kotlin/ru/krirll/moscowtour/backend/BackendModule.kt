@@ -6,6 +6,7 @@ import org.koin.core.annotation.Single
 import ru.krirll.backend.BackendCommon
 import ru.krirll.backend.data.EnvFetcher
 import ru.krirll.backend.domain.JwtInfo
+import ru.krirll.moscowtour.backend.di.ApiModule
 import ru.krirll.moscowtour.backend.di.EventModule
 
 @Module
@@ -27,7 +28,8 @@ class MoscowtourModule {
         DbModule::class,
         EventModule::class,
         BackendCommon::class,
-        MoscowtourModule::class
+        MoscowtourModule::class,
+        ApiModule::class
     ]
 )
 @ComponentScan

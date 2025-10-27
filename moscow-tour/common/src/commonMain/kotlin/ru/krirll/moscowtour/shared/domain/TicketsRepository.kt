@@ -9,7 +9,7 @@ interface TicketsRepository {
     fun getAll(): Flow<List<Ticket>>
     suspend fun remove(ticketId: Long)
     suspend fun create(tourId: Long, personData: PersonData, time: Long)
-    suspend fun getFilePath(ticketId: Long): String
+    suspend fun getFileName(ticketId: Long): String
 
     companion object {
         const val PREFIX = "$DYNAMIC_PREFIX/tickets"
@@ -19,7 +19,7 @@ interface TicketsRepository {
         const val GET_DOWNLOAD_URL = "$PREFIX/downloadUrl"
         const val TICKET_ID_ARG = "ticketId"
         const val DOWNLOAD = "$PREFIX/download"
-        const val FILE_PATH_ARG = "fileName"
+        const val FILE_NAME_ARG = "fileName"
     }
 }
 
@@ -30,7 +30,4 @@ data class RemoveTicketRequest(val ticketId: Long)
 data class CreateTicketRequest(val tourId: Long, val personData: PersonData, val time: Long)
 
 @Serializable
-data class DownloadUrlResponse(val url: String)
-
-@Serializable
-data class DownloadTicketRequest(val url: String)
+data class GetFileNameResponse(val fileName: String)

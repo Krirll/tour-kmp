@@ -12,10 +12,11 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import ru.krirll.moscowtour.backend.data.document.TicketBuilderImpl
 import ru.krirll.moscowtour.backend.di.RoutingEntryPoint
 import ru.krirll.moscowtour.backend.presentation.obtainAccountId
 import ru.krirll.moscowtour.shared.domain.CreateTicketRequest
-import ru.krirll.moscowtour.shared.domain.DownloadUrlResponse
+import ru.krirll.moscowtour.shared.domain.GetFileNameResponse
 import ru.krirll.moscowtour.shared.domain.RemoveTicketRequest
 import ru.krirll.moscowtour.shared.domain.TicketsRepository
 import java.io.File
@@ -49,14 +50,14 @@ fun Routing.setupTickets(
             return@get call.respond(HttpStatusCode.BadRequest)
         } else {
             val filePath = routingEntryPoint.ticketsFactory.create(call.obtainAccountId())
-                .getFilePath(ticketId)
+                .getFileName(ticketId)
             responseWithFileCheck(routingEntryPoint, filePath) {
-                call.respond(DownloadUrlResponse(filePath))
+                call.respond(GetFileNameResponse(filePath))
             }
         }
     }
     get(TicketsRepository.DOWNLOAD) {
-        val filePath = call.parameters[TicketsRepository.FILE_PATH_ARG]
+        val filePath = call.parameters[TicketsRepository.FILE_NAME_ARG]
             ?: return@get call.respond(HttpStatusCode.BadRequest)
         responseWithFileCheck(routingEntryPoint, filePath) { file ->
             call.response.header(
@@ -73,7 +74,9 @@ private suspend fun RoutingContext.responseWithFileCheck(
     filePath: String,
     responseCallback: suspend (File) -> Unit
 ) {
-    val file = withContext(routingEntryPoint.dispatcherProvider.io) { File(filePath) }
+    val file = withContext(routingEntryPoint.dispatcherProvider.io) {
+        File(TicketBuilderImpl.BASE_DIR_PATH, filePath)
+    }
     val isExists = withContext(routingEntryPoint.dispatcherProvider.io) { file.exists() }
     if (!isExists) {
         call.respond(HttpStatusCode.NotFound)
