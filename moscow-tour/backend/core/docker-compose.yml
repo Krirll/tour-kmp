@@ -24,6 +24,7 @@ services:
     restart: always
     volumes:
       - ./moscowtour/cache/:/usr/local/app/cache:rw
+      - ./moscowtour/tickets/:/usr/local/app/files/tickets:rw
     networks:
       - serv-network
     depends_on:

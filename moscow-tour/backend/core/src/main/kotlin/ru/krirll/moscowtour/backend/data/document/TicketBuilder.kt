@@ -78,7 +78,7 @@ class TicketBuilderImpl(
     }
 
     companion object {
-        const val BASE_DIR_PATH = "/var/moscowtour/files/tickets"
+        const val BASE_DIR_PATH = "/usr/local/app/files/tickets"
         const val DATE_OF_BUY = "Дата приобретения:"
     }
 }
