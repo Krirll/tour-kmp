@@ -26,19 +26,19 @@ fun Application.configureRouting(
             routingLogger.error("http exception occurred. returns ${cause.httpCode}", cause)
             call.respond(
                 status = HttpStatusCode.fromValue(cause.httpCode),
-                message = ServerExceptionInfo(cause.message ?: "Неизвестная ошибка")
+                message = ServerExceptionInfo(cause.message ?: cause.stackTraceToString())
             )
         }
         exception<Throwable> { call, cause ->
             routingLogger.error("error occurred. returns 500...", cause)
             call.respond(
                 status = HttpStatusCode.InternalServerError,
-                message = ServerExceptionInfo(cause.message ?: "Неизвестная ошибка")
+                message = ServerExceptionInfo(cause.message ?: cause.stackTraceToString())
             )
         }
     }
     routing {
-        setupBaseMethods(routingEntryPoint.toursApi)
+        setupBaseMethods(routingEntryPoint.toursApi, routingEntryPoint.dispatcherProvider)
         setupAuthMethods(routingEntryPoint, authEntryPoint)
     }
 }

@@ -21,7 +21,7 @@ class TicketBuilderImpl(
             val baseDir = File(BASE_DIR_PATH)
             if (!baseDir.exists()) baseDir.mkdirs()
 
-            val templateFile = javaClass.getResourceAsStream("template.docx")
+            val templateFile = javaClass.getResourceAsStream("/template.docx")
                 ?: error("Template not found")
 
             val fileName = "ticket_${System.currentTimeMillis()}.docx"

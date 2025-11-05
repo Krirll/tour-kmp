@@ -17,8 +17,8 @@ fun Route.setupSavedTours(
     savedToursFactory: SavedToursRepositoryFactory
 ) {
     post(SavedToursRepository.REMOVE) {
-        val saveRequest = call.receive<RemoveRequest>()
-        savedToursFactory.create(call.obtainAccountId()).remove(saveRequest.tourId)
+        val removeRequest = call.receive<RemoveRequest>()
+        savedToursFactory.create(call.obtainAccountId()).remove(removeRequest.tourId)
         call.respond(HttpStatusCode.OK)
     }
     post(SavedToursRepository.SAVE) {
