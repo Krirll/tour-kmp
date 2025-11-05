@@ -1,5 +1,8 @@
-selectAllImagesByTourId:
-    SELECT * FROM "tour_images" WHERE tour_id = ?;
+selectAllImagesPathsByTourId:
+    SELECT i.path
+    FROM tour_images ti
+    JOIN images i ON i.image_id = ti.image_id
+    WHERE ti.tour_id = ?;
 
 updateImageByTourId:
     UPDATE "tour_images" SET image_id = ? WHERE tour_id = ?;

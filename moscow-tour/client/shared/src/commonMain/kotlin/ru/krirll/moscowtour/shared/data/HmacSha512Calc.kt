@@ -8,7 +8,7 @@ import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 
 @Factory
 class HmacSha512Calc(private val dispatcherProvider: DispatcherProvider) {
-    private val hmacKey = "cd4204fae910ba12b9eb6650ef90852252cf20e4c55bbb3b21ac1f8cdf8d0ab53a5f49d2298824f011dbefd30fdec21ff0b485ae835dd9bccc9d377ed54c0d80"
+    private val hmacKey = "dbdc444b27579eaef1fe84e77e6161cba649eca0885a618b1ff2f5177563d6c808ba414d759ed9b5ac03acf460310b93e43f62688f05ac5ecf4327cf0bf61379"
 
     @OptIn(ExperimentalStdlibApi::class)
     suspend fun calc(data: ByteArray): ByteArray = withContext(dispatcherProvider.io) {

@@ -13,8 +13,6 @@ import ru.krirll.moscowtour.shared.domain.SavedToursRepository
 import ru.krirll.moscowtour.shared.domain.model.SavedTour
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import java.sql.SQLException
-import java.time.LocalTime
-import java.time.ZoneOffset
 
 class BackendSavedToursRepository(
     private val db: AppDatabase,
@@ -35,6 +33,8 @@ class BackendSavedToursRepository(
         mapNotNull { savedTour ->
             val tour = db.toursQueries.selectTourById(savedTour.tour_id)
                 .executeAsOneOrNull() ?: return@mapNotNull null
+            val images = db.tour_imagesQueries.selectAllImagesPathsByTourId(tour.tour_id)
+                .executeAsList().map { "https://tour.krirll.ru/api/tours/images?imageName=$it" }
             SavedTour(
                 savedTourId = savedTour.saved_tour_id,
                 tour = Tour(
@@ -43,11 +43,11 @@ class BackendSavedToursRepository(
                     description = tour.description,
                     city = tour.city_name,
                     country = tour.country_name,
-                    dateBegin = tour.date_begin.toEpochSecond(LocalTime.now(), ZoneOffset.UTC),
-                    dateEnd = tour.date_end.toEpochSecond(LocalTime.now(), ZoneOffset.UTC),
+                    dateBegin = tour.date_begin,
+                    dateEnd = tour.date_end,
                     canBuy = tour.canBuy,
                     price = tour.price.toDouble(),
-                    imagesUrls = tour.images.toList()
+                    imagesUrls = images
                 )
             )
         }

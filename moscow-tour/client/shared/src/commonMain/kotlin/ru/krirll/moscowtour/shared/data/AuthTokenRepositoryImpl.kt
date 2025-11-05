@@ -5,6 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.utils.io.core.toByteArray
 import org.koin.core.annotation.Factory
+import ru.krirll.http.domain.BadRequestException
 import ru.krirll.http.domain.HttpException
 import ru.krirll.http.domain.TokenInfo
 import ru.krirll.http.domain.TokenStorage
@@ -28,6 +29,18 @@ class AuthTokenRepositoryImpl(
 ) : AuthTokenRepository {
 
     override suspend fun register(loginInfo: LoginInfo): TokenInfo {
+        //todo добавить проверки
+        /*
+        INCORRECT_REG_LOGIN("Логин должен состоять из 6 символов (из букв английского алфавита и содержать цифры)"),
+        INCORRECT_REG_PASSWORD("Пароль должен состоять из 6 символов (из букв английского алфавита и содержать цифры)"),
+
+        val regex = "^[A-Za-z0-9]{6,}$\n".toRegex()
+        if (!loginInfo.login.matches(regex)) {
+            throw BadRequestException(stringFetcher.get(StringResource.INCORRECT_REG_LOGIN))
+        }
+        if (!loginInfo.passwordHash.matches(regex)) {
+            throw BadRequestException(stringFetcher.get(StringResource.INCORRECT_REG_PASSWORD))
+        }*/
         return post(loginInfo, AuthTokenRepository.REGISTER_PATH, false)
     }
 

@@ -12,10 +12,9 @@ insertTour:
         city_id,
         date_begin,
         date_end,
-        actual_count,
         count_trips,
         price
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 updateTour:
     UPDATE "tours"
@@ -24,7 +23,6 @@ updateTour:
         city_id = ?,
         date_begin = ?,
         date_end = ?,
-        actual_count = ?,
         count_trips = ?,
         price = ?
     WHERE tour_id = ?;

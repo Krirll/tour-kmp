@@ -7,12 +7,12 @@ import ru.krirll.backend.data.StringFetcher
 import ru.krirll.backend.data.StringResource
 import ru.krirll.backend.domain.LoginVerifier
 import ru.krirll.domain.Log
+import ru.krirll.http.domain.BadRequestException
 import ru.krirll.http.domain.TokenInfo
 import ru.krirll.moscowtour.backend.AppDatabase
 import ru.krirll.moscowtour.server.Refresh_tokens
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.AuthTokenRepository
-import ru.krirll.http.domain.BadRequestException
 import ru.krirll.moscowtour.shared.domain.ChangePasswordRequest
 import ru.krirll.moscowtour.shared.domain.TokenRequest
 import ru.krirll.moscowtour.shared.domain.model.LoginInfo
@@ -55,9 +55,20 @@ class BackendAuthTokenRepository(
 ) : AuthTokenRepository {
     private val random = SecureRandom()
 
-    override suspend fun register(loginInfo: LoginInfo): TokenInfo {
-        throw BadRequestException(stringFetcher.get(StringResource.REG_BLOCKED))
-    }
+    override suspend fun register(loginInfo: LoginInfo): TokenInfo =
+        withContext(dispatcherProvider.io) {
+            if (db.accountsQueries.selectAccountByLogin(loginInfo.login)
+                    .executeAsOneOrNull()?.login == loginInfo.login
+            ) {
+                throw BadRequestException(stringFetcher.get(StringResource.ALREADY_EXISTS_USER))
+            }
+            //todo потом сделать лимит 3 чтобы было что демонстрировать
+            if (db.accountsQueries.selectAllAccounts().executeAsList().isNotEmpty()) {
+                throw BadRequestException(stringFetcher.get(StringResource.USERS_LIMIT))
+            }
+            db.accountsQueries.addAccount(loginInfo.login, loginInfo.passwordHash)
+            create(loginInfo.login)
+        }
 
     override suspend fun login(loginInfo: LoginInfo): TokenInfo =
         withContext(dispatcherProvider.io) {
@@ -147,6 +158,6 @@ class BackendAuthTokenRepository(
     }
 
     private companion object {
-        const val SALT = "G0yCPoy7gCj1a5OxPaeYLeJm69NvPQ50HbV0ZVYVqahUPdKun4MKgg86u9HbWq2e"
+        const val SALT = "K3sWm82RzF1XoAbmL8z0PfE7yG4VdTuHn9QcYxJjIiZlNkWvOaCeDrBtSpMhRgUq"
     }
 }

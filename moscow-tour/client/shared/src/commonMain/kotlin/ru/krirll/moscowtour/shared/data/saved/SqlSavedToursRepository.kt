@@ -66,9 +66,9 @@ class SqlSavedToursRepository(
                     it.country_name,
                     it.date_begin.toLong(),
                     it.date_end.toLong(),
-                    if (it.can_buy == 1L) true else false,
+                    it.can_buy == 1L,
                     it.price,
-                    it.image_url.split(",")
+                    it.image_urls.split(",")
                 )
             )
 

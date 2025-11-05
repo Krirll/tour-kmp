@@ -10,5 +10,7 @@ interface ToursApi {
 
     companion object {
         const val TOURS_PATH = "tours"
+        const val TOUR_IMAGES = "${TOURS_PATH}/images"
+        const val IMAGE_NAME_ARG = "imageName"
     }
 }

@@ -14,8 +14,6 @@ import ru.krirll.moscowtour.shared.domain.TicketsRepository
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
 import ru.krirll.moscowtour.shared.domain.model.Tour
-import java.time.LocalTime
-import java.time.ZoneOffset
 
 class BackendTicketsRepository(
     private val db: AppDatabase,
@@ -88,11 +86,14 @@ class BackendTicketsRepository(
             description = this.description,
             city = this.city_name,
             country = this.country_name,
-            dateBegin = this.date_begin.toEpochSecond(LocalTime.now(), ZoneOffset.UTC),
-            dateEnd = this.date_end.toEpochSecond(LocalTime.now(), ZoneOffset.UTC),
+            dateBegin = this.date_begin,
+            dateEnd = this.date_end,
             canBuy = this.canBuy,
             price = this.price.toDouble(),
-            imagesUrls = this.images.toList()
+            imagesUrls = db.tour_imagesQueries.selectAllImagesPathsByTourId(this.tour_id)
+                .executeAsList().map {
+                    "https://tour.krirll.ru/api/tours/images?imageName=$it"
+                }
         )
     }
 

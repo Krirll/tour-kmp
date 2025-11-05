@@ -1,0 +1,18 @@
+CREATE VIEW tour_details AS
+SELECT
+    t.tour_id,
+    t.title,
+    t.description,
+    c.name AS city_name,
+    co.name AS country_name,
+    t.date_begin,
+    t.date_end,
+    t.count_trips,
+    t.price,
+    (t.count_trips - COALESCE(
+        (SELECT COUNT(*) FROM tickets tk WHERE tk.tour_id = t.tour_id),
+        0
+    )) > 0 AS canBuy
+FROM tours t
+JOIN cities c ON t.city_id = c.city_id
+JOIN countries co ON c.country_id = co.country_id;
