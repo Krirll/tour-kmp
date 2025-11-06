@@ -1,12 +1,5 @@
 package ru.krirll.moscowtour.shared.data
 
-import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
+import io.ktor.utils.io.ByteReadChannel
 
-actual class PlatformDownloader actual constructor(
-    downloader: Downloader,
-    dispatcherProvider: DispatcherProvider
-) {
-    actual suspend fun downloadFile(url: String) {
-        //nothing
-    }
-}
+actual suspend fun saveFileFromResponse(byteChannel: ByteReadChannel, fileName: String) {}

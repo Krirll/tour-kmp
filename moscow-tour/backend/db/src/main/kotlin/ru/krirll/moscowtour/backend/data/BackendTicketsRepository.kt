@@ -14,6 +14,7 @@ import ru.krirll.moscowtour.shared.domain.TicketsRepository
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
 import ru.krirll.moscowtour.shared.domain.model.Tour
+import java.security.MessageDigest
 
 class BackendTicketsRepository(
     private val db: AppDatabase,
@@ -50,7 +51,7 @@ class BackendTicketsRepository(
         }
     }
 
-    override suspend fun create(
+    override suspend fun createAndDownload(
         tourId: Long,
         personData: PersonData,
         time: Long
@@ -58,30 +59,25 @@ class BackendTicketsRepository(
         withContext(dispatcherProvider.io) {
             val dbTour = db.toursQueries.selectTourById(tourId).executeAsOneOrNull()
                 ?: throw IllegalStateException("No tour by id: $tourId")
+
+            val currentHash = personData.hash()
             val isExists = db.ticketsQueries
                 .selectByAccountId(accountId)
                 .executeAsList()
-                .firstOrNull { it.tour_id == tourId } != null
-            //todo тут надо подумать как сделать нормальную проверку, так как могут быть другие паспортные данные
-            if (isExists) throw IllegalStateException("Ticket is already exists")
-            val tour = dbTour.toModel()
-            val externalPath = ticketBuilder.build(tour, personData, time)
-            db.ticketsQueries.insert(
-                tourId,
-                accountId,
-                time,
-                externalPath
-            )
-        }
-    }
+                .any {
+                    it.tour_id == tourId && it.person_data_hash == currentHash
+                }
 
-    override suspend fun getFileName(ticketId: Long): String {
-        return withContext(dispatcherProvider.io) {
-            db.ticketsQueries
-                .selectByTicketId(ticketId)
-                .executeAsOneOrNull()
-                ?.external_path
-                ?: throw java.lang.IllegalStateException("No ticket by id: $ticketId")
+            val tour = dbTour.toModel()
+            ticketBuilder.build(tour, personData, time)
+            if (!isExists) {
+                db.ticketsQueries.insert(
+                    tourId,
+                    accountId,
+                    time,
+                    currentHash
+                )
+            }
         }
     }
 
@@ -101,6 +97,21 @@ class BackendTicketsRepository(
                     "https://tour.krirll.ru/api/tours/images?imageName=$it"
                 }
         )
+    }
+
+    private fun PersonData.hash(): String {
+        val rawData = listOf(
+            lastName.lowercase(),
+            firstName.lowercase(),
+            middleName,
+            passportSeries,
+            passportNumber,
+            phone
+        ).joinToString("|")
+
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hashBytes = digest.digest(rawData.toByteArray(Charsets.UTF_8))
+        return hashBytes.joinToString("") { "%02x".format(it) }
     }
 
     private suspend fun notifyChanged(ticketId: Long) {

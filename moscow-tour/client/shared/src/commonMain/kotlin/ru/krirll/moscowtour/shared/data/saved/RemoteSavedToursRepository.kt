@@ -1,6 +1,7 @@
 package ru.krirll.moscowtour.shared.data.saved
 
 import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
 import io.ktor.client.request.post
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -58,7 +59,7 @@ class RemoteSavedToursRepository(
     }
 
     override suspend fun remove(tourId: Long) {
-        httpClient.post {
+        httpClient.delete {
             obtainConfig().apply(this, SavedToursRepository.REMOVE)
             setJsonBody(RemoveRequest(tourId))
         }

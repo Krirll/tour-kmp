@@ -2,7 +2,7 @@ package ru.krirll.moscowtour.shared.data.ticket
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
-import io.ktor.client.request.post
+import io.ktor.client.request.get
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
@@ -14,9 +14,9 @@ import org.koin.core.annotation.Named
 import ru.krirll.http.domain.TokenStorage
 import ru.krirll.moscowtour.shared.data.apply
 import ru.krirll.moscowtour.shared.data.get
+import ru.krirll.moscowtour.shared.data.saveFileFromResponse
 import ru.krirll.moscowtour.shared.data.setJsonBody
 import ru.krirll.moscowtour.shared.domain.CreateTicketRequest
-import ru.krirll.moscowtour.shared.domain.GetFileNameResponse
 import ru.krirll.moscowtour.shared.domain.EventType
 import ru.krirll.moscowtour.shared.domain.RemoteEvent
 import ru.krirll.moscowtour.shared.domain.RemoteEventListener
@@ -46,12 +46,13 @@ class RemoteTicketsRepository(
         }
     }
 
-    override suspend fun create(tourId: Long, personData: PersonData, time: Long) {
+    override suspend fun createAndDownload(tourId: Long, personData: PersonData, time: Long) {
         tokenCache.token.first() ?: return
-        httpClient.post {
-            obtainConfig().apply(this, TicketsRepository.CREATE)
+        val response = httpClient.get {
+            obtainConfig().apply(this, TicketsRepository.CREATE_AND_DOWNLOAD)
             setJsonBody(CreateTicketRequest(tourId, personData, time))
         }
+        saveFileFromResponse(response)
     }
 
     override suspend fun remove(ticketId: Long) {
@@ -60,16 +61,6 @@ class RemoteTicketsRepository(
             obtainConfig().apply(this, TicketsRepository.DELETE)
             setJsonBody(RemoveTicketRequest(ticketId))
         }
-    }
-
-    override suspend fun getFileName(ticketId: Long): String {
-        tokenCache.token.first() ?: throw IllegalStateException("Вы не авторизованы")
-        val response = httpClient.get<GetFileNameResponse>(
-            TicketsRepository.GET_DOWNLOAD_URL,
-            mapOf(TicketsRepository.TICKET_ID_ARG to ticketId.toString()),
-            obtainConfig()
-        )
-        return response.fileName
     }
 
     private suspend fun getAllSingle(): List<Ticket> {

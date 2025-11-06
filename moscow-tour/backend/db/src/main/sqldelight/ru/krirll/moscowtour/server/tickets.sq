@@ -1,17 +1,8 @@
-selectAll:
-    SELECT * FROM "tickets";
-
 selectByAccountId:
     SELECT * FROM "tickets" WHERE account_id = ?;
 
-selectByTicketId:
-    SELECT * FROM "tickets" WHERE ticket_id = ?;
-
-selectByTourId:
-    SELECT * FROM "tickets" WHERE tour_id = ?;
-
 insert:
-    INSERT INTO "tickets" (tour_id, account_id, date, external_path) VALUES (?, ?, ?, ?);
+    INSERT INTO "tickets" (tour_id, account_id, date, person_data_hash) VALUES (?, ?, ?, ?);
 
 remove:
     DELETE FROM "tickets" WHERE ticket_id = ?;

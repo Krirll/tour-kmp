@@ -8,18 +8,13 @@ import ru.krirll.moscowtour.shared.domain.model.Ticket
 interface TicketsRepository {
     fun getAll(): Flow<List<Ticket>>
     suspend fun remove(ticketId: Long)
-    suspend fun create(tourId: Long, personData: PersonData, time: Long)
-    suspend fun getFileName(ticketId: Long): String
+    suspend fun createAndDownload(tourId: Long, personData: PersonData, time: Long)
 
     companion object {
         const val PREFIX = "$DYNAMIC_PREFIX/tickets"
         const val QUERY_ALL = "$PREFIX/query_all"
         const val DELETE = "$PREFIX/delete"
-        const val CREATE = "$PREFIX/create"
-        const val GET_DOWNLOAD_URL = "$PREFIX/downloadUrl"
-        const val TICKET_ID_ARG = "ticketId"
-        const val DOWNLOAD = "$PREFIX/download"
-        const val FILE_NAME_ARG = "fileName"
+        const val CREATE_AND_DOWNLOAD = "$PREFIX/createAndDownload"
     }
 }
 
@@ -28,6 +23,3 @@ data class RemoveTicketRequest(val ticketId: Long)
 
 @Serializable
 data class CreateTicketRequest(val tourId: Long, val personData: PersonData, val time: Long)
-
-@Serializable
-data class GetFileNameResponse(val fileName: String)

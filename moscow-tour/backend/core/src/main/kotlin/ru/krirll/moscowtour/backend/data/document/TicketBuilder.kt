@@ -4,6 +4,7 @@ import kotlinx.coroutines.withContext
 import org.apache.poi.xwpf.usermodel.XWPFDocument
 import org.apache.poi.xwpf.usermodel.XWPFTableCell
 import org.koin.core.annotation.Factory
+import ru.krirll.moscowtour.backend.domain.normalizeTimestamp
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.TicketBuilder
 import ru.krirll.moscowtour.shared.domain.model.PersonData
@@ -19,7 +20,7 @@ class TicketBuilderImpl(
     private val dispatcherProvider: DispatcherProvider
 ) : TicketBuilder {
 
-    override suspend fun build(tour: Tour, personData: PersonData, time: Long): String {
+    override suspend fun build(tour: Tour, personData: PersonData, time: Long) {
         return withContext(dispatcherProvider.io) {
             val baseDir = File(BASE_DIR_PATH)
             if (!baseDir.exists()) baseDir.mkdirs()
@@ -27,7 +28,7 @@ class TicketBuilderImpl(
             val templateFile = javaClass.getResourceAsStream("/template.docx")
                 ?: error("Template not found")
 
-            val fileName = "ticket_${System.currentTimeMillis()}.docx"
+            val fileName = "$time"
 
             templateFile.use { fis ->
                 val doc = XWPFDocument(fis)
@@ -85,15 +86,6 @@ class TicketBuilderImpl(
 
                 doc.close()
             }
-            fileName
-        }
-    }
-
-    fun Long.normalizeTimestamp(): Long {
-        return if (this < 100_000_000_000L) {
-            this * 1000
-        } else {
-            this
         }
     }
 

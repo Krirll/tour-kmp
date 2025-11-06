@@ -92,7 +92,7 @@ CREATE TABLE tickets (
   tour_id BIGINT NOT NULL,
   account_id BIGINT NOT NULL,
   date BIGINT NOT NULL,
-  external_path TEXT NOT NULL,
+  person_data_hash TEXT NOT NULL,
   FOREIGN KEY (tour_id) REFERENCES tours (tour_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,

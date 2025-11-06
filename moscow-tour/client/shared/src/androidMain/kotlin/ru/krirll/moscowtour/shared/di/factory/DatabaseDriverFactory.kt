@@ -11,6 +11,7 @@ actual class DatabaseDriverFactory {
 
     actual suspend fun createDriver(): SqlDriver {
         val app = koin.get<Application>()
+        //todo посмотреть как реализовано в последнем коммите vbox
         return AndroidSqliteDriver(AppDatabase.Schema, app, "moscowtour.db")
     }
 }

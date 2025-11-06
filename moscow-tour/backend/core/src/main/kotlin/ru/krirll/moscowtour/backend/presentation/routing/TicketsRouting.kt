@@ -7,19 +7,21 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondFile
 import io.ktor.server.routing.Routing
-import io.ktor.server.routing.RoutingContext
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
-import io.ktor.server.routing.post
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import ru.krirll.moscowtour.backend.data.document.TicketBuilderImpl
 import ru.krirll.moscowtour.backend.di.RoutingEntryPoint
+import ru.krirll.moscowtour.backend.domain.normalizeTimestamp
 import ru.krirll.moscowtour.backend.presentation.obtainAccountId
 import ru.krirll.moscowtour.shared.domain.CreateTicketRequest
-import ru.krirll.moscowtour.shared.domain.GetFileNameResponse
 import ru.krirll.moscowtour.shared.domain.RemoveTicketRequest
 import ru.krirll.moscowtour.shared.domain.TicketsRepository
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun Routing.setupTickets(
     routingEntryPoint: RoutingEntryPoint
@@ -31,56 +33,30 @@ fun Routing.setupTickets(
                 .first()
         )
     }
-    post(TicketsRepository.DELETE) {
+    delete(TicketsRepository.DELETE) {
         val request = call.receive<RemoveTicketRequest>()
         routingEntryPoint.ticketsFactory.create(call.obtainAccountId())
             .remove(request.ticketId)
         call.respond(HttpStatusCode.OK)
     }
-    post(TicketsRepository.CREATE) {
+    get(TicketsRepository.CREATE_AND_DOWNLOAD) {
         val request = call.receive<CreateTicketRequest>()
         routingEntryPoint.ticketsFactory.create(call.obtainAccountId())
-            .create(request.tourId, request.personData, request.time)
-        call.respond(HttpStatusCode.OK)
-    }
-    get(TicketsRepository.GET_DOWNLOAD_URL) {
-        val params = call.parameters
-        val ticketId = params[TicketsRepository.TICKET_ID_ARG]?.toLong()
-        if (ticketId == null) {
-            return@get call.respond(HttpStatusCode.BadRequest)
-        } else {
-            val filePath = routingEntryPoint.ticketsFactory.create(call.obtainAccountId())
-                .getFileName(ticketId)
-            responseWithFileCheck(routingEntryPoint, filePath) {
-                call.respond(GetFileNameResponse(filePath))
+            .createAndDownload(request.tourId, request.personData, request.time)
+        withContext(routingEntryPoint.dispatcherProvider.io) {
+            val file = File(TicketBuilderImpl.BASE_DIR_PATH, "${request.time}")
+            try {
+                val formatter = SimpleDateFormat("dd.MM.yyyy_HH-mm", Locale.of("ru", "RU"))
+                call.response.header(
+                    HttpHeaders.ContentDisposition,
+                    "attachment; filename=\"ticket-${
+                        formatter.format(Date(request.time.normalizeTimestamp()))
+                    }.docx\""
+                )
+                call.respondFile(file)
+            } finally {
+                file.delete()
             }
         }
-    }
-    get(TicketsRepository.DOWNLOAD) {
-        val filePath = call.parameters[TicketsRepository.FILE_NAME_ARG]
-            ?: return@get call.respond(HttpStatusCode.BadRequest)
-        responseWithFileCheck(routingEntryPoint, filePath) { file ->
-            call.response.header(
-                HttpHeaders.ContentDisposition,
-                "attachment; filename=\"${file.name}\""
-            )
-            call.respondFile(file)
-        }
-    }
-}
-
-private suspend fun RoutingContext.responseWithFileCheck(
-    routingEntryPoint: RoutingEntryPoint,
-    filePath: String,
-    responseCallback: suspend (File) -> Unit
-) {
-    val file = withContext(routingEntryPoint.dispatcherProvider.io) {
-        File(TicketBuilderImpl.BASE_DIR_PATH, filePath)
-    }
-    val isExists = withContext(routingEntryPoint.dispatcherProvider.io) { file.exists() }
-    if (!isExists) {
-        call.respond(HttpStatusCode.NotFound)
-    } else {
-        responseCallback(file)
     }
 }
