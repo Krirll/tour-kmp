@@ -2,6 +2,7 @@ package ru.krirll.moscowtour.backend.data.document
 
 import kotlinx.coroutines.withContext
 import org.apache.poi.xwpf.usermodel.XWPFDocument
+import org.apache.poi.xwpf.usermodel.XWPFTableCell
 import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.TicketBuilder
@@ -9,7 +10,9 @@ import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @Factory
 class TicketBuilderImpl(
@@ -35,35 +38,44 @@ class TicketBuilderImpl(
                 // 1. Личные данные
                 val personalTable = tables[0]
                 val personalRow = personalTable.getRow(1)
-                personalRow.getCell(0).text = personData.lastName
-                personalRow.getCell(1).text = personData.firstName
-                personalRow.getCell(2).text = personData.middleName
-                personalRow.getCell(3).text = personData.passportSeries.toString()
-                personalRow.getCell(4).text = personData.passportNumber.toString()
-                personalRow.getCell(5).text = personData.phone
+                personalRow.getCell(0).setCleanText(personData.lastName)
+                personalRow.getCell(1).setCleanText(personData.firstName)
+                personalRow.getCell(2).setCleanText(personData.middleName)
+                personalRow.getCell(3).setCleanText(personData.passportSeries.toString())
+                personalRow.getCell(4).setCleanText(personData.passportNumber.toString())
+                personalRow.getCell(5).setCleanText(personData.phone)
 
                 // 2. Данные билета
+                val locale = Locale.of("ru", "RU")
+                val datesFormatter = SimpleDateFormat("dd.MM.yyyy", locale)
                 val ticketTable = tables[1]
                 val ticketRow = ticketTable.getRow(1)
-                ticketRow.getCell(0).text = tour.title
-                ticketRow.getCell(1).text = tour.country
-                ticketRow.getCell(2).text = tour.city
-                ticketRow.getCell(3).text = Date(tour.dateEnd).toString()
-                ticketRow.getCell(4).text = Date(tour.dateEnd).toString()
-                ticketRow.getCell(5).text = tour.price.toString()
+                ticketRow.getCell(0).setCleanText(tour.title)
+                ticketRow.getCell(1).setCleanText(tour.country)
+                ticketRow.getCell(2).setCleanText(tour.city)
+                ticketRow.getCell(3).setCleanText(
+                    datesFormatter.format(
+                        Date(tour.dateBegin.normalizeTimestamp())
+                    )
+                )
+                ticketRow.getCell(4).setCleanText(
+                    datesFormatter.format(
+                        Date(tour.dateEnd.normalizeTimestamp())
+                    )
+                )
+                ticketRow.getCell(5).setCleanText(tour.price.toString())
 
                 // 3. Замена текста "Дата приобретения:" на "Дата приобретения: <значение>"
-                for (p in doc.paragraphs) {
-                    if (p.text.contains(DATE_OF_BUY)) {
-                        for (run in p.runs) {
-                            val newText = p.text.replace(
-                                DATE_OF_BUY,
-                                "$DATE_OF_BUY ${Date(time)}"
-                            )
-                            run.setText(newText, 0)
-                            break
-                        }
-                    }
+                val buyFormatter = SimpleDateFormat("dd.MM.yyyy HH:mm", locale)
+                val targetParagraph = doc.paragraphs.find { it.text.contains(DATE_OF_BUY) }
+                targetParagraph?.let { p ->
+                    val newText =
+                        p.text.replace(
+                            DATE_OF_BUY,
+                            "$DATE_OF_BUY ${buyFormatter.format(Date(time.normalizeTimestamp()))}"
+                        )
+                    while (p.runs.isNotEmpty()) p.removeRun(0)
+                    p.createRun().setText(newText)
                 }
 
                 val ticket = File(baseDir, fileName)
@@ -75,6 +87,20 @@ class TicketBuilderImpl(
             }
             fileName
         }
+    }
+
+    fun Long.normalizeTimestamp(): Long {
+        return if (this < 100_000_000_000L) {
+            this * 1000
+        } else {
+            this
+        }
+    }
+
+    private fun XWPFTableCell.setCleanText(text: String) {
+        val p = this.addParagraph()
+        val run = p.createRun()
+        run.setText(text)
     }
 
     companion object {

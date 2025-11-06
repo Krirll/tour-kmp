@@ -58,6 +58,12 @@ class BackendTicketsRepository(
         withContext(dispatcherProvider.io) {
             val dbTour = db.toursQueries.selectTourById(tourId).executeAsOneOrNull()
                 ?: throw IllegalStateException("No tour by id: $tourId")
+            val isExists = db.ticketsQueries
+                .selectByAccountId(accountId)
+                .executeAsList()
+                .firstOrNull { it.tour_id == tourId } != null
+            //todo тут надо подумать как сделать нормальную проверку, так как могут быть другие паспортные данные
+            if (isExists) throw IllegalStateException("Ticket is already exists")
             val tour = dbTour.toModel()
             val externalPath = ticketBuilder.build(tour, personData, time)
             db.ticketsQueries.insert(
