@@ -1,6 +1,7 @@
 package ru.krirll.moscowtour.shared.domain
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.Serializable
 import ru.krirll.moscowtour.shared.domain.model.SavedTour
 import ru.krirll.moscowtour.shared.domain.model.Tour
@@ -9,6 +10,10 @@ interface SavedToursRepository {
     suspend fun save(tour: Tour)
     fun getAll(): Flow<List<SavedTour>>
     suspend fun remove(tourId: Long)
+
+    suspend fun clear() {
+        getAll().first().forEach { remove(it.tour.id) }
+    }
 
     companion object {
 

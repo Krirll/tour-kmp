@@ -19,14 +19,13 @@ class LogoutUseCase(
 ) : LogoutAction {
     val token = tokenStorage.token
 
-    override suspend fun logout(accountId: Long) {
+    override suspend fun logout() {
         tokenStorage.token.firstOrNull()?.refresh?.let {
             runCatching { authTokenRepository.revoke(TokenRequest(it)) }
         }
         tokenStorage.clear()
         localSearchRepo.clearAll()
-        localSavedToursRepository.clear(accountId)
-        syncRepository.setRecentlyWatchedSynchronized(false)
+        localSavedToursRepository.clear()
         syncRepository.setSearchSynchronized(false)
         syncRepository.setSavedToursSynchronized(false)
         bearerAuthProvider.clearToken()

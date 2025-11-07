@@ -1,5 +1,6 @@
 package ru.krirll.moscowtour.shared.data
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -13,8 +14,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 actual suspend fun saveFileFromResponse(byteChannel: ByteReadChannel, fileName: String) {
-    val context: Context = koin.get() // твой способ получить Context
+    val context: Context = koin.get<Application>()
 
+    //todo доделать
     val resultUri: Uri = suspendCancellableCoroutine { cont ->
         val launcher = (context as ActivityResultCaller).registerForActivityResult(
             ActivityResultContracts.CreateDocument(fileName)

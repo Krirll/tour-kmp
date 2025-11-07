@@ -1,7 +1,6 @@
 package ru.krirll.moscowtour.shared.presentation.nav
 
 import kotlinx.serialization.Serializable
-import ru.krirll.moscowtour.shared.domain.isJs
 
 @Serializable
 sealed class Route : ru.krirll.ui.nav.Route() {
@@ -17,7 +16,8 @@ sealed class Route : ru.krirll.ui.nav.Route() {
 
     @Serializable
     data class Loading(
-        val authRequired: Boolean = isJs,
+        //todo придумать какое то ограничение, чтоб не перегружать сервак
+        //val authRequired: Boolean = isJs,
         val next: Collection<Route> = listOf(default)
     ) : Route()
 
@@ -39,7 +39,8 @@ sealed class Route : ru.krirll.ui.nav.Route() {
 
         @Serializable
         data class Auth(
-            val required: Boolean = isJs,
+            //todo придумать какое то ограничение, чтоб не перегружать сервак
+            //val required: Boolean = isJs,
             val next: Collection<Route> = listOf(default)
         ) : Route()
 

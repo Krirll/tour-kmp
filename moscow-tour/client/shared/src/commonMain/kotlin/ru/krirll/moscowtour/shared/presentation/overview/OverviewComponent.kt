@@ -17,7 +17,6 @@ import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.SavedToursRepository
 import ru.krirll.moscowtour.shared.domain.interactor.AboutVideoInteractor
-import ru.krirll.moscowtour.shared.domain.model.File
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.ShareManager

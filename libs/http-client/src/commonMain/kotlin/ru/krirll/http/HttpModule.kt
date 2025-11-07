@@ -55,7 +55,7 @@ class HttpModule {
             newToken.toKtor()
         } catch (e: Throwable) {
             if (e is HttpException) {
-                koin.getOrNull<LogoutAction>()?.logout(-1) //todo получать айди авторизованного пользователя
+                koin.getOrNull<LogoutAction>()?.logout()
             }
             null
         }
