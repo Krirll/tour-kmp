@@ -20,7 +20,12 @@ class TicketBuilderImpl(
     private val dispatcherProvider: DispatcherProvider
 ) : TicketBuilder {
 
-    override suspend fun build(tour: Tour, personData: PersonData, time: Long) {
+    override suspend fun build(
+        tour: Tour,
+        personData: PersonData,
+        requestTime: Long,
+        buyTime: Long?
+    ) {
         return withContext(dispatcherProvider.io) {
             val baseDir = File(BASE_DIR_PATH)
             if (!baseDir.exists()) baseDir.mkdirs()
@@ -28,12 +33,12 @@ class TicketBuilderImpl(
             val templateFile = javaClass.getResourceAsStream("/template.docx")
                 ?: error("Template not found")
 
-            val fileName = "$time"
+            val fileName = "$requestTime"
 
             templateFile.use { fis ->
                 val doc = XWPFDocument(fis)
 
-                // Проходим по всем таблицам (у тебя их 2)
+                // Проходим по всем таблицам
                 val tables = doc.tables
 
                 // 1. Личные данные
@@ -73,7 +78,13 @@ class TicketBuilderImpl(
                     val newText =
                         p.text.replace(
                             DATE_OF_BUY,
-                            "$DATE_OF_BUY ${buyFormatter.format(Date(time.normalizeTimestamp()))}"
+                            "$DATE_OF_BUY ${
+                                buyFormatter.format(
+                                    Date(
+                                        buyTime?.normalizeTimestamp() ?: requestTime.normalizeTimestamp()
+                                    )
+                                )
+                            }"
                         )
                     while (p.runs.isNotEmpty()) p.removeRun(0)
                     p.createRun().setText(newText)

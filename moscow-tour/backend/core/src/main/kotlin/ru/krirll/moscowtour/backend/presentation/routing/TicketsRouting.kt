@@ -1,11 +1,12 @@
 package ru.krirll.moscowtour.backend.presentation.routing
 
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.header
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondFile
+import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
@@ -45,15 +46,16 @@ fun Routing.setupTickets(
             .createAndDownload(request.tourId, request.personData, request.time)
         withContext(routingEntryPoint.dispatcherProvider.io) {
             val file = File(TicketBuilderImpl.BASE_DIR_PATH, "${request.time}")
+            val bytes = file.readBytes()
             try {
-                val formatter = SimpleDateFormat("dd.MM.yyyy_HH-mm", Locale.of("ru", "RU"))
+                val formatter = SimpleDateFormat("dd.MM.yyyy_HH-mm-SSS", Locale.of("ru", "RU"))
                 call.response.header(
                     HttpHeaders.ContentDisposition,
                     "attachment; filename=\"ticket-${
                         formatter.format(Date(request.time.normalizeTimestamp()))
                     }.docx\""
                 )
-                call.respondFile(file)
+                call.respondBytes(bytes, ContentType.Application.OctetStream)
             } finally {
                 file.delete()
             }
