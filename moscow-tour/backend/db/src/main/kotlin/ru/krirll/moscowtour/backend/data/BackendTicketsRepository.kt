@@ -56,7 +56,6 @@ class BackendTicketsRepository(
         personData: PersonData,
         time: Long
     ) {
-        //todo поправить шаблон - Туристическая фирма поменять на Туристическое агенство (увы но надо на винде)
         withContext(dispatcherProvider.io) {
             val dbTour = db.toursQueries.selectTourById(tourId).executeAsOneOrNull()
                 ?: throw IllegalStateException("No tour by id: $tourId")
@@ -68,9 +67,8 @@ class BackendTicketsRepository(
             val dbTicket = tickets.firstOrNull {
                     it.tour_id == tourId && it.person_data_hash == currentHash
                 }
-//todo проверить, что дата приобретения выставляется старая, если билет уже приобретался
             val tour = dbTour.toModel()
-            ticketBuilder.build(tour, personData, dbTicket?.date ?: time)
+            ticketBuilder.build(tour, personData, time, dbTicket?.date)
             if (dbTicket == null) {
                 db.ticketsQueries.insert(
                     tourId,
