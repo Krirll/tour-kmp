@@ -9,7 +9,6 @@ import ru.krirll.moscowtour.shared.di.SavedModule
 import ru.krirll.moscowtour.shared.di.SearchModule
 import ru.krirll.moscowtour.shared.di.TicketsModule
 import ru.krirll.moscowtour.shared.presentation.ShareManager
-import ru.krirll.moscowtour.shared.presentation.VideoLauncher
 
 @Module(
     includes = [

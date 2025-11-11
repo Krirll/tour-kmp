@@ -13,6 +13,7 @@ import ru.krirll.moscowtour.shared.domain.TicketFactory
 import ru.krirll.moscowtour.shared.domain.TicketsRepository
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
+import ru.krirll.moscowtour.shared.domain.model.TicketFile
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import java.security.MessageDigest
 
@@ -55,7 +56,7 @@ class BackendTicketsRepository(
         tourId: Long,
         personData: PersonData,
         time: Long
-    ): Pair<String, ByteArray> = withContext(dispatcherProvider.io) {
+    ): TicketFile = withContext(dispatcherProvider.io) {
         val dbTour = db.toursQueries.selectTourById(tourId).executeAsOneOrNull()
             ?: throw IllegalStateException("No tour by id: $tourId")
 

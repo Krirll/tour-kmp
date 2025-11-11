@@ -8,6 +8,7 @@ import ru.krirll.moscowtour.backend.domain.normalizeTimestamp
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.TicketFactory
 import ru.krirll.moscowtour.shared.domain.model.PersonData
+import ru.krirll.moscowtour.shared.domain.model.TicketFile
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
@@ -24,7 +25,7 @@ class TicketFactoryImpl(
         personData: PersonData,
         requestTime: Long,
         buyTime: Long?
-    ): Pair<String, ByteArray> {
+    ): TicketFile {
         return withContext(dispatcherProvider.io) {
             val templateFile = javaClass.getResourceAsStream("/template.docx")
                 ?: error("Template not found")
@@ -89,11 +90,12 @@ class TicketFactoryImpl(
                 val fileName = "ticket-${
                     formatter.format(Date(requestTime.normalizeTimestamp()))
                 }.docx"
-                fileName to ByteArrayOutputStream().use { outputStream ->
+                val bytes = ByteArrayOutputStream().use { outputStream ->
                     doc.write(outputStream)
                     doc.close()
                     outputStream.toByteArray()
                 }
+                TicketFile(fileName, bytes)
             }
         }
     }

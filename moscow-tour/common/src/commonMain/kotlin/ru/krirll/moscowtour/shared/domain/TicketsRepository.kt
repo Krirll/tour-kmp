@@ -4,11 +4,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
+import ru.krirll.moscowtour.shared.domain.model.TicketFile
 
 interface TicketsRepository {
     fun getAll(): Flow<List<Ticket>>
     suspend fun remove(ticketId: Long)
-    suspend fun createAndDownload(tourId: Long, personData: PersonData, time: Long): Pair<String, ByteArray>
+    suspend fun createAndDownload(tourId: Long, personData: PersonData, time: Long): TicketFile
 
     companion object {
         const val PREFIX = "$DYNAMIC_PREFIX/tickets"

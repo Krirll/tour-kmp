@@ -1,6 +1,7 @@
 package ru.krirll.moscowtour.shared.domain
 
 import ru.krirll.moscowtour.shared.domain.model.PersonData
+import ru.krirll.moscowtour.shared.domain.model.TicketFile
 import ru.krirll.moscowtour.shared.domain.model.Tour
 
 interface TicketFactory {
@@ -9,5 +10,5 @@ interface TicketFactory {
         personData: PersonData,
         requestTime: Long,
         buyTime: Long?
-    ): Pair<String, ByteArray>
+    ): TicketFile
 }

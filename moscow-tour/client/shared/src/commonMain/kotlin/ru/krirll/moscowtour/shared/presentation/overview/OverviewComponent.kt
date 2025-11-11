@@ -20,7 +20,6 @@ import ru.krirll.moscowtour.shared.domain.interactor.AboutVideoInteractor
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.ShareManager
-import ru.krirll.moscowtour.shared.presentation.VideoLauncher
 import ru.krirll.moscowtour.shared.presentation.componentScope
 import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child

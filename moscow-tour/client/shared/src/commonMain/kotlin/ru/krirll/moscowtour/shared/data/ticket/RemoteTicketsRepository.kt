@@ -27,6 +27,7 @@ import ru.krirll.moscowtour.shared.domain.TicketsRepository
 import ru.krirll.moscowtour.shared.domain.getServerConfiguration
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
+import ru.krirll.moscowtour.shared.domain.model.TicketFile
 
 @Factory(binds = [RemoteTicketsRepository::class])
 class RemoteTicketsRepository(
@@ -51,8 +52,8 @@ class RemoteTicketsRepository(
         tourId: Long,
         personData: PersonData,
         time: Long
-    ): Pair<String, ByteArray> {
-        tokenCache.token.first() ?: return "" to byteArrayOf()
+    ): TicketFile {
+        tokenCache.token.first() ?: return TicketFile("", byteArrayOf())
         val response = httpClient.get {
             obtainConfig().apply(this, TicketsRepository.CREATE_AND_DOWNLOAD)
             setJsonBody(CreateTicketRequest(tourId, personData, time))
@@ -62,7 +63,7 @@ class RemoteTicketsRepository(
             ?.substringAfter("filename=\"")
             ?.substringBefore("\"")
             ?: "билет.docx"
-        return fileName to response.bodyAsBytes()
+        return TicketFile(fileName, response.bodyAsBytes())
     }
 
     override suspend fun remove(ticketId: Long) {
