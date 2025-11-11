@@ -1,37 +1,24 @@
 package ru.krirll.moscowtour.shared.data
 
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.readAvailable
-import io.ktor.utils.io.readFully
-import kotlinx.browser.document
-import org.khronos.webgl.Uint8Array
-import org.w3c.dom.HTMLAnchorElement
-import org.w3c.files.Blob
-import org.w3c.files.BlobPropertyBag
-import kotlin.collections.forEachIndexed
+@JsFun("""
+    function saveFileFromBytes(bytes, fileName) {
+        var uint8Array = Uint8Array.from(bytes);
+        var blob = new Blob([uint8Array], { type: 'application/octet-stream' });
+        var url = URL.createObjectURL(blob);
 
-actual suspend fun saveFileFromResponse(byteChannel: ByteReadChannel, fileName: String) {
-    val byteList = mutableListOf<Byte>()
-    while (!byteChannel.isClosedForRead) {
-        val read = byteChannel.readAvailable(ByteArray(4096))
-        if (read > 0) {
-            val buffer = ByteArray(read)
-            byteChannel.readFully(buffer)
-            byteList.addAll(buffer.toList())
-        }
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        URL.revokeObjectURL(url);
     }
+""")
+private external fun saveFileFromBytes(bytes: ByteArray, fileName: String)
 
-    val uint8Array = Uint8Array(byteList.size)
-    byteList.forEachIndexed { i, byte -> uint8Array[i] = byte.toUByte() }
-
-    val blob = Blob(arrayOf(uint8Array.buffer), BlobPropertyBag(type = "application/octet-stream"))
-    val url = js("URL.createObjectURL(blob)") as String
-
-    val a = document.createElement("a") as HTMLAnchorElement
-    a.href = url
-    a.download = fileName
-    a.style.display = "none"
-    document.body?.appendChild(a)
-    a.click()
-    document.body?.removeChild(a)
+actual suspend fun saveFileFromResponse(byteArray: ByteArray, fileName: String) {
+    saveFileFromBytes(byteArray, fileName)
 }

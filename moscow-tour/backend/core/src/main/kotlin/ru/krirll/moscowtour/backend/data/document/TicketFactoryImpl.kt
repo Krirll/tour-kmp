@@ -6,34 +6,29 @@ import org.apache.poi.xwpf.usermodel.XWPFTableCell
 import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.backend.domain.normalizeTimestamp
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
-import ru.krirll.moscowtour.shared.domain.TicketBuilder
+import ru.krirll.moscowtour.shared.domain.TicketFactory
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Tour
-import java.io.File
-import java.io.FileOutputStream
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Factory
-class TicketBuilderImpl(
+class TicketFactoryImpl(
     private val dispatcherProvider: DispatcherProvider
-) : TicketBuilder {
+) : TicketFactory {
 
-    override suspend fun build(
+    override suspend fun create(
         tour: Tour,
         personData: PersonData,
         requestTime: Long,
         buyTime: Long?
-    ) {
+    ): Pair<String, ByteArray> {
         return withContext(dispatcherProvider.io) {
-            val baseDir = File(BASE_DIR_PATH)
-            if (!baseDir.exists()) baseDir.mkdirs()
-
             val templateFile = javaClass.getResourceAsStream("/template.docx")
                 ?: error("Template not found")
 
-            val fileName = "$requestTime"
 
             templateFile.use { fis ->
                 val doc = XWPFDocument(fis)
@@ -90,12 +85,15 @@ class TicketBuilderImpl(
                     p.createRun().setText(newText)
                 }
 
-                val ticket = File(baseDir, fileName)
-                FileOutputStream(ticket).use { fos ->
-                    doc.write(fos)
+                val formatter = SimpleDateFormat("dd.MM.yyyy_HH-mm-SSS", Locale.of("ru", "RU"))
+                val fileName = "ticket-${
+                    formatter.format(Date(requestTime.normalizeTimestamp()))
+                }.docx"
+                fileName to ByteArrayOutputStream().use { outputStream ->
+                    doc.write(outputStream)
+                    doc.close()
+                    outputStream.toByteArray()
                 }
-
-                doc.close()
             }
         }
     }
@@ -107,7 +105,6 @@ class TicketBuilderImpl(
     }
 
     companion object {
-        const val BASE_DIR_PATH = "/usr/local/app/files/tickets"
         const val DATE_OF_BUY = "Дата приобретения:"
     }
 }

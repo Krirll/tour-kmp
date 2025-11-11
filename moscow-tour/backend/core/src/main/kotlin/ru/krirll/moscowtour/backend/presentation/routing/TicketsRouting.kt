@@ -12,17 +12,11 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import ru.krirll.moscowtour.backend.data.document.TicketBuilderImpl
 import ru.krirll.moscowtour.backend.di.RoutingEntryPoint
-import ru.krirll.moscowtour.backend.domain.normalizeTimestamp
 import ru.krirll.moscowtour.backend.presentation.obtainAccountId
 import ru.krirll.moscowtour.shared.domain.CreateTicketRequest
 import ru.krirll.moscowtour.shared.domain.RemoveTicketRequest
 import ru.krirll.moscowtour.shared.domain.TicketsRepository
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 fun Routing.setupTickets(
     routingEntryPoint: RoutingEntryPoint
@@ -42,23 +36,14 @@ fun Routing.setupTickets(
     }
     get(TicketsRepository.CREATE_AND_DOWNLOAD) {
         val request = call.receive<CreateTicketRequest>()
-        routingEntryPoint.ticketsFactory.create(call.obtainAccountId())
+        val result = routingEntryPoint.ticketsFactory.create(call.obtainAccountId())
             .createAndDownload(request.tourId, request.personData, request.time)
         withContext(routingEntryPoint.dispatcherProvider.io) {
-            val file = File(TicketBuilderImpl.BASE_DIR_PATH, "${request.time}")
-            val bytes = file.readBytes()
-            try {
-                val formatter = SimpleDateFormat("dd.MM.yyyy_HH-mm-SSS", Locale.of("ru", "RU"))
-                call.response.header(
-                    HttpHeaders.ContentDisposition,
-                    "attachment; filename=\"ticket-${
-                        formatter.format(Date(request.time.normalizeTimestamp()))
-                    }.docx\""
-                )
-                call.respondBytes(bytes, ContentType.Application.OctetStream)
-            } finally {
-                file.delete()
-            }
+            call.response.header(
+                HttpHeaders.ContentDisposition,
+                "attachment; filename=\"${result.first}\""
+            )
+            call.respondBytes(result.second, ContentType.Application.OctetStream)
         }
     }
 }

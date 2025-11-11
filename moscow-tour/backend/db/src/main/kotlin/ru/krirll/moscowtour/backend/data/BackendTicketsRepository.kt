@@ -9,7 +9,7 @@ import ru.krirll.moscowtour.server.Tour_details
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.RemoteEvent
 import ru.krirll.moscowtour.shared.domain.RemoteEventHandler
-import ru.krirll.moscowtour.shared.domain.TicketBuilder
+import ru.krirll.moscowtour.shared.domain.TicketFactory
 import ru.krirll.moscowtour.shared.domain.TicketsRepository
 import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Ticket
@@ -19,7 +19,7 @@ import java.security.MessageDigest
 class BackendTicketsRepository(
     private val db: AppDatabase,
     private val accountId: Long,
-    private val ticketBuilder: TicketBuilder,
+    private val ticketFactory: TicketFactory,
     private val dispatcherProvider: DispatcherProvider,
     private val eventHandler: RemoteEventHandler
 ) : TicketsRepository {
@@ -55,29 +55,27 @@ class BackendTicketsRepository(
         tourId: Long,
         personData: PersonData,
         time: Long
-    ) {
-        withContext(dispatcherProvider.io) {
-            val dbTour = db.toursQueries.selectTourById(tourId).executeAsOneOrNull()
-                ?: throw IllegalStateException("No tour by id: $tourId")
+    ): Pair<String, ByteArray> = withContext(dispatcherProvider.io) {
+        val dbTour = db.toursQueries.selectTourById(tourId).executeAsOneOrNull()
+            ?: throw IllegalStateException("No tour by id: $tourId")
 
-            val tickets = db.ticketsQueries
-                .selectByAccountId(accountId)
-                .executeAsList()
-            val currentHash = personData.hash()
-            val dbTicket = tickets.firstOrNull {
-                    it.tour_id == tourId && it.person_data_hash == currentHash
-                }
-            val tour = dbTour.toModel()
-            ticketBuilder.build(tour, personData, time, dbTicket?.date)
-            if (dbTicket == null) {
-                db.ticketsQueries.insert(
-                    tourId,
-                    accountId,
-                    time,
-                    currentHash
-                )
-            }
+        val tickets = db.ticketsQueries
+            .selectByAccountId(accountId)
+            .executeAsList()
+        val currentHash = personData.hash()
+        val dbTicket = tickets.firstOrNull {
+            it.tour_id == tourId && it.person_data_hash == currentHash
         }
+        val tour = dbTour.toModel()
+        if (dbTicket == null) {
+            db.ticketsQueries.insert(
+                tourId,
+                accountId,
+                time,
+                currentHash
+            )
+        }
+        ticketFactory.create(tour, personData, time, dbTicket?.date)
     }
 
     private fun Tour_details.toModel(): Tour {

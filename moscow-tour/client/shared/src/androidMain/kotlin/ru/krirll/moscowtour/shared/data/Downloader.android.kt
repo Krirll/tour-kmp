@@ -2,21 +2,16 @@ package ru.krirll.moscowtour.shared.data
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.contract.ActivityResultContracts
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.readAvailable
 import kotlinx.coroutines.suspendCancellableCoroutine
 import ru.krirll.moscowtour.shared.di.koin
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-actual suspend fun saveFileFromResponse(byteChannel: ByteReadChannel, fileName: String) {
+actual suspend fun saveFileFromResponse(byteArray: ByteArray, fileName: String) {
     val context: Context = koin.get<Application>()
-
-    //todo доделать
     val resultUri: Uri = suspendCancellableCoroutine { cont ->
         val launcher = (context as ActivityResultCaller).registerForActivityResult(
             ActivityResultContracts.CreateDocument(fileName)
@@ -24,22 +19,12 @@ actual suspend fun saveFileFromResponse(byteChannel: ByteReadChannel, fileName: 
             if (uri != null) cont.resume(uri)
             else cont.resumeWithException(Exception("File save canceled"))
         }
-        launcher.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            putExtra(Intent.EXTRA_TITLE, fileName)
-        })
+        launcher.launch(fileName)
     }
-
-    context.contentResolver.openOutputStream(resultUri).use { output ->
-        output?.let {
-            val buffer = ByteArray(4096)
-            while (!byteChannel.isClosedForRead) {
-                val read = byteChannel.readAvailable(buffer)
-                if (read > 0) output.write(buffer, 0, read)
-            }
-        }
-    }
+    context.contentResolver.openOutputStream(resultUri)?.use { output ->
+        output.write(byteArray)
+        output.flush()
+    } ?: throw Exception("Unable to open output stream for URI: $resultUri")
 
     //todo для ios
     /**

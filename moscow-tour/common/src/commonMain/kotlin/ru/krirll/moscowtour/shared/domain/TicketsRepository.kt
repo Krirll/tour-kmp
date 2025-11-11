@@ -8,7 +8,7 @@ import ru.krirll.moscowtour.shared.domain.model.Ticket
 interface TicketsRepository {
     fun getAll(): Flow<List<Ticket>>
     suspend fun remove(ticketId: Long)
-    suspend fun createAndDownload(tourId: Long, personData: PersonData, time: Long)
+    suspend fun createAndDownload(tourId: Long, personData: PersonData, time: Long): Pair<String, ByteArray>
 
     companion object {
         const val PREFIX = "$DYNAMIC_PREFIX/tickets"

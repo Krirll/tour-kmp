@@ -3,6 +3,8 @@ package ru.krirll.moscowtour.shared.data.ticket
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsBytes
+import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
@@ -14,7 +16,6 @@ import org.koin.core.annotation.Named
 import ru.krirll.http.domain.TokenStorage
 import ru.krirll.moscowtour.shared.data.apply
 import ru.krirll.moscowtour.shared.data.get
-import ru.krirll.moscowtour.shared.data.saveFileFromResponse
 import ru.krirll.moscowtour.shared.data.setJsonBody
 import ru.krirll.moscowtour.shared.domain.CreateTicketRequest
 import ru.krirll.moscowtour.shared.domain.EventType
@@ -46,13 +47,22 @@ class RemoteTicketsRepository(
         }
     }
 
-    override suspend fun createAndDownload(tourId: Long, personData: PersonData, time: Long) {
-        tokenCache.token.first() ?: return
+    override suspend fun createAndDownload(
+        tourId: Long,
+        personData: PersonData,
+        time: Long
+    ): Pair<String, ByteArray> {
+        tokenCache.token.first() ?: return "" to byteArrayOf()
         val response = httpClient.get {
             obtainConfig().apply(this, TicketsRepository.CREATE_AND_DOWNLOAD)
             setJsonBody(CreateTicketRequest(tourId, personData, time))
         }
-        saveFileFromResponse(response)
+        val contentDisposition = response.headers[HttpHeaders.ContentDisposition]
+        val fileName = contentDisposition
+            ?.substringAfter("filename=\"")
+            ?.substringBefore("\"")
+            ?: "билет.docx"
+        return fileName to response.bodyAsBytes()
     }
 
     override suspend fun remove(ticketId: Long) {
