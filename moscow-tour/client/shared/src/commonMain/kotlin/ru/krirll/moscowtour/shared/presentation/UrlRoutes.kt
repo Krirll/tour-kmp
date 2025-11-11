@@ -15,10 +15,8 @@ object UrlRoutes {
 
         const val OVERVIEW = "overview"
         const val SELECT_SEASON = "selectSeason"
-        const val SELECT_EPISODE = "selectEpisode"
 
         const val SETTINGS = "settings"
-        const val SERV = "serv"
         const val AUTH = "auth"
         const val REGISTER = "register"
         const val EDIT_PASSWORD = "editPassword"
@@ -137,37 +135,12 @@ object UrlRoutes {
             }
         ),
 
-        // "/overview/{id}/{selectedSeasonId}/selectEpisode"
-        rule(
-            match = { it is Route.Overview.Episode },
-            build = {
-                val r = it as Route.Overview.Episode
-                Built("/${Seg.OVERVIEW}/${r.id}/${r.selectedSeasonId}/${Seg.SELECT_EPISODE}")
-            },
-            parse = { segs, _ ->
-                if (segs.size == 4 && segs[0] == Seg.OVERVIEW && segs[3] == Seg.SELECT_EPISODE) {
-                    val id = segs[1].toLongOrNull()
-                    val season = segs[2].toLongOrNull()
-                    if (id != null && season != null) Route.Overview.Episode(id, selectedSeasonId = season) else null
-                } else null
-            }
-        ),
-
         // "/settings"
         rule(
             match = { it === Route.Settings },
             build = { Built("/${Seg.SETTINGS}") },
             parse = { segs, _ ->
                 if (segs.size == 1 && segs[0] == Seg.SETTINGS) Route.Settings else null
-            }
-        ),
-
-        // "/settings/serv"
-        rule(
-            match = { it === Route.Settings.EditServ },
-            build = { Built("/${Seg.SETTINGS}/${Seg.SERV}") },
-            parse = { segs, _ ->
-                if (segs.size == 2 && segs[0] == Seg.SETTINGS && segs[1] == Seg.SERV) Route.Settings.EditServ else null
             }
         ),
 

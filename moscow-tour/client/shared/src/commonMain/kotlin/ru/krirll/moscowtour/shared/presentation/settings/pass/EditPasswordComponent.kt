@@ -21,7 +21,7 @@ import ru.krirll.moscowtour.shared.presentation.settings.auth.AuthState
 class EditPasswordComponent(
     private val context: ComponentContext,
     private val authTokenRepository: AuthTokenRepository,
-    private val dispatcherProvider: DispatcherProvider,
+    dispatcherProvider: DispatcherProvider,
     val onBack: () -> Unit
 ) : ComponentContext by context {
     private val scope = coroutineScope(SupervisorJob() + dispatcherProvider.main)

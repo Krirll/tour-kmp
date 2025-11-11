@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.SavedToursRepository
-import ru.krirll.moscowtour.shared.domain.interactor.AboutVideoInteractor
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.ShareManager
@@ -27,14 +26,11 @@ import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 
 class OverviewComponent(
-    private val interactor: AboutVideoInteractor,
     private val savedToursRepository: SavedToursRepository,
     private val dispatcherProvider: DispatcherProvider,
     private val context: ComponentContext,
     private val id: Long,
     val doBack: () -> Unit,
-    val showSeasons: () -> Unit,
-    val videoLauncher: VideoLauncher,
     val shareManager: ShareManager,
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
@@ -107,9 +103,7 @@ class OverviewComponent(
 
 @Factory(binds = [OverviewFactory::class])
 class OverviewFactory(
-    private val interactor: AboutVideoInteractor,
     private val savedToursRepository: SavedToursRepository,
-    private val videoLauncher: VideoLauncher,
     private val shareManager: ShareManager,
     private val dispatcherProvider: DispatcherProvider
 ) : ComponentFactory<Child.OverviewChild, Route.Overview> {
@@ -119,14 +113,11 @@ class OverviewFactory(
         root: RootComponent
     ): Child.OverviewChild {
         val comp = OverviewComponent(
-            interactor,
             savedToursRepository,
             dispatcherProvider,
             child,
             route.id,
-            showSeasons = { root.nav(Route.Overview.Season(route.id)) },
             doBack = { root.onBack() },
-            videoLauncher = videoLauncher,
             shareManager = shareManager,
         )
         return Child.OverviewChild(comp)

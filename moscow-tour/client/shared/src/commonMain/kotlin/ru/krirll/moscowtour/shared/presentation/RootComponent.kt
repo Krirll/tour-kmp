@@ -10,7 +10,6 @@ import kotlinx.serialization.KSerializer
 import org.koin.core.Koin
 import org.koin.core.annotation.Factory
 import ru.krirll.http.domain.TokenStorage
-import ru.krirll.ui.nav.BaseRootComponent
 import ru.krirll.moscowtour.shared.di.koin
 import ru.krirll.moscowtour.shared.domain.HeathCheck
 import ru.krirll.moscowtour.shared.presentation.list.VideosChildFactory
@@ -19,7 +18,6 @@ import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 import ru.krirll.moscowtour.shared.presentation.overview.OverviewFactory
-import ru.krirll.moscowtour.shared.presentation.overview.episode.EpisodeOverviewFactory
 import ru.krirll.moscowtour.shared.presentation.overview.season.SeasonOverviewFactory
 import ru.krirll.moscowtour.shared.presentation.saved.SavedMovieFactory
 import ru.krirll.moscowtour.shared.presentation.search.SearchScreenFactory
@@ -27,7 +25,7 @@ import ru.krirll.moscowtour.shared.presentation.settings.SettingsComponentFactor
 import ru.krirll.moscowtour.shared.presentation.settings.auth.AuthComponentFactory
 import ru.krirll.moscowtour.shared.presentation.settings.pass.EditPasswordComponentFactory
 import ru.krirll.moscowtour.shared.presentation.settings.register.RegisterComponentFactory
-import ru.krirll.moscowtour.shared.presentation.settings.serv.EditServComponentFactory
+import ru.krirll.ui.nav.BaseRootComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
 class RootComponent(
@@ -98,9 +96,7 @@ fun <T : Child, R : Route> Route.provideFactory(koin: Koin): ComponentFactory<T,
         is Route.SearchVideos -> koin.get<SearchScreenFactory>()
         is Route.Overview -> koin.get<OverviewFactory>()
         is Route.Overview.Season -> koin.get<SeasonOverviewFactory>()
-        is Route.Overview.Episode -> koin.get<EpisodeOverviewFactory>()
         is Route.Settings -> koin.get<SettingsComponentFactory>()
-        is Route.Settings.EditServ -> koin.get<EditServComponentFactory>()
         is Route.Settings.Auth -> koin.get<AuthComponentFactory>()
         is Route.Settings.Register -> koin.get<RegisterComponentFactory>()
         is Route.Saved -> koin.get<SavedMovieFactory>()

@@ -26,8 +26,9 @@ class LoadingComponentFactory : ComponentFactory<Child.LoadingChild, Route.Loadi
                 child,
                 root.isLoggedIn,
                 onLoaded = { isLoggedIn ->
-                    if (!isLoggedIn && route.authRequired) {
-                        root.navReplace(Route.Settings.Auth(true, next = route.next))
+                    if (!isLoggedIn) {
+                        //todo тут не нужна авторизация слету, пользователь может и потом это сделать
+                        root.navReplace(Route.Settings.Auth(next = route.next))
                     } else {
                         root.navReplace(*route.next.toTypedArray())
                     }

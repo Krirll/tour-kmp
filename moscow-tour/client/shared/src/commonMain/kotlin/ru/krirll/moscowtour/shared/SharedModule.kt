@@ -24,7 +24,4 @@ class SharedModule {
 
     @Factory
     fun provideShareManager(): ShareManager = ShareManager()
-
-    @Factory
-    fun provideVideoLauncher(): VideoLauncher = VideoLauncher()
 }

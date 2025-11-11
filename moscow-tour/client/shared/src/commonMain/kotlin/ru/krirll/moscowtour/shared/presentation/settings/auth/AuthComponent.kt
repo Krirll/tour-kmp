@@ -17,11 +17,9 @@ import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 
 class AuthComponent(
-    val isAuthRequired: Boolean,
     private val context: ComponentContext,
     val doBack: () -> Unit,
     val doRegister: () -> Unit,
-    val doMainMenu: () -> Unit,
     private val authTokenRepository: AuthTokenRepository,
     private val dispatcherProvider: DispatcherProvider,
     private val log: Log
@@ -43,11 +41,7 @@ class AuthComponent(
     }
 
     fun finish() {
-        if (isAuthRequired) {
-            doMainMenu()
-        } else {
-            doBack()
-        }
+        doBack()
     }
 }
 
@@ -61,11 +55,9 @@ class AuthComponentFactory(
         route: Route.Settings.Auth, child: ComponentContext, root: RootComponent
     ): Child.AuthChild {
         val comp = AuthComponent(
-            route.required,
             child,
             doBack = { root.onBack() },
             doRegister = { root.nav(Route.Settings.Register) },
-            doMainMenu = { root.navReplace(*route.next.toTypedArray()) },
             authTokenRepository,
             dispatcherProvider,
             log

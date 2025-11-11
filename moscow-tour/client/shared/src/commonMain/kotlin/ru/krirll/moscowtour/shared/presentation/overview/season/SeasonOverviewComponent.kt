@@ -17,11 +17,9 @@ import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 
 class SeasonOverviewComponent(
-    private val interactor: AboutVideoInteractor,
     private val context: ComponentContext,
     private val dispatchers: DispatcherProvider,
     val id: Long,
-    val showEpisode: (seasonId: Long) -> Unit,
     val doBack: () -> Unit,
     private val snapshot: ListSnapshot<Season> = context.instanceKeeper.getOrCreate { ListSnapshot() }
 ) : ComponentContext by context {
@@ -45,7 +43,6 @@ class SeasonOverviewComponent(
 @Factory(binds = [SeasonOverviewFactory::class])
 class SeasonOverviewFactory(
     private val dispatcherProvider: DispatcherProvider,
-    private val interactor: AboutVideoInteractor,
 ) : ComponentFactory<Child.SeasonOverviewChild, Route.Overview.Season> {
     override fun create(
         route: Route.Overview.Season,
@@ -53,11 +50,9 @@ class SeasonOverviewFactory(
         root: RootComponent
     ): Child.SeasonOverviewChild {
         val comp = SeasonOverviewComponent(
-            interactor,
             child,
             dispatcherProvider,
             route.id,
-            showEpisode = { root.nav(Route.Overview.Episode(route.id, it)) },
             doBack = { root.onBack() }
         )
         return Child.SeasonOverviewChild(comp)

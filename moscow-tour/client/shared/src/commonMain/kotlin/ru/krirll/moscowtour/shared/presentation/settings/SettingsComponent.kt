@@ -19,11 +19,10 @@ import ru.krirll.moscowtour.shared.presentation.nav.Route
 class SettingsComponent(
     private val context: ComponentContext,
     private val dispatcherProvider: DispatcherProvider,
-    private val serverConfigurationRepository: ServerConfigurationRepository,
+    serverConfigurationRepository: ServerConfigurationRepository,
     private val logoutUseCase: LogoutUseCase,
     val isDebug: Boolean,
     val doBack: () -> Unit,
-    val editServAddr: () -> Unit,
     val doAuth: () -> Unit,
     val doRegister: () -> Unit,
     val editPassword: () -> Unit,
@@ -59,8 +58,7 @@ class SettingsComponentFactory(
             serverConfigurationRepository,
             isDebug = isDebug,
             doBack = { root.onBack() },
-            editServAddr = { root.nav(Route.Settings.EditServ) },
-            doAuth = { root.nav(Route.Settings.Auth(required = true)) },
+            doAuth = { root.nav(Route.Settings.Auth()) },
             doRegister = { root.nav(Route.Settings.Register) },
             logoutUseCase = logoutUseCase,
             editPassword = { root.nav(Route.Settings.EditPassword) }

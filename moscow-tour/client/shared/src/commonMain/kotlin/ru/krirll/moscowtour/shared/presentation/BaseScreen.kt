@@ -25,12 +25,10 @@ import ru.krirll.moscowtour.shared.presentation.loading.LoadingScreen
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 import ru.krirll.moscowtour.shared.presentation.overview.OverviewScreen
-import ru.krirll.moscowtour.shared.presentation.overview.episode.EpisodesOverviewScreen
 import ru.krirll.moscowtour.shared.presentation.overview.season.SeasonOverviewScreen
 import ru.krirll.moscowtour.shared.presentation.settings.auth.AuthScreen
 import ru.krirll.moscowtour.shared.presentation.settings.pass.EditPasswordScreen
 import ru.krirll.moscowtour.shared.presentation.settings.register.RegisterScreen
-import ru.krirll.moscowtour.shared.presentation.settings.serv.EditServScreen
 
 @Composable
 fun getColorScheme(): ColorScheme {
@@ -57,8 +55,6 @@ private fun NavInternal(rootComponent: RootComponent) {
         when (child) {
             is Child.OverviewChild -> OverviewScreen(child.component)
             is Child.SeasonOverviewChild -> SeasonOverviewScreen(child.component)
-            is Child.EpisodeOverviewChild -> EpisodesOverviewScreen(child.component)
-            is Child.EditServerAddrChild -> EditServScreen(child.component)
             is Child.AuthChild -> AuthScreen(child.component)
             is Child.RegisterChild -> RegisterScreen(child.component)
             is Child.EditPasswordChild -> EditPasswordScreen(child.component)

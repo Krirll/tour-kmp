@@ -17,7 +17,6 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     @Serializable
     data class Loading(
         //todo придумать какое то ограничение, чтоб не перегружать сервак
-        //val authRequired: Boolean = isJs,
         val next: Collection<Route> = listOf(default)
     ) : Route()
 
@@ -26,21 +25,14 @@ sealed class Route : ru.krirll.ui.nav.Route() {
 
         @Serializable
         class Season(val id: Long) : Route()
-
-        @Serializable
-        class Episode(val id: Long, val selectedSeasonId: Long) : Route()
     }
 
     @Serializable
     data object Settings : Route() {
 
         @Serializable
-        data object EditServ : Route()
-
-        @Serializable
         data class Auth(
             //todo придумать какое то ограничение, чтоб не перегружать сервак
-            //val required: Boolean = isJs,
             val next: Collection<Route> = listOf(default)
         ) : Route()
 

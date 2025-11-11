@@ -1,15 +1,5 @@
 package ru.krirll.moscowtour.shared.presentation.settings.auth
 
-import moscowtour.moscow_tour.client.shared.generated.resources.Res
-import moscowtour.moscow_tour.client.shared.generated.resources.account_auth
-import moscowtour.moscow_tour.client.shared.generated.resources.account_login
-import moscowtour.moscow_tour.client.shared.generated.resources.account_password
-import moscowtour.moscow_tour.client.shared.generated.resources.account_reg_hint
-import moscowtour.moscow_tour.client.shared.generated.resources.empty_login
-import moscowtour.moscow_tour.client.shared.generated.resources.empty_pass
-import moscowtour.moscow_tour.client.shared.generated.resources.error_title
-import moscowtour.moscow_tour.client.shared.generated.resources.okay
-import moscowtour.moscow_tour.client.shared.generated.resources.unknown_error
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,14 +27,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
+import moscowtour.moscow_tour.client.shared.generated.resources.Res
+import moscowtour.moscow_tour.client.shared.generated.resources.account_auth
+import moscowtour.moscow_tour.client.shared.generated.resources.account_login
+import moscowtour.moscow_tour.client.shared.generated.resources.account_password
+import moscowtour.moscow_tour.client.shared.generated.resources.account_reg_hint
+import moscowtour.moscow_tour.client.shared.generated.resources.empty_login
+import moscowtour.moscow_tour.client.shared.generated.resources.empty_pass
+import moscowtour.moscow_tour.client.shared.generated.resources.error_title
+import moscowtour.moscow_tour.client.shared.generated.resources.okay
+import moscowtour.moscow_tour.client.shared.generated.resources.unknown_error
 import org.jetbrains.compose.resources.stringResource
-import ru.krirll.ui.components.PasswordTextField
 import ru.krirll.moscowtour.shared.domain.model.EmptyLoginException
 import ru.krirll.moscowtour.shared.domain.model.EmptyPasswordException
 import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.SimpleAppBar
 import ru.krirll.moscowtour.shared.presentation.list.Loading
+import ru.krirll.ui.components.PasswordTextField
 
 @Composable
 fun AuthScreen(comp: AuthComponent) {
@@ -55,17 +55,15 @@ fun AuthScreen(comp: AuthComponent) {
         password,
         comp.state,
         stringResource(Res.string.account_auth),
-        doBack = if (comp.isAuthRequired) null else comp.doBack,
+        doBack = comp.doBack,
         onDone = { comp.login(login.value, password.value) },
         onFinish = { comp.finish() },
         buttonAction = {
-            if (!comp.isAuthRequired) {
-                OutlinedButton(
-                    onClick = { comp.doRegister() },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(Res.string.account_reg_hint))
-                }
+            OutlinedButton(
+                onClick = { comp.doRegister() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(Res.string.account_reg_hint))
             }
         }
     )

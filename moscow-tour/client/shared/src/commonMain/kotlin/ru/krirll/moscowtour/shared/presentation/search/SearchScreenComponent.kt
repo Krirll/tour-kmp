@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Named
@@ -30,10 +31,11 @@ class SearchScreenComponent(
     val doBack: () -> Unit,
     private val dispatcherProvider: DispatcherProvider,
     private val searchRepository: SearchRepository,
-    private val remoteEventListener: RemoteEventListener,
+    remoteEventListener: RemoteEventListener,
     private val log: Log,
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
+
     val oldSearch = snapshot.oldSearch.asStateFlow()
     val searchEvent = remoteEventListener.event.filter { it is RemoteEvent.OnSearch }
         .catch {
@@ -50,7 +52,7 @@ class SearchScreenComponent(
     }
 
     fun refresh() {
-        exec { snapshot.oldSearch.emit(searchRepository.search("")) }
+        exec { snapshot.oldSearch.emit(searchRepository.getAll().first()) }
     }
 
     fun restart() {
@@ -80,7 +82,7 @@ class SearchScreenComponent(
 
     fun removeFromSearch(item: String) = exec {
         searchRepository.delete(item)
-        snapshot.oldSearch.emit(searchRepository.search(""))
+        snapshot.oldSearch.emit(searchRepository.getAll().first())
     }
 
     private fun exec(callback: suspend () -> Unit) {

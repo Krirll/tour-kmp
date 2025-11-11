@@ -29,7 +29,7 @@ class RemoteSearchRepository(
     private val httpClient: HttpClient,
     private val serverConfigurationRepository: ServerConfigurationRepository,
     private val tokenCache: TokenStorage,
-    @Named(EventType.SAVED) private val eventListener: RemoteEventListener
+    @Named(EventType.SEARCH) private val eventListener: RemoteEventListener
 ) : SearchRepository {
 
     override fun getAll(): Flow<List<String>> {
@@ -37,7 +37,7 @@ class RemoteSearchRepository(
             emit(getAllSingle())
             emitAll(
                 eventListener.event
-                    .filter { it is RemoteEvent.OnSaved }
+                    .filter { it is RemoteEvent.OnSearch }
                     .map { getAllSingle() }
             )
         }
