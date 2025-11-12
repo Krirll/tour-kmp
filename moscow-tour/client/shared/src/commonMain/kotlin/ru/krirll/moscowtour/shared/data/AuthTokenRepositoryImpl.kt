@@ -30,16 +30,27 @@ class AuthTokenRepositoryImpl(
 ) : AuthTokenRepository {
 
     override suspend fun register(loginInfo: LoginInfo): TokenInfo {
-        return post(loginInfo, AuthTokenRepository.REGISTER_PATH, false)
+        return post(
+            loginInfo,
+            AuthTokenRepository.REGISTER_PATH,
+            saveToCache = false,
+            needCheck = true
+        )
     }
 
     override suspend fun login(loginInfo: LoginInfo): TokenInfo {
-        return post(loginInfo, AuthTokenRepository.LOGIN_PATH, true)
+        return post(
+            loginInfo,
+            AuthTokenRepository.LOGIN_PATH,
+            saveToCache = true,
+            needCheck = false
+        )
     }
 
     override suspend fun update(refresh: TokenRequest): TokenInfo {
         return httpClient.post {
-            serverConfigurationProvider.getServerConfiguration().apply(this, AuthTokenRepository.UPDATE_PATH)
+            serverConfigurationProvider.getServerConfiguration()
+                .apply(this, AuthTokenRepository.UPDATE_PATH)
             setJsonBody(refresh)
         }.body<TokenInfo>()
     }
@@ -48,32 +59,41 @@ class AuthTokenRepositoryImpl(
         val oldPassHash = hashCalculator.calc(request.oldPasswordHash.toByteArray())
         val newPassHash = hashCalculator.calc(request.newPasswordHash.toByteArray())
         httpClient.post {
-            serverConfigurationProvider.getServerConfiguration().apply(this, AuthTokenRepository.CHANGE_PASS_PATH)
+            serverConfigurationProvider.getServerConfiguration()
+                .apply(this, AuthTokenRepository.CHANGE_PASS_PATH)
             setJsonBody(ChangePasswordRequest(oldPassHash.toHexString(), newPassHash.toHexString()))
         }
     }
 
     override suspend fun revoke(tokenRequest: TokenRequest) {
         httpClient.post {
-            serverConfigurationProvider.getServerConfiguration().apply(this, AuthTokenRepository.REVOKE_PATH)
+            serverConfigurationProvider.getServerConfiguration()
+                .apply(this, AuthTokenRepository.REVOKE_PATH)
             setJsonBody(tokenRequest)
         }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private suspend fun post(loginInfo: LoginInfo, path: String, saveToCache: Boolean): TokenInfo {
+    private suspend fun post(
+        loginInfo: LoginInfo,
+        path: String,
+        saveToCache: Boolean,
+        needCheck: Boolean
+    ): TokenInfo {
         if (loginInfo.login.trim().isEmpty()) {
             throw EmptyLoginException()
         } else if (loginInfo.passwordHash.trim().isEmpty()) {
             throw EmptyPasswordException()
         }
-        val loginRegex = "^(?=.{3,20}$)[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$".toRegex()
-        if (!loginInfo.login.matches(loginRegex)) {
-            throw IncorrectLoginException()
-        }
-        val passRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,30}$".toRegex()
-        if (!loginInfo.passwordHash.matches(passRegex)) {
-            throw IncorrectPasswordException()
+        if (needCheck) {
+            val loginRegex = "^(?=.{3,20}$)[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$".toRegex()
+            if (!loginInfo.login.matches(loginRegex)) {
+                throw IncorrectLoginException()
+            }
+            val passRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,30}$".toRegex()
+            if (!loginInfo.passwordHash.matches(passRegex)) {
+                throw IncorrectPasswordException()
+            }
         }
         val realPassHash = hashCalculator.calc(loginInfo.passwordHash.toByteArray())
         try {

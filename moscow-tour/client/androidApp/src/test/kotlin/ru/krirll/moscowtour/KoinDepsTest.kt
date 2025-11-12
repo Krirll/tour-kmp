@@ -41,16 +41,13 @@ class KoinDepsTest {
             modules(testModule)
         }
         listOf<Route>(
-            Route.Settings.Auth(false),
-            Route.Settings.EditServ,
-            Route.Overview.Episode(1, 1),
+            Route.Settings.Auth(),
             Route.Overview(1),
             Route.Settings.Register,
             Route.Saved,
-            Route.SearchVideos,
-            Route.Overview.Season(1),
+            Route.SearchTours,
             Route.Settings,
-            Route.Videos(null),
+            Route.Tours(null),
             Route.Settings.EditPassword
         ).forEach { it.check() }
     }
@@ -61,16 +58,13 @@ class KoinDepsTest {
         when (this) {
             is Route.Loading,
             is Route.Overview,
-            is Route.Overview.Episode,
-            is Route.Overview.Season,
             Route.Saved,
-            Route.SearchVideos,
+            Route.SearchTours,
             Route.Settings,
             is Route.Settings.Auth,
             Route.Settings.EditPassword,
-            Route.Settings.EditServ,
             Route.Settings.Register,
-            is Route.Videos -> {}
+            is Route.Tours -> {}
         }
     }
 }

@@ -51,8 +51,11 @@ class AuthComponentFactory(
     private val dispatcherProvider: DispatcherProvider,
     private val log: Log
 ) : ComponentFactory<Child.AuthChild, Route.Settings.Auth> {
+
     override fun create(
-        route: Route.Settings.Auth, child: ComponentContext, root: RootComponent
+        route: Route.Settings.Auth,
+        child: ComponentContext,
+        root: RootComponent
     ): Child.AuthChild {
         val comp = AuthComponent(
             child,

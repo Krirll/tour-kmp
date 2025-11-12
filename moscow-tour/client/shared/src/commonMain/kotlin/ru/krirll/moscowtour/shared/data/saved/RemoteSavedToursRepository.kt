@@ -22,6 +22,7 @@ import ru.krirll.moscowtour.shared.domain.ServerConfigurationRepository
 import ru.krirll.moscowtour.shared.domain.getServerConfiguration
 import ru.krirll.moscowtour.shared.domain.model.SavedTour
 import ru.krirll.moscowtour.shared.domain.model.Tour
+import ru.krirll.moscowtour.shared.domain.IsSavedResponse
 
 @Factory(binds = [RemoteSavedToursRepository::class])
 class RemoteSavedToursRepository(
@@ -39,6 +40,27 @@ class RemoteSavedToursRepository(
                     .map { getAllSingle() }
             )
         }
+    }
+
+    override suspend fun isSaved(tourId: Long): Flow<Boolean> {
+        return flow {
+            emit(isSavedSingle(tourId))
+            emitAll(
+                eventListener.event
+                    .filter { it is RemoteEvent.OnSaved && it.tourId == tourId }
+                    .map { isSavedSingle(tourId) }
+            )
+        }
+    }
+
+    private suspend fun isSavedSingle(id: Long): Boolean {
+        return httpClient.get<IsSavedResponse>(
+            SavedToursRepository.QUERY_SAVED,
+            mapOf(
+                SavedToursRepository.TOUR_ID_ARG to id.toString()
+            ),
+            obtainConfig()
+        ).isSaved
     }
 
     private suspend fun obtainConfig() = serverConfigurationRepository.getServerConfiguration()

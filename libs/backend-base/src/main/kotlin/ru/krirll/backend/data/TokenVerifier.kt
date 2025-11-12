@@ -1,6 +1,7 @@
 package ru.krirll.backend.data
 
 import com.auth0.jwt.JWT
+import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import org.koin.core.annotation.Factory
@@ -10,11 +11,11 @@ import ru.krirll.backend.domain.LoginVerifier
 
 @Factory
 class TokenVerifier(
-    private val jwtInfo: JwtInfo,
+    jwtInfo: JwtInfo,
     private val loginVerifier: LoginVerifier
 ) {
 
-    val verifier = JWT.require(Algorithm.HMAC512(jwtInfo.secret))
+    val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(jwtInfo.secret))
         .withAudience(jwtInfo.audience)
         .withIssuer(jwtInfo.issuer)
         .build()

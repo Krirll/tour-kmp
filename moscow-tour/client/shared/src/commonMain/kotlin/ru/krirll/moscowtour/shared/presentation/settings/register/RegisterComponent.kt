@@ -48,6 +48,7 @@ class RegisterComponentFactory(
     private val dispatcherProvider: DispatcherProvider,
     private val log: Log
 ) : ComponentFactory<Child.RegisterChild, Route.Settings.Register> {
+
     override fun create(
         route: Route.Settings.Register,
         child: ComponentContext,
@@ -63,4 +64,3 @@ class RegisterComponentFactory(
         return Child.RegisterChild(comp)
     }
 }
-

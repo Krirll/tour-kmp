@@ -43,7 +43,6 @@ import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.back
 import moscowtour.moscow_tour.client.shared.generated.resources.copy
 import moscowtour.moscow_tour.client.shared.generated.resources.desc
-import moscowtour.moscow_tour.client.shared.generated.resources.details_movie
 import moscowtour.moscow_tour.client.shared.generated.resources.details_serial
 import moscowtour.moscow_tour.client.shared.generated.resources.more
 import moscowtour.moscow_tour.client.shared.generated.resources.share
@@ -79,19 +78,16 @@ fun OverviewScreen(component: OverviewComponent) {
             when {
                 errorState != null -> ErrorAndRetry(
                     errorMsg = errorState!!
-                ) { component.loadDetailsIfNeeded() }
+                ) { component.listenIsSavedIfNeeded() }
 
                 details != null -> DetailsInfo(
                     details = details!!,
                     paddingValues = it,
-                    onWatchClicked = {
+                    onBuyClicked = {
                         details?.let { d ->
-                            if (d.isMovie) {
-                                scope.launch {
-                                    component.movieUrl?.let { component.videoLauncher.launch(it) }
-                                }
-                            } else {
-                                component.showSeasons()
+                            scope.launch {
+                            //todo переделать на покупку билета
+                            //component.movieUrl?.let { component.videoLauncher.launch(it) }
                             }
                         }
                     }
@@ -136,7 +132,7 @@ private fun OverviewAppBar(
                         }
                     }
                 }
-                if (it.isMovie) AdditionalAppBarMenu(snackbarHostState, component.movieUrl)
+                //if (it.isMovie) AdditionalAppBarMenu(snackbarHostState, component.movieUrl)
             }
         },
         scrollBehavior = scrollBehavior
@@ -170,7 +166,7 @@ private fun AdditionalAppBarMenu(snack: SnackbarHostState, url: String?) {
 fun DetailsInfo(
     details: Tour,
     paddingValues: PaddingValues,
-    onWatchClicked: () -> Unit
+    onBuyClicked: () -> Unit
 ) {
     val showDetails = rememberSaveable { mutableStateOf(false) }
     LazyColumn(
@@ -181,7 +177,7 @@ fun DetailsInfo(
         item { OverviewDescription(details, showDetails) }
         item {
             Button(
-                onClick = onWatchClicked,
+                onClick = onBuyClicked,
                 modifier = Modifier.fillMaxWidth().padding(8.dp)
             ) { Text(stringResource(Res.string.watch)) }
         }
@@ -201,17 +197,13 @@ private fun OverviewDescription(
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Text(
-            text = details.desc.trim(),
+            text = details.description,
             style = MaterialTheme.typography.bodyLarge,
             maxLines = if (showDetails.value) Int.MAX_VALUE else 3,
             overflow = TextOverflow.Ellipsis
         )
         if (!showDetails.value) {
-            val textRes = if (details.isMovie) {
-                Res.string.details_movie
-            } else {
-                Res.string.details_serial
-            }
+            val textRes = Res.string.details_serial
             Text(
                 text = stringResource(textRes),
                 style = MaterialTheme.typography.bodyLarge,
@@ -225,12 +217,15 @@ private fun OverviewDescription(
 @Composable
 private fun OverviewTitle(details: Tour) {
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-        Image(
-            painter = rememberImagePainter(details.poster),
-            contentDescription = null,
-            modifier = Modifier
-                .clip(RoundedCornerShape(8)),
-            contentScale = ContentScale.Crop,
-        )
+        //todo переделать на карусель
+        details.imagesUrls?.get(0)?.let {
+            Image(
+                painter = rememberImagePainter(it),
+                contentDescription = null,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8)),
+                contentScale = ContentScale.Crop,
+            )
+        }
     }
 }

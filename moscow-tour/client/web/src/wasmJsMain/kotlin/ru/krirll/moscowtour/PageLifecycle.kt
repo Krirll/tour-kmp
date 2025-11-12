@@ -19,6 +19,7 @@ import ru.krirll.koin
     }
 """)
 external fun hideElementById(id: String)
+//todo есть lifecycle от Decompose - смотри как сделано в QrGenerator
 
 @JsFun("(function(){ return document.visibilityState; })")
 external fun pageVisibilityState(): String

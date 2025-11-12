@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.SavedToursRepository
+import ru.krirll.moscowtour.shared.domain.model.SavedTour
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.componentScope
@@ -19,6 +20,7 @@ import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
+import kotlin.collections.map
 
 class SavedMovieScreenComponent(
     private val context: ComponentContext,
@@ -30,7 +32,7 @@ class SavedMovieScreenComponent(
     private val _errorMsg = MutableStateFlow<String?>(null)
     val errorMsg = _errorMsg.asStateFlow()
     private val exceptionHandler = createErrorHandler { _errorMsg.emit(it) }
-    private val _all = MutableStateFlow<List<TourItem>?>(null)
+    private val _all = MutableStateFlow<List<Tour>?>(null)
     val all = _all.asStateFlow()
     private var prevJob: Job? = null
 
@@ -47,8 +49,23 @@ class SavedMovieScreenComponent(
         }
     }
 
-    private fun List<Tour>.map(): List<TourItem> {
-        return this.map { TourItem(it.id, it.poster, it.title, it.desc, it.isSerial) }
+    private fun List<SavedTour>.map(): List<Tour> {
+        return this.map {
+            with(it.tour) {
+                Tour(
+                    id,
+                    title,
+                    description,
+                    city,
+                    country,
+                    dateBegin,
+                    dateEnd,
+                    canBuy,
+                    price,
+                    imagesUrls
+                )
+            }
+        }
     }
 }
 
@@ -56,12 +73,13 @@ class SavedMovieScreenComponent(
 class SavedMovieFactory(
     private val repo: SavedToursRepository,
     private val dispatcherProvider: DispatcherProvider,
-) : ComponentFactory<Child.SavedMovieChild, Route.Saved> {
+) : ComponentFactory<Child.SavedToursChild, Route.Saved> {
+
     override fun create(
         route: Route.Saved,
         child: ComponentContext,
         root: RootComponent
-    ): Child.SavedMovieChild {
+    ): Child.SavedToursChild {
         val comp = SavedMovieScreenComponent(
             child,
             dispatcherProvider,
@@ -69,7 +87,6 @@ class SavedMovieFactory(
             doBack = { root.onBack() },
             showOverview = { root.nav(Route.Overview(it)) }
         )
-        return Child.SavedMovieChild(comp)
+        return Child.SavedToursChild(comp)
     }
 }
-

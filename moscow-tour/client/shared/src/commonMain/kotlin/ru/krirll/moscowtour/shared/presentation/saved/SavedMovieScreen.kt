@@ -6,13 +6,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.saved_movies_not_found
-import ru.krirll.moscowtour.shared.presentation.list.VideoScreenContent
+import ru.krirll.moscowtour.shared.presentation.list.TourScreenContent
 
 @Composable
 fun SavedMovieContent(comp: SavedMovieScreenComponent, paddingValues: PaddingValues) {
     val error by comp.errorMsg.collectAsState(null)
     val items by comp.all.collectAsState(null)
-    VideoScreenContent(
+    TourScreenContent(
         paddingValues,
         error,
         items,

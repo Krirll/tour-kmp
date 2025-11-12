@@ -113,15 +113,16 @@ class SearchScreenFactory(
     private val searchRepository: SearchRepository,
     @Named(EventType.SEARCH) private val remoteEventListener: RemoteEventListener,
     private val log: Log
-) : ComponentFactory<Child.SearchChild, Route.SearchVideos> {
+) : ComponentFactory<Child.SearchChild, Route.SearchTours> {
+
     override fun create(
-        route: Route.SearchVideos,
+        route: Route.SearchTours,
         child: ComponentContext,
         root: RootComponent
     ): Child.SearchChild {
         val comp = SearchScreenComponent(
             child,
-            search = { root.nav(Route.Videos(it)) },
+            search = { root.nav(Route.Tours(it)) },
             doBack = { root.onBack() },
             dispatcherProvider,
             searchRepository,

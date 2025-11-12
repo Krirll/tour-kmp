@@ -5,13 +5,11 @@ import ru.krirll.http.domain.TokenInfo
 import ru.krirll.moscowtour.shared.domain.model.LoginInfo
 
 interface AuthTokenRepository {
+
     suspend fun register(loginInfo: LoginInfo): TokenInfo
     suspend fun login(loginInfo: LoginInfo): TokenInfo
-
     suspend fun update(refresh: TokenRequest): TokenInfo
-
     suspend fun changePassword(request: ChangePasswordRequest)
-
     suspend fun revoke(tokenRequest: TokenRequest)
 
     companion object {

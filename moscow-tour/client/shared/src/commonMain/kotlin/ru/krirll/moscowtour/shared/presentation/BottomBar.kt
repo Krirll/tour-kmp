@@ -27,7 +27,7 @@ fun createNavigationList(): List<NavigationEntry<Route>> {
             painterResource(Res.drawable.star)
         ),
         NavigationEntry(
-            Route.SearchVideos,
+            Route.SearchTours,
             stringResource(Res.string.search),
             painterResource(Res.drawable.search)
         ),

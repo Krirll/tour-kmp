@@ -1,15 +1,12 @@
 package ru.krirll.moscowtour.shared.presentation.settings
 
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Named
 import ru.krirll.moscowtour.shared.di.IS_DEBUG_KEY
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.LogoutUseCase
-import ru.krirll.moscowtour.shared.domain.ServerConfigurationRepository
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.componentScope
 import ru.krirll.moscowtour.shared.presentation.nav.Child
@@ -19,7 +16,6 @@ import ru.krirll.moscowtour.shared.presentation.nav.Route
 class SettingsComponent(
     private val context: ComponentContext,
     private val dispatcherProvider: DispatcherProvider,
-    serverConfigurationRepository: ServerConfigurationRepository,
     private val logoutUseCase: LogoutUseCase,
     val isDebug: Boolean,
     val doBack: () -> Unit,
@@ -27,9 +23,6 @@ class SettingsComponent(
     val doRegister: () -> Unit,
     val editPassword: () -> Unit,
 ) : ComponentContext by context {
-    val serverInfo = serverConfigurationRepository.serverConfiguration
-        .filterNotNull()
-        .map { it.asHttpStr() }
 
     val tokenInfo = logoutUseCase.token
 
@@ -42,11 +35,11 @@ class SettingsComponent(
 
 @Factory(binds = [SettingsComponentFactory::class])
 class SettingsComponentFactory(
-    private val serverConfigurationRepository: ServerConfigurationRepository,
     private val dispatcherProvider: DispatcherProvider,
     private val logoutUseCase: LogoutUseCase,
     @Named(IS_DEBUG_KEY) private val isDebug: Boolean
 ) : ComponentFactory<Child.SettingsChild, Route.Settings> {
+
     override fun create(
         route: Route.Settings,
         child: ComponentContext,
@@ -55,7 +48,6 @@ class SettingsComponentFactory(
         val comp = SettingsComponent(
             child,
             dispatcherProvider,
-            serverConfigurationRepository,
             isDebug = isDebug,
             doBack = { root.onBack() },
             doAuth = { root.nav(Route.Settings.Auth()) },

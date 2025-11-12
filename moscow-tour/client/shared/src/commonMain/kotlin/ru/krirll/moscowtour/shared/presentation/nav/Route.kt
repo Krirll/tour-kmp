@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 sealed class Route : ru.krirll.ui.nav.Route() {
 
     @Serializable
-    data class Videos(val request: String? = null) : Route()
+    data class Tours(val request: String? = null) : Route()
 
     @Serializable
-    data object SearchVideos : Route()
+    data object SearchTours : Route()
 
     @Serializable
     data object Saved : Route()
@@ -21,11 +21,7 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     ) : Route()
 
     @Serializable
-    class Overview(val id: Long) : Route() {
-
-        @Serializable
-        class Season(val id: Long) : Route()
-    }
+    data class Overview(val id: Long) : Route()
 
     @Serializable
     data object Settings : Route() {
@@ -44,6 +40,6 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     }
 
     companion object {
-        val default = Videos(null)
+        val default = Tours(null)
     }
 }

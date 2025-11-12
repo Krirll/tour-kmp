@@ -2,6 +2,7 @@ package ru.krirll.moscowtour.backend.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import ru.krirll.backend.data.Logger
 import ru.krirll.moscowtour.backend.AppDatabase
@@ -73,6 +74,11 @@ class BackendSavedToursRepository(
             db.saved_toursQueries.removeSavedTour(accountId, tourId)
             eventHandler.notify(RemoteEvent.OnSaved(accountId, tourId))
         }
+    }
+
+    override suspend fun isSaved(tourId: Long): Flow<Boolean> {
+        val request = db.saved_toursQueries.selectByAccountIdAndTourId(accountId, tourId)
+        return flowOf(request.executeAsOneOrNull() != null)
     }
 
     private companion object {

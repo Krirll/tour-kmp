@@ -7,9 +7,11 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.util.getOrFail
 import kotlinx.coroutines.flow.first
 import ru.krirll.moscowtour.backend.di.factory.SavedToursRepositoryFactory
 import ru.krirll.moscowtour.backend.presentation.obtainAccountId
+import ru.krirll.moscowtour.shared.domain.IsSavedResponse
 import ru.krirll.moscowtour.shared.domain.RemoveRequest
 import ru.krirll.moscowtour.shared.domain.SavedToursRepository
 import ru.krirll.moscowtour.shared.domain.model.Tour
@@ -32,5 +34,12 @@ fun Route.setupSavedTours(
             .getAll()
             .first()
         call.respond(listOf(saved))
+    }
+    get(SavedToursRepository.QUERY_SAVED) {
+        val p = call.parameters
+        val saved = savedToursFactory.create(call.obtainAccountId())
+            .isSaved(p.getOrFail(SavedToursRepository.TOUR_ID_ARG).toLong())
+            .first()
+        call.respond(IsSavedResponse(saved))
     }
 }

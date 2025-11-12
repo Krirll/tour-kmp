@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,21 +48,22 @@ import moscowtour.moscow_tour.client.shared.generated.resources.recommendations
 import moscowtour.moscow_tour.client.shared.generated.resources.retry
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.search.AppBarWithSearch
 import ru.krirll.moscowtour.shared.presentation.state.rememberTopAppBarStateByHolder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VideoScreen(component: VideoScreenComponent) {
+fun ToursScreen(component: ToursScreenComponent) {
     val appBarState = rememberTopAppBarStateByHolder(component.topAppBarStateHolder)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(appBarState)
     val error by component.errorCode.collectAsState(null)
     val items by component.items.collectAsState()
     BaseScreen(
-        content = {
-            VideoScreenContent(
-                it,
+        content = { paddingValues ->
+            TourScreenContent(
+                paddingValues,
                 error,
                 items,
                 onRefresh = { component.load() },
@@ -86,10 +87,10 @@ fun VideoScreen(component: VideoScreenComponent) {
 }
 
 @Composable
-fun VideoContent(component: VideoScreenComponent, paddingValues: PaddingValues) {
+fun TourContent(component: ToursScreenComponent, paddingValues: PaddingValues) {
     val error by component.errorCode.collectAsState(null)
     val items by component.items.collectAsState()
-    VideoScreenContent(
+    TourScreenContent(
         paddingValues,
         error,
         items,
@@ -101,10 +102,10 @@ fun VideoContent(component: VideoScreenComponent, paddingValues: PaddingValues) 
 }
 
 @Composable
-fun VideoScreenContent(
+fun TourScreenContent(
     paddingValues: PaddingValues,
     error: String?,
-    items: List<TourItem>?,
+    items: List<Tour>?,
     emptyResource: StringResource,
     onRefresh: () -> Unit,
     onShowOverview: (Long) -> Unit,
@@ -118,7 +119,7 @@ fun VideoScreenContent(
             onRefresh()
         }
     } else if (items != null) {
-        VideosInfo(items = items, paddingValues, emptyResource) {
+        TourInfo(items = items, paddingValues, emptyResource) {
             onShowOverview(it.id)
         }
     } else {
@@ -127,12 +128,12 @@ fun VideoScreenContent(
 }
 
 @Composable
-fun VideosInfo(
-    items: List<TourItem>,
+fun TourInfo(
+    items: List<Tour>,
     paddingValues: PaddingValues,
     emptyResource: StringResource,
     load: Boolean = true,
-    onClick: (item: TourItem) -> Unit
+    onClick: (item: Tour) -> Unit
 ) {
     if (items.isNotEmpty()) {
         LazyVerticalGrid(
@@ -142,9 +143,9 @@ fun VideosInfo(
                 .padding(paddingValues)
                 .focusGroup()
         ) {
-            itemsIndexed(items) { index, item ->
+            items(items) { item ->
                 Poster(
-                    imageUrl = item.poster,
+                    imageUrl = item.imagesUrls?.firstOrNull() ?: "", //todo дефолтную картинку надо
                     label = item.title,
                     load = load,
                     onClick = { onClick(item) },
@@ -188,6 +189,7 @@ fun Poster(
             )
             .clickable(onClick = onClick)
     ) {
+        //todo тут надо показывать какую нибудь дефолтную хуйню вместо красного цвета если картинки нет
         val painter = if (load) rememberImagePainter(imageUrl) else ColorPainter(Color.Red)
         Image(
             painter = painter,

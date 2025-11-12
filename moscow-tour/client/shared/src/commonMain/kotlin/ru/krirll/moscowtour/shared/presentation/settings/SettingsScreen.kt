@@ -1,11 +1,5 @@
 package ru.krirll.moscowtour.shared.presentation.settings
 
-import moscowtour.moscow_tour.client.shared.generated.resources.Res
-import moscowtour.moscow_tour.client.shared.generated.resources.account_auth
-import moscowtour.moscow_tour.client.shared.generated.resources.account_logout_auth
-import moscowtour.moscow_tour.client.shared.generated.resources.account_reg
-import moscowtour.moscow_tour.client.shared.generated.resources.custom_serv_addr
-import moscowtour.moscow_tour.client.shared.generated.resources.edit_password
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +10,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import moscowtour.moscow_tour.client.shared.generated.resources.Res
+import moscowtour.moscow_tour.client.shared.generated.resources.account_auth
+import moscowtour.moscow_tour.client.shared.generated.resources.account_logout_auth
+import moscowtour.moscow_tour.client.shared.generated.resources.account_reg
+import moscowtour.moscow_tour.client.shared.generated.resources.edit_password
 import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.presentation.applyColumnPadding
 import ru.krirll.moscowtour.shared.presentation.asColumnPadding
@@ -24,14 +23,13 @@ import ru.krirll.moscowtour.shared.presentation.base.TextPreference
 
 @Composable
 fun SettingsContent(comp: SettingsComponent, paddingValues: PaddingValues) {
-    val servAddr by comp.serverInfo.collectAsState(null)
     val tokenInfo by comp.tokenInfo.collectAsState(null)
     Column(modifier = Modifier.applyColumnPadding(paddingValues)) {
         ExpressiveLazyColumn(
             Modifier,
             contentPadding = PaddingValues(0.dp),
             mutableListOf<@Composable () -> Unit>().apply {
-                if (servAddr != null && comp.isDebug) {
+                /*if (servAddr != null && comp.isDebug) {
                     add {
                         TextPreference(
                             stringResource(Res.string.custom_serv_addr),
@@ -39,7 +37,7 @@ fun SettingsContent(comp: SettingsComponent, paddingValues: PaddingValues) {
                             modifier = Modifier.fillMaxWidth().clickable { comp.editServAddr() }
                         )
                     }
-                }
+                }*/
             }
         )
         val needAuth = tokenInfo == null

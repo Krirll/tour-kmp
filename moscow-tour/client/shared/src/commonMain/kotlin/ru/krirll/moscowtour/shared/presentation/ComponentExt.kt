@@ -32,11 +32,6 @@ data class ListSnapshot<T>(
     val errorCode: MutableSharedFlow<String?> = MutableSharedFlow()
 ) : InstanceKeeper.Instance
 
-data class ItemSnapshot<T>(
-    val items: MutableStateFlow<T?> = MutableStateFlow(null),
-    val errorCode: MutableSharedFlow<String?> = MutableSharedFlow()
-) : InstanceKeeper.Instance
-
 fun LifecycleOwner.createErrorHandler(
     errorCallback: suspend (String) -> Unit
 ): CoroutineExceptionHandler {

@@ -39,22 +39,16 @@ class OverviewComponent(
     }
     val details = snapshot.details.asStateFlow()
     val errorCode = snapshot.errorCode.asSharedFlow()
-    val movieLink = snapshot.movieLink.asStateFlow()
-    val movieUrl get() = movieLink.value?.first()?.url
     private var isSavedJob: Job? = null
     private val _isSaved = MutableStateFlow<Boolean?>(null)
     val isSaved = _isSaved.filterNotNull()
 
     init {
-        doOnStart { init() }
+        doOnStart { listenIsSavedIfNeeded() }
         doOnStop { isSavedJob?.cancel() }
     }
 
-    fun init() {
-        loadDetailsIfNeeded()
-    }
-
-    private fun listenIsSavedIfNeeded() {
+    fun listenIsSavedIfNeeded() {
         if (isSavedJob == null || isSavedJob?.isActive == false) {
             isSavedJob = componentScope.launch(dispatcherProvider.main + exceptionHandler) {
                 _isSaved.emitAll(savedToursRepository.isSaved(id))
@@ -72,21 +66,6 @@ class OverviewComponent(
         exec { savedToursRepository.remove(details.id) }
     }
 
-    fun loadDetailsIfNeeded() {
-        listenIsSavedIfNeeded()
-        if (snapshot.details.value != null) {
-            return
-        }
-        exec {
-            val details = interactor.fetchVideoDetails(id)
-            if (details.isMovie) {
-                val files = interactor.fetchVideoLinks(id, null)
-                snapshot.movieLink.emit(files.files)
-            }
-            snapshot.details.emit(details)
-        }
-    }
-
     private fun exec(callback: suspend () -> Unit): Job {
         return componentScope.launch(dispatcherProvider.main + exceptionHandler) {
             snapshot.errorCode.emit(null)
@@ -97,7 +76,6 @@ class OverviewComponent(
     data class Snapshot(
         val details: MutableStateFlow<Tour?> = MutableStateFlow(null),
         val errorCode: MutableSharedFlow<String?> = MutableSharedFlow(),
-        val movieLink: MutableStateFlow<List<File>?> = MutableStateFlow(null)
     ) : InstanceKeeper.Instance
 }
 
@@ -107,6 +85,7 @@ class OverviewFactory(
     private val shareManager: ShareManager,
     private val dispatcherProvider: DispatcherProvider
 ) : ComponentFactory<Child.OverviewChild, Route.Overview> {
+
     override fun create(
         route: Route.Overview,
         child: ComponentContext,
@@ -123,4 +102,3 @@ class OverviewFactory(
         return Child.OverviewChild(comp)
     }
 }
-

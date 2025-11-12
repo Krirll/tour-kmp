@@ -19,7 +19,7 @@ import ru.krirll.ui.USE_EXPERIMENTAL_RAIL
 import ru.krirll.ui.currentWindowType
 import ru.krirll.ui.isCompact
 import ru.krirll.ui.isExpanded
-import ru.krirll.moscowtour.shared.presentation.list.VideoContent
+import ru.krirll.moscowtour.shared.presentation.list.TourContent
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 import ru.krirll.moscowtour.shared.presentation.saved.SavedMovieContent
@@ -118,9 +118,9 @@ fun MainScreenInternal(route: Route, child: Child, rootComponent: RootComponent)
         scrollBehavior = scrollBehavior
     ) { padding ->
         when (child) {
-            is Child.VideosChild -> VideoContent(child.component, padding)
+            is Child.ToursChild -> TourContent(child.component, padding)
             is Child.SettingsChild -> SettingsContent(child.component, padding)
-            is Child.SavedMovieChild -> SavedMovieContent(child.component, padding)
+            is Child.SavedToursChild -> SavedMovieContent(child.component, padding)
             else -> {}
         }
     }

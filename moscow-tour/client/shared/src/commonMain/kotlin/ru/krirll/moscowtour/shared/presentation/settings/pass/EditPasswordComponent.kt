@@ -51,6 +51,7 @@ class EditPasswordComponentFactory(
     private val authTokenRepository: AuthTokenRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : ComponentFactory<Child.EditPasswordChild, Route.Settings.EditPassword> {
+
     override fun create(
         route: Route.Settings.EditPassword,
         child: ComponentContext,

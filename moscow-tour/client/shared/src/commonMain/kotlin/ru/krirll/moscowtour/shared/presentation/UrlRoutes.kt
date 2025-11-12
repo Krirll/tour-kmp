@@ -9,12 +9,10 @@ object UrlRoutes {
 
     object Seg {
         const val ROOT = "/"
-        const val VIDEOS = "videos"
-        const val SEARCH = "search"
+        const val TOURS = "tours"
         const val SAVED = "saved"
 
         const val OVERVIEW = "overview"
-        const val SELECT_SEASON = "selectSeason"
 
         const val SETTINGS = "settings"
         const val AUTH = "auth"
@@ -75,26 +73,17 @@ object UrlRoutes {
             }
         ),
 
-        // "/videos[?q=...]"
+        // "/tours[?q=...]"
         rule(
-            match = { it is Route.Videos },
+            match = { it is Route.Tours },
             build = {
-                val r = it as Route.Videos
-                Built("/${Seg.VIDEOS}", r.request?.let { q -> mapOf(Param.QUERY to q) } ?: emptyMap())
+                val r = it as Route.Tours
+                Built("/${Seg.TOURS}", r.request?.let { q -> mapOf(Param.QUERY to q) } ?: emptyMap())
             },
             parse = { segs, params ->
-                if (segs.size == 1 && segs[0] == Seg.VIDEOS) {
-                    Route.Videos(request = params[Param.QUERY])
+                if (segs.size == 1 && segs[0] == Seg.TOURS) {
+                    Route.Tours(request = params[Param.QUERY])
                 } else null
-            }
-        ),
-
-        // "/search"
-        rule(
-            match = { it === Route.SearchVideos },
-            build = { Built("/${Seg.SEARCH}") },
-            parse = { segs, _ ->
-                if (segs.size == 1 && segs[0] == Seg.SEARCH) Route.SearchVideos else null
             }
         ),
 
@@ -121,20 +110,6 @@ object UrlRoutes {
             }
         ),
 
-        // "/overview/{id}/selectSeason"
-        rule(
-            match = { it is Route.Overview.Season },
-            build = {
-                val r = it as Route.Overview.Season
-                Built("/${Seg.OVERVIEW}/${r.id}/${Seg.SELECT_SEASON}")
-            },
-            parse = { segs, _ ->
-                if (segs.size == 3 && segs[0] == Seg.OVERVIEW && segs[2] == Seg.SELECT_SEASON) {
-                    segs[1].toLongOrNull()?.let { id -> Route.Overview.Season(id) }
-                } else null
-            }
-        ),
-
         // "/settings"
         rule(
             match = { it === Route.Settings },
@@ -144,7 +119,7 @@ object UrlRoutes {
             }
         ),
 
-        // "/settings/auth"  (required=true по умолчанию)
+        // "/settings/auth"
         rule(
             match = { it is Route.Settings.Auth },
             build = { Built("/${Seg.SETTINGS}/${Seg.AUTH}") },

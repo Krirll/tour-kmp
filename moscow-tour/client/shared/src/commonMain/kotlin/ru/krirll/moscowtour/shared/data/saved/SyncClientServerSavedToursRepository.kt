@@ -53,4 +53,11 @@ class SyncClientServerSavedToursRepository(
             fallback = { local.remove(tourId) }
         )
     }
+
+    override suspend fun isSaved(tourId: Long): Flow<Boolean> {
+        return authTokenCache.query(
+            active = { remote.isSaved(tourId) },
+            fallback = { local.isSaved(tourId) }
+        )
+    }
 }
