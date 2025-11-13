@@ -12,10 +12,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.SavedToursRepository
+import ru.krirll.moscowtour.shared.domain.ToursApi
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.ShareManager
@@ -27,6 +29,7 @@ import ru.krirll.moscowtour.shared.presentation.nav.Route
 
 class OverviewComponent(
     private val savedToursRepository: SavedToursRepository,
+    private val toursApi: ToursApi,
     private val dispatcherProvider: DispatcherProvider,
     private val context: ComponentContext,
     private val id: Long,
@@ -34,26 +37,20 @@ class OverviewComponent(
     val shareManager: ShareManager,
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
+
     private val exceptionHandler = createErrorHandler {
         snapshot.errorCode.emit(it)
     }
-    val details = snapshot.details.asStateFlow()
-    val errorCode = snapshot.errorCode.asSharedFlow()
     private var isSavedJob: Job? = null
     private val _isSaved = MutableStateFlow<Boolean?>(null)
+
+    val details = snapshot.details.asStateFlow()
+    val errorCode = snapshot.errorCode.asSharedFlow()
     val isSaved = _isSaved.filterNotNull()
 
     init {
-        doOnStart { listenIsSavedIfNeeded() }
+        doOnStart { loadIfNeeded() }
         doOnStop { isSavedJob?.cancel() }
-    }
-
-    fun listenIsSavedIfNeeded() {
-        if (isSavedJob == null || isSavedJob?.isActive == false) {
-            isSavedJob = componentScope.launch(dispatcherProvider.main + exceptionHandler) {
-                _isSaved.emitAll(savedToursRepository.isSaved(id))
-            }
-        }
     }
 
     fun save() {
@@ -64,6 +61,24 @@ class OverviewComponent(
     fun remove() {
         val details = snapshot.details.value ?: return
         exec { savedToursRepository.remove(details.id) }
+    }
+
+    fun loadIfNeeded() {
+        listenIsSavedIfNeeded()
+        if (snapshot.details.value != null) {
+            return
+        }
+        exec {
+            snapshot.details.emit(toursApi.fetchTours().first { it.id == id })
+        }
+    }
+
+    private fun listenIsSavedIfNeeded() {
+        if (isSavedJob == null || isSavedJob?.isActive == false) {
+            isSavedJob = componentScope.launch(dispatcherProvider.main + exceptionHandler) {
+                _isSaved.emitAll(savedToursRepository.isSaved(id))
+            }
+        }
     }
 
     private fun exec(callback: suspend () -> Unit): Job {
@@ -82,6 +97,7 @@ class OverviewComponent(
 @Factory(binds = [OverviewFactory::class])
 class OverviewFactory(
     private val savedToursRepository: SavedToursRepository,
+    private val toursApi: ToursApi,
     private val shareManager: ShareManager,
     private val dispatcherProvider: DispatcherProvider
 ) : ComponentFactory<Child.OverviewChild, Route.Overview> {
@@ -93,6 +109,7 @@ class OverviewFactory(
     ): Child.OverviewChild {
         val comp = OverviewComponent(
             savedToursRepository,
+            toursApi,
             dispatcherProvider,
             child,
             route.id,

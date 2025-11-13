@@ -18,6 +18,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
+import moscowtour.moscow_tour.client.shared.generated.resources.visibility
+import moscowtour.moscow_tour.client.shared.generated.resources.visibility_off
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource

@@ -41,7 +41,7 @@
             </intent-filter>
 
             <intent-filter>
-                <action android:name="ru.krirll.moscowtour.action.OPEN_SAVED_MOVIES" />
+                <action android:name="ru.krirll.moscowtour.action.OPEN_SAVED_TOURS" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">

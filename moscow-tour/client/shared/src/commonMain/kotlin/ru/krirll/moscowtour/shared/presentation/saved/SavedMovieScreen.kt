@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
-import moscowtour.moscow_tour.client.shared.generated.resources.saved_movies_not_found
+import moscowtour.moscow_tour.client.shared.generated.resources.saved_tours_not_found
 import ru.krirll.moscowtour.shared.presentation.list.TourScreenContent
 
 @Composable
@@ -18,7 +18,7 @@ fun SavedMovieContent(comp: SavedMovieScreenComponent, paddingValues: PaddingVal
         items,
         onRefresh = { comp.load() },
         onShowOverview = { comp.showOverview(it) },
-        emptyResource = Res.string.saved_movies_not_found,
+        emptyResource = Res.string.saved_tours_not_found,
         onLoad = { comp.load() }
     )
 }

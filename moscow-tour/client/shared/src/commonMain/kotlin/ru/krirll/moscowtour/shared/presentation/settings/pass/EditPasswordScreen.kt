@@ -34,7 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.presentation.base.PasswordTextField
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.SimpleAppBar
-import ru.krirll.moscowtour.shared.presentation.list.Loading
+import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.settings.auth.AuthState
 
 @OptIn(ExperimentalMaterial3Api::class)

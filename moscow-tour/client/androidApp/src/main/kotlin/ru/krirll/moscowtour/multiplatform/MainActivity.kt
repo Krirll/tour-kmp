@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun openSavedIfNeeded(intent: Intent?): Boolean {
-        if (intent?.action == "ru.krirll.moscowtour.action.OPEN_SAVED_MOVIES") {
+        if (intent?.action == "ru.krirll.moscowtour.action.OPEN_SAVED_TOURS") {
             root.nav(Route.Saved, true)
             return true
         }

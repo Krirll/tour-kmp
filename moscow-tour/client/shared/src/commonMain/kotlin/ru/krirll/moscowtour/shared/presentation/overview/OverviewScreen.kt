@@ -1,7 +1,6 @@
 package ru.krirll.moscowtour.shared.presentation.overview
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,22 +42,20 @@ import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.back
 import moscowtour.moscow_tour.client.shared.generated.resources.copy
 import moscowtour.moscow_tour.client.shared.generated.resources.desc
-import moscowtour.moscow_tour.client.shared.generated.resources.details_serial
 import moscowtour.moscow_tour.client.shared.generated.resources.more
 import moscowtour.moscow_tour.client.shared.generated.resources.share
-import moscowtour.moscow_tour.client.shared.generated.resources.star
+import moscowtour.moscow_tour.client.shared.generated.resources.star_checked
 import moscowtour.moscow_tour.client.shared.generated.resources.star_unchecked
-import moscowtour.moscow_tour.client.shared.generated.resources.watch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.applyColumnPadding
 import ru.krirll.moscowtour.shared.presentation.asColumnPadding
+import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.clipboardUrl
 import ru.krirll.moscowtour.shared.presentation.getClipboardText
 import ru.krirll.moscowtour.shared.presentation.list.ErrorAndRetry
-import ru.krirll.moscowtour.shared.presentation.list.Loading
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +75,7 @@ fun OverviewScreen(component: OverviewComponent) {
             when {
                 errorState != null -> ErrorAndRetry(
                     errorMsg = errorState!!
-                ) { component.listenIsSavedIfNeeded() }
+                ) { component.loadIfNeeded() }
 
                 details != null -> DetailsInfo(
                     details = details!!,
@@ -126,13 +123,14 @@ private fun OverviewAppBar(
                 isSaved?.let { saved ->
                     IconButton(onClick = if (saved) component::remove else component::save) {
                         if (saved) {
-                            Icon(painterResource(Res.drawable.star), null)
+                            Icon(painterResource(Res.drawable.star_checked), null)
                         } else {
                             Icon(painterResource(Res.drawable.star_unchecked), null)
                         }
                     }
                 }
-                //if (it.isMovie) AdditionalAppBarMenu(snackbarHostState, component.movieUrl)
+                //todo генерировать ссылку чтоб можно было поделиться
+                AdditionalAppBarMenu(snackbarHostState, "component.movieUrl" as String?)
             }
         },
         scrollBehavior = scrollBehavior
@@ -179,7 +177,7 @@ fun DetailsInfo(
             Button(
                 onClick = onBuyClicked,
                 modifier = Modifier.fillMaxWidth().padding(8.dp)
-            ) { Text(stringResource(Res.string.watch)) }
+            ) { /*Text(stringResource(Res.string.watch))*/ }
         }
     }
 }
@@ -202,15 +200,6 @@ private fun OverviewDescription(
             maxLines = if (showDetails.value) Int.MAX_VALUE else 3,
             overflow = TextOverflow.Ellipsis
         )
-        if (!showDetails.value) {
-            val textRes = Res.string.details_serial
-            Text(
-                text = stringResource(textRes),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable { showDetails.value = true }
-            )
-        }
     }
 }
 

@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,8 +42,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
+import moscowtour.moscow_tour.client.shared.generated.resources.main
 import moscowtour.moscow_tour.client.shared.generated.resources.not_found
-import moscowtour.moscow_tour.client.shared.generated.resources.recommendations
 import moscowtour.moscow_tour.client.shared.generated.resources.retry
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -74,7 +73,7 @@ fun ToursScreen(component: ToursScreenComponent) {
             )
         },
         appBar = {
-            val appName = stringResource(Res.string.recommendations)
+            val appName = stringResource(Res.string.main)
             val title = component.search ?: appName
             AppBarWithSearch(
                 scrollBehavior,
@@ -154,7 +153,7 @@ fun TourInfo(
             }
         }
     } else {
-        VideosNotFound(emptyResource)
+        ToursNotFound(emptyResource)
     }
 }
 
@@ -190,7 +189,7 @@ fun Poster(
             )
             .clickable(onClick = onClick)
     ) {
-        //todo тут надо показывать какую нибудь дефолтную хуйню вместо красного цвета если картинки нет
+        //todo если картинки нет то показывать drawable.broken_image
         val painter = if (load) rememberImagePainter(imageUrl) else ColorPainter(Color.Red)
         Image(
             painter = painter,
@@ -238,7 +237,7 @@ fun ErrorAndRetry(errorMsg: String, retry: () -> Unit) {
 }
 
 @Composable
-fun VideosNotFound(emptyResource: StringResource) {
+fun ToursNotFound(emptyResource: StringResource) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

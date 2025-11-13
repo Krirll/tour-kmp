@@ -43,7 +43,7 @@ import ru.krirll.moscowtour.shared.domain.model.EmptyPasswordException
 import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.SimpleAppBar
-import ru.krirll.moscowtour.shared.presentation.list.Loading
+import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.base.PasswordTextField
 
 @Composable

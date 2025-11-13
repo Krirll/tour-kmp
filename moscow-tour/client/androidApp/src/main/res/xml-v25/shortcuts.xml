@@ -3,11 +3,11 @@
     <shortcut
         android:enabled="true"
         android:icon="@drawable/baseline_saved_search_24"
-        android:shortcutId="saved_movies"
-        android:shortcutLongLabel="@string/saved_movies_long"
-        android:shortcutShortLabel="@string/saved_movies">
+        android:shortcutId="saved_tours"
+        android:shortcutLongLabel="@string/saved_tours_long"
+        android:shortcutShortLabel="@string/saved_tours">
         <intent
-            android:action="ru.krirll.moscowtour.action.OPEN_SAVED_MOVIES"
+            android:action="ru.krirll.moscowtour.action.OPEN_SAVED_TOURS"
             android:targetClass="ru.krirll.moscowtour.multiplatform.MainActivity"
             android:targetPackage="ru.krirll.moscowtour.multiplatform" />
     </shortcut>

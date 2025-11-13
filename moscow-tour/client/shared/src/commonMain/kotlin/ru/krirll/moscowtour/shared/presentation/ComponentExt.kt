@@ -19,6 +19,7 @@ import ru.krirll.http.domain.HttpException
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.di.koin
 
+//todo перееписать это на Decompose.coroutineScope
 val LifecycleOwner.componentScope: CoroutineScope
     get() {
         val main = koin.get<DispatcherProvider>().main
