@@ -11,7 +11,7 @@ addAccount:
     INSERT INTO "accounts" (login, password_hash) VALUES (?, ?);
 
 removeAccount:
-    DELETE FROM "accounts" WHERE login = ?;
+    DELETE FROM "accounts" WHERE account_id = ?;
 
 updatePassword:
     UPDATE "accounts" SET password_hash = ? WHERE account_id = ?;

@@ -11,6 +11,7 @@ interface AuthTokenRepository {
     suspend fun update(refresh: TokenRequest): TokenInfo
     suspend fun changePassword(request: ChangePasswordRequest)
     suspend fun revoke(tokenRequest: TokenRequest)
+    suspend fun delete(tokenRequest: TokenRequest)
 
     companion object {
         const val LOGIN_PATH = "$DYNAMIC_PREFIX/login"
@@ -18,6 +19,7 @@ interface AuthTokenRepository {
         const val UPDATE_PATH = "$DYNAMIC_PREFIX/updateToken"
         const val CHANGE_PASS_PATH = "$DYNAMIC_PREFIX/changePassword"
         const val REVOKE_PATH = "$DYNAMIC_PREFIX/revokeToken"
+        const val DELETE_PATH = "$DYNAMIC_PREFIX/deleteAccount"
     }
 }
 

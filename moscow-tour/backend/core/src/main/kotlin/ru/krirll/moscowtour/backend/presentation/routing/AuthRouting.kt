@@ -5,6 +5,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Routing
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import ru.krirll.moscowtour.backend.di.AuthEntryPoint
@@ -19,18 +20,22 @@ fun Routing.setupAuthMethods(
     authEntryPoint: AuthEntryPoint,
 
 ) {
-    val default = authEntryPoint.authTokenRepositoryFactory.create()
+    val repo = authEntryPoint.authTokenRepositoryFactory.create()
     post(AuthTokenRepository.REGISTER_PATH) {
-        call.respond(default.register(call.receive()))
+        call.respond(repo.register(call.receive()))
     }
     post(AuthTokenRepository.LOGIN_PATH) {
-        call.respond(default.login(call.receive()))
+        call.respond(repo.login(call.receive()))
     }
     post(AuthTokenRepository.UPDATE_PATH) {
-        call.respond(default.update(call.receive()))
+        call.respond(repo.update(call.receive()))
     }
     post(AuthTokenRepository.REVOKE_PATH) {
-        default.revoke(call.receive())
+        repo.revoke(call.receive())
+        call.respond(HttpStatusCode.OK)
+    }
+    delete(AuthTokenRepository.DELETE_PATH) {
+        repo.delete(call.receive())
         call.respond(HttpStatusCode.OK)
     }
     authenticate(AUTH_JWT_NAME) {

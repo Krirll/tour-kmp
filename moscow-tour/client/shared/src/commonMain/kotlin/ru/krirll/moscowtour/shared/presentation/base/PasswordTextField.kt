@@ -1,4 +1,4 @@
-package ru.krirll.ui.components
+package ru.krirll.moscowtour.shared.presentation.base
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -17,9 +17,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import moscowtour.libs.ui.generated.resources.Res
-import moscowtour.libs.ui.generated.resources.visibility
-import moscowtour.libs.ui.generated.resources.visibility_off
+import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource

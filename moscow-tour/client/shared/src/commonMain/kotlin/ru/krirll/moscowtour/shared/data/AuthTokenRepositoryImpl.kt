@@ -2,6 +2,7 @@ package ru.krirll.moscowtour.shared.data
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.post
 import io.ktor.utils.io.core.toByteArray
 import org.koin.core.annotation.Factory
@@ -69,6 +70,14 @@ class AuthTokenRepositoryImpl(
         httpClient.post {
             serverConfigurationProvider.getServerConfiguration()
                 .apply(this, AuthTokenRepository.REVOKE_PATH)
+            setJsonBody(tokenRequest)
+        }
+    }
+
+    override suspend fun delete(tokenRequest: TokenRequest) {
+        httpClient.delete {
+            serverConfigurationProvider.getServerConfiguration()
+                .apply(this, AuthTokenRepository.DELETE_PATH)
             setJsonBody(tokenRequest)
         }
     }

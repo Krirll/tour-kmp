@@ -166,7 +166,6 @@ private fun OldSearchInfo(
     }
 }
 
-//todo сделать для ios
 expect fun Modifier.requestFocusOnDownEvent(focusRequester: FocusRequester): Modifier
 
 @Composable

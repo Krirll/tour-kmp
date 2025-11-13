@@ -9,23 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-private const val PREF_ITEM_PADDING = 16
-
-@Composable
-fun PreferenceCategory(text: String) {
-    Text(
-        text = text,
-        modifier = Modifier.padding(
-            start = PREF_ITEM_PADDING.dp,
-            end = PREF_ITEM_PADDING.dp,
-            top = PREF_ITEM_PADDING.dp,
-            bottom = 4.dp
-        ),
-        color = MaterialTheme.colorScheme.primary,
-        style = MaterialTheme.typography.bodySmall
-    )
-}
-
 @Composable
 fun TextPreference(
     text: String,

@@ -50,6 +50,7 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
+import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.search.AppBarWithSearch
 import ru.krirll.moscowtour.shared.presentation.state.rememberTopAppBarStateByHolder
 
@@ -248,15 +249,5 @@ fun VideosNotFound(emptyResource: StringResource) {
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
-    }
-}
-
-@Composable
-fun Loading() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
     }
 }

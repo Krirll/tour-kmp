@@ -44,7 +44,7 @@ import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.SimpleAppBar
 import ru.krirll.moscowtour.shared.presentation.list.Loading
-import ru.krirll.ui.components.PasswordTextField
+import ru.krirll.moscowtour.shared.presentation.base.PasswordTextField
 
 @Composable
 fun AuthScreen(comp: AuthComponent) {

@@ -41,9 +41,9 @@ fun Routing.setupTickets(
         withContext(routingEntryPoint.dispatcherProvider.io) {
             call.response.header(
                 HttpHeaders.ContentDisposition,
-                "attachment; filename=\"${result.first}\""
+                "attachment; filename=\"${result.fileName}\""
             )
-            call.respondBytes(result.second, ContentType.Application.OctetStream)
+            call.respondBytes(result.byteArray, ContentType.Application.OctetStream)
         }
     }
 }

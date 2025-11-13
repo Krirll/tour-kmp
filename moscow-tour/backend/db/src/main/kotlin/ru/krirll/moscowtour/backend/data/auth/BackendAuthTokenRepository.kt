@@ -49,7 +49,7 @@ class BackendAuthTokenRepository(
     private val dispatcherProvider: DispatcherProvider,
     private val jwtPreparer: JwtPreparer,
     private val loginVerifier: LoginVerifier,
-    private val userId: Long,
+    private val accountId: Long,
     private val log: Log,
     private val stringFetcher: StringFetcher
 ) : AuthTokenRepository {
@@ -97,6 +97,10 @@ class BackendAuthTokenRepository(
         revokeInternal(tokenRequest)
     }
 
+    override suspend fun delete(tokenRequest: TokenRequest) {
+        db.accountsQueries.removeAccount(accountId).await()
+    }
+
     private suspend fun revokeInternal(request: TokenRequest) {
         log.d("BackendAuthTokenRepository", "revoke ${request.token.toHash()}")
         val info = getTokenAndCheck(request)
@@ -140,14 +144,14 @@ class BackendAuthTokenRepository(
 
     override suspend fun changePassword(request: ChangePasswordRequest): Unit =
         withContext(dispatcherProvider.io) {
-            val user = db.accountsQueries.selectAccountByAccountId(userId).executeAsOneOrNull()
+            val user = db.accountsQueries.selectAccountByAccountId(accountId).executeAsOneOrNull()
                 ?: throw BadRequestException(stringFetcher.get(StringResource.UNKNOWN_USER))
             if (user.password_hash != request.oldPasswordHash) {
                 throw BadRequestException(stringFetcher.get(StringResource.INVALID_PASSWORD))
             } else if (user.password_hash == request.newPasswordHash) {
                 throw BadRequestException(stringFetcher.get(StringResource.NO_CHANGES_PASS))
             }
-            db.accountsQueries.updatePassword(request.newPasswordHash, userId).await()
+            db.accountsQueries.updatePassword(request.newPasswordHash, accountId).await()
         }
 
     private fun String.toHash(): String {
