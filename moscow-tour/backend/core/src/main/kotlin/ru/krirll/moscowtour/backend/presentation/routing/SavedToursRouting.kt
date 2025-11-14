@@ -14,6 +14,7 @@ import ru.krirll.moscowtour.backend.presentation.obtainAccountId
 import ru.krirll.moscowtour.shared.domain.IsSavedResponse
 import ru.krirll.moscowtour.shared.domain.RemoveRequest
 import ru.krirll.moscowtour.shared.domain.SavedToursRepository
+import ru.krirll.moscowtour.shared.domain.SavedToursResponse
 import ru.krirll.moscowtour.shared.domain.model.Tour
 
 fun Route.setupSavedTours(
@@ -33,7 +34,7 @@ fun Route.setupSavedTours(
         val saved = savedToursFactory.create(call.obtainAccountId())
             .getAll()
             .first()
-        call.respond(listOf(saved))
+        call.respond(SavedToursResponse(saved))
     }
     get(SavedToursRepository.QUERY_SAVED) {
         val p = call.parameters
