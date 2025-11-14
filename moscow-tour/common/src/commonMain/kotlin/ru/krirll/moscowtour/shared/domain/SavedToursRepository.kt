@@ -32,3 +32,6 @@ data class RemoveRequest(val tourId: Long)
 
 @Serializable
 data class IsSavedResponse(val isSaved: Boolean)
+
+@Serializable
+data class SavedToursResponse(val list: List<SavedTour>)

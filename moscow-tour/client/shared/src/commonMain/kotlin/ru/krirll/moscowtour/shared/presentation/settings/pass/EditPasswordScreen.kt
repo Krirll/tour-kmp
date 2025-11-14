@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import moscowtour.moscow_tour.client.shared.generated.resources.new_password_repeat
 import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.presentation.base.PasswordTextField
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
@@ -54,7 +55,8 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
         content = {
             var old by rememberSaveable { mutableStateOf("") }
             var new by rememberSaveable { mutableStateOf("") }
-            val onDone: () -> Unit = { component.changePassword(old, new) }
+            var repeat by rememberSaveable { mutableStateOf("") }
+            val onDone: () -> Unit = { component.changePassword(old, new, repeat) }
             Box(modifier = Modifier.padding(it)) {
                 when (val s = state) {
                     is AuthState.Loading -> Loading()
@@ -91,6 +93,14 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                                     new,
                                     onValueChange = { new = it },
                                     labelRes = Res.string.new_password,
+                                    onDone = onDone
+                                )
+                            }
+                            item {
+                                PasswordTextField(
+                                    repeat,
+                                    onValueChange = { repeat = it },
+                                    labelRes = Res.string.new_password_repeat,
                                     onDone = onDone
                                 )
                             }

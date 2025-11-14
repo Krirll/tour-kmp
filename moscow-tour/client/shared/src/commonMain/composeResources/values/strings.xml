@@ -31,5 +31,7 @@
     <string name="edit_password">Изменить пароль</string>
     <string name="old_password">Текущий пароль</string>
     <string name="new_password">Новый пароль</string>
+    <string name="new_password_repeat">Подтвердите новый пароль</string>
     <string name="password_changed">Пароль был успешно изменён</string>
+    <string name="buy_ticket">Купить билет</string>
 </resources>

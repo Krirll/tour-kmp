@@ -72,6 +72,6 @@ class AuthComponentFactory(
 sealed interface AuthState {
     data object Idle : AuthState
     data object Loading : AuthState
-    data class Error(val e: LoginException) : AuthState
+    data class Error(val e: Exception) : AuthState
     data object Succeed : AuthState
 }

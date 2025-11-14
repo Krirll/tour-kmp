@@ -12,13 +12,15 @@ import ru.krirll.moscowtour.shared.presentation.settings.auth.BaseLogin
 fun RegisterScreen(comp: RegisterComponent) {
     val login = rememberSaveable { mutableStateOf("") }
     val password = rememberSaveable { mutableStateOf("") }
+    val repeatPassword = rememberSaveable { mutableStateOf("") }
     BaseLogin(
         login,
         password,
         comp.state,
         stringResource(Res.string.account_reg),
         doBack = comp.doBack,
-        onDone = { comp.register(login.value, password.value) },
-        onFinish = comp.doBack
+        onDone = { comp.register(login.value, password.value, repeatPassword.value) },
+        onFinish = comp.doBack,
+        repeatPassword = repeatPassword
     )
 }

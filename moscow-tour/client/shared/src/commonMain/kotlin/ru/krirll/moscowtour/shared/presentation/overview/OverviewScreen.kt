@@ -40,6 +40,7 @@ import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.launch
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.back
+import moscowtour.moscow_tour.client.shared.generated.resources.buy_ticket
 import moscowtour.moscow_tour.client.shared.generated.resources.copy
 import moscowtour.moscow_tour.client.shared.generated.resources.desc
 import moscowtour.moscow_tour.client.shared.generated.resources.more
@@ -177,7 +178,7 @@ fun DetailsInfo(
             Button(
                 onClick = onBuyClicked,
                 modifier = Modifier.fillMaxWidth().padding(8.dp)
-            ) { /*Text(stringResource(Res.string.watch))*/ }
+            ) { Text(stringResource(Res.string.buy_ticket)) }
         }
     }
 }

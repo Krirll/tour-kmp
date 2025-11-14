@@ -28,14 +28,19 @@ class RegisterComponent(
     private val _state = MutableStateFlow<AuthState>(AuthState.Idle)
     val state = _state.asStateFlow()
 
-    fun register(login: String, password: String) {
+    fun register(login: String, password: String, repeatPassword: String) {
         componentScope.launch(dispatcherProvider.main) {
             _state.emit(AuthState.Loading)
             try {
+                if (password != repeatPassword) {
+                    throw IllegalStateException("Пароли не совпадают")
+                }
                 authTokenRepository.register(LoginInfo(login, password))
                 _state.emit(AuthState.Succeed)
             } catch (e: LoginException) {
                 log.e("RegisterComponent", e)
+                _state.value = AuthState.Error(e)
+            } catch (e: IllegalStateException) {
                 _state.value = AuthState.Error(e)
             }
         }

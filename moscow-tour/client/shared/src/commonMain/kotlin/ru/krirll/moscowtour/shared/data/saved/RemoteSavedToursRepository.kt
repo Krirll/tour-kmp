@@ -23,6 +23,7 @@ import ru.krirll.moscowtour.shared.domain.getServerConfiguration
 import ru.krirll.moscowtour.shared.domain.model.SavedTour
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.domain.IsSavedResponse
+import ru.krirll.moscowtour.shared.domain.SavedToursResponse
 
 @Factory(binds = [RemoteSavedToursRepository::class])
 class RemoteSavedToursRepository(
@@ -66,11 +67,11 @@ class RemoteSavedToursRepository(
     private suspend fun obtainConfig() = serverConfigurationRepository.getServerConfiguration()
 
     private suspend fun getAllSingle(): List<SavedTour> {
-        return httpClient.get<List<SavedTour>>(
+        return httpClient.get<SavedToursResponse>(
             SavedToursRepository.QUERY_ALL,
             emptyMap(),
             obtainConfig()
-        )
+        ).list
     }
 
     override suspend fun save(tour: Tour) {

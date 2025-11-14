@@ -63,7 +63,7 @@ class BackendAuthTokenRepository(
                 throw BadRequestException(stringFetcher.get(StringResource.ALREADY_EXISTS_USER))
             }
             //todo потом сделать лимит 3 чтобы было что демонстрировать
-            if (db.accountsQueries.selectAllAccounts().executeAsList().isNotEmpty()) {
+            if (db.accountsQueries.selectAllAccounts().executeAsList().size >= 2) {
                 throw BadRequestException(stringFetcher.get(StringResource.USERS_LIMIT))
             }
             db.accountsQueries.addAccount(loginInfo.login, loginInfo.passwordHash)

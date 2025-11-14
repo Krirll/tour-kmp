@@ -35,9 +35,12 @@ class EditPasswordComponent(
         _state.tryEmit(AuthState.Idle)
     }
 
-    fun changePassword(old: String, new: String) {
+    fun changePassword(old: String, new: String, repeatNew: String) {
         scope.launch(errorHandler) {
             _state.emit(AuthState.Loading)
+            if (new != repeatNew) {
+                throw IllegalStateException("Пароли не совпадают")
+            }
             authTokenRepository.changePassword(
                 ChangePasswordRequest(old, new)
             )

@@ -35,12 +35,12 @@ import moscowtour.moscow_tour.client.shared.generated.resources.account_reg_hint
 import moscowtour.moscow_tour.client.shared.generated.resources.empty_login
 import moscowtour.moscow_tour.client.shared.generated.resources.empty_pass
 import moscowtour.moscow_tour.client.shared.generated.resources.error_title
+import moscowtour.moscow_tour.client.shared.generated.resources.new_password_repeat
 import moscowtour.moscow_tour.client.shared.generated.resources.okay
 import moscowtour.moscow_tour.client.shared.generated.resources.unknown_error
 import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.domain.model.EmptyLoginException
 import ru.krirll.moscowtour.shared.domain.model.EmptyPasswordException
-import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.SimpleAppBar
 import ru.krirll.moscowtour.shared.presentation.base.Loading
@@ -79,10 +79,11 @@ fun BaseLogin(
     doBack: (() -> Unit)?,
     onDone: () -> Unit,
     onFinish: () -> Unit,
+    repeatPassword: MutableState<String>? = null,
     buttonAction: (@Composable () -> Unit)? = null
 ) {
     val state by stateFlow.collectAsState(AuthState.Idle)
-    var errorInfo by remember { mutableStateOf<LoginException?>(null) }
+    var errorInfo by remember { mutableStateOf<Exception?>(null) }
     LaunchedEffect(state) {
         when (val s = state) {
             is AuthState.Error -> { errorInfo = s.e }
@@ -128,6 +129,14 @@ fun BaseLogin(
                             onDone = onDone,
                             labelRes = Res.string.account_password
                         )
+                        repeatPassword?.let {
+                            PasswordTextField(
+                                repeatPassword.value,
+                                onValueChange = { repeatPassword.value = it },
+                                onDone = onDone,
+                                labelRes = Res.string.new_password_repeat
+                            )
+                        }
                         Button(
                             onClick = { onDone() },
                             modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
@@ -143,7 +152,7 @@ fun BaseLogin(
 }
 
 @Composable
-private fun LoginException.toMessage(): String {
+private fun Exception.toMessage(): String {
     return when (this) {
         is EmptyLoginException -> stringResource(Res.string.empty_login)
         is EmptyPasswordException -> stringResource(Res.string.empty_pass)
