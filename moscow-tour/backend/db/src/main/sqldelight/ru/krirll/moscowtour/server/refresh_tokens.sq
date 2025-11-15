@@ -23,8 +23,3 @@ revokeToken:
     UPDATE refresh_tokens
     SET revoked = TRUE
     WHERE token_id = ?;
-
-revokeAllForAccount:
-    UPDATE refresh_tokens
-    SET revoked = TRUE
-    WHERE account_id = ?;

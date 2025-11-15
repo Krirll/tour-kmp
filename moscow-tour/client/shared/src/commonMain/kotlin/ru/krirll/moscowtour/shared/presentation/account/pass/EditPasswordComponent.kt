@@ -1,4 +1,4 @@
-package ru.krirll.moscowtour.shared.presentation.settings.pass
+package ru.krirll.moscowtour.shared.presentation.account.pass
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
@@ -16,7 +16,7 @@ import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
-import ru.krirll.moscowtour.shared.presentation.settings.auth.AuthState
+import ru.krirll.moscowtour.shared.presentation.account.auth.AuthState
 
 class EditPasswordComponent(
     private val context: ComponentContext,
@@ -24,12 +24,14 @@ class EditPasswordComponent(
     dispatcherProvider: DispatcherProvider,
     val onBack: () -> Unit
 ) : ComponentContext by context {
+
     private val scope = coroutineScope(SupervisorJob() + dispatcherProvider.main)
-    private val _state = MutableStateFlow<AuthState>(AuthState.Idle)
-    val state = _state.asStateFlow()
-    private val errorHandler = createErrorHandler {
+    private val errorHandler = createErrorHandler(scope) {
         _state.emit(AuthState.Error(LoginException(it)))
     }
+
+    private val _state = MutableStateFlow<AuthState>(AuthState.Idle)
+    val state = _state.asStateFlow()
 
     fun resetState() {
         _state.tryEmit(AuthState.Idle)
@@ -53,10 +55,10 @@ class EditPasswordComponent(
 class EditPasswordComponentFactory(
     private val authTokenRepository: AuthTokenRepository,
     private val dispatcherProvider: DispatcherProvider
-) : ComponentFactory<Child.EditPasswordChild, Route.Settings.EditPassword> {
+) : ComponentFactory<Child.EditPasswordChild, Route.Account.EditPassword> {
 
     override fun create(
-        route: Route.Settings.EditPassword,
+        route: Route.Account.EditPassword,
         child: ComponentContext,
         root: RootComponent
     ): Child.EditPasswordChild {

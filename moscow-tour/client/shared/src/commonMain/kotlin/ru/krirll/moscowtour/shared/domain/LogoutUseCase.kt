@@ -17,17 +17,25 @@ class LogoutUseCase(
     private val tokenStorage: TokenStorage,
     private val authTokenRepository: AuthTokenRepository
 ) : LogoutAction {
+
     val token = tokenStorage.token
 
-    override suspend fun logout() {
+    override suspend fun logout(withDelete: Boolean) {
         tokenStorage.token.firstOrNull()?.refresh?.let {
-            runCatching { authTokenRepository.revoke(TokenRequest(it)) }
+            runCatching {
+                if (withDelete) {
+                    authTokenRepository.delete(TokenRequest(it))
+                } else {
+                    authTokenRepository.revoke(TokenRequest(it))
+                }
+            }
         }
         tokenStorage.clear()
         localSearchRepo.clearAll()
         localSavedToursRepository.clear()
         syncRepository.setSearchSynchronized(false)
         syncRepository.setSavedToursSynchronized(false)
+        //todo возможно для билетов тоже нужна синхронизация, но при условии авторизации
         bearerAuthProvider.clearToken()
     }
 }

@@ -20,10 +20,10 @@ import ru.krirll.moscowtour.shared.presentation.nav.Route
 import ru.krirll.moscowtour.shared.presentation.overview.OverviewFactory
 import ru.krirll.moscowtour.shared.presentation.saved.SavedMovieFactory
 import ru.krirll.moscowtour.shared.presentation.search.SearchScreenFactory
-import ru.krirll.moscowtour.shared.presentation.settings.SettingsComponentFactory
-import ru.krirll.moscowtour.shared.presentation.settings.auth.AuthComponentFactory
-import ru.krirll.moscowtour.shared.presentation.settings.pass.EditPasswordComponentFactory
-import ru.krirll.moscowtour.shared.presentation.settings.register.RegisterComponentFactory
+import ru.krirll.moscowtour.shared.presentation.account.AccountComponentFactory
+import ru.krirll.moscowtour.shared.presentation.account.auth.AuthComponentFactory
+import ru.krirll.moscowtour.shared.presentation.account.pass.EditPasswordComponentFactory
+import ru.krirll.moscowtour.shared.presentation.account.register.RegisterComponentFactory
 import ru.krirll.ui.nav.BaseRootComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -94,11 +94,12 @@ fun <T : Child, R : Route> Route.provideFactory(koin: Koin): ComponentFactory<T,
         is Route.Tours -> koin.get<ToursChildFactory>()
         is Route.SearchTours -> koin.get<SearchScreenFactory>()
         is Route.Overview -> koin.get<OverviewFactory>()
-        is Route.Settings -> koin.get<SettingsComponentFactory>()
-        is Route.Settings.Auth -> koin.get<AuthComponentFactory>()
-        is Route.Settings.Register -> koin.get<RegisterComponentFactory>()
+        is Route.Account -> koin.get<AccountComponentFactory>()
+        is Route.Account.Auth -> koin.get<AuthComponentFactory>()
+        is Route.Account.Register -> koin.get<RegisterComponentFactory>()
+        is Route.Account.Tickets -> TODO()
+        is Route.Account.EditPassword -> koin.get<EditPasswordComponentFactory>()
         is Route.Saved -> koin.get<SavedMovieFactory>()
-        is Route.Settings.EditPassword -> koin.get<EditPasswordComponentFactory>()
         is Route.Loading -> koin.get<LoadingComponentFactory>()
     }
     @Suppress("UNCHECKED_CAST") return factory as ComponentFactory<T, R>

@@ -1,4 +1,4 @@
-package ru.krirll.moscowtour.shared.presentation.settings.pass
+package ru.krirll.moscowtour.shared.presentation.account.pass
 
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.edit_password
@@ -36,7 +36,7 @@ import ru.krirll.moscowtour.shared.presentation.base.PasswordTextField
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.SimpleAppBar
 import ru.krirll.moscowtour.shared.presentation.base.Loading
-import ru.krirll.moscowtour.shared.presentation.settings.auth.AuthState
+import ru.krirll.moscowtour.shared.presentation.account.auth.AuthState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

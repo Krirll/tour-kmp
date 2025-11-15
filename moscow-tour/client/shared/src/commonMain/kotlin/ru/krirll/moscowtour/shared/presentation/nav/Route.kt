@@ -24,7 +24,7 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     data class Overview(val id: Long) : Route()
 
     @Serializable
-    data object Settings : Route() {
+    data object Account : Route() {
 
         @Serializable
         data class Auth(
@@ -37,6 +37,9 @@ sealed class Route : ru.krirll.ui.nav.Route() {
 
         @Serializable
         data object EditPassword : Route()
+
+        @Serializable
+        data object Tickets : Route()
     }
 
     companion object {

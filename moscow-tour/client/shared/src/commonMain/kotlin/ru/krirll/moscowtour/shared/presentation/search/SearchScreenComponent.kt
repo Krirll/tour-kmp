@@ -3,6 +3,7 @@ package ru.krirll.moscowtour.shared.presentation.search
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +20,6 @@ import ru.krirll.moscowtour.shared.domain.RemoteEvent
 import ru.krirll.moscowtour.shared.domain.RemoteEventListener
 import ru.krirll.moscowtour.shared.domain.SearchRepository
 import ru.krirll.moscowtour.shared.presentation.RootComponent
-import ru.krirll.moscowtour.shared.presentation.componentScope
 import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
@@ -46,8 +46,10 @@ class SearchScreenComponent(
     val errorMsg get() = snapshot.errorMsg
 
     val isLoading get() = snapshot.isLoading
+
+    private val scope = coroutineScope()
     private var lastCmd: (suspend () -> Unit)? = null
-    private val exceptionHandler = createErrorHandler {
+    private val exceptionHandler = createErrorHandler(scope) {
         snapshot.errorMsg.emit(it)
     }
 
@@ -56,7 +58,7 @@ class SearchScreenComponent(
     }
 
     fun restart() {
-        componentScope.launch(dispatcherProvider.main + exceptionHandler) {
+        scope.launch(dispatcherProvider.main + exceptionHandler) {
             snapshot.errorMsg.emit(null)
             snapshot.isLoading.emit(true)
             try {
@@ -86,7 +88,7 @@ class SearchScreenComponent(
     }
 
     private fun exec(callback: suspend () -> Unit) {
-        componentScope.launch(dispatcherProvider.main + exceptionHandler) {
+        scope.launch(dispatcherProvider.main + exceptionHandler) {
             try {
                 snapshot.isLoading.emit(true)
                 lastCmd = callback

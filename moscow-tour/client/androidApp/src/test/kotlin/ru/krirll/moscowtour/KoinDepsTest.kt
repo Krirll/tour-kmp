@@ -41,14 +41,14 @@ class KoinDepsTest {
             modules(testModule)
         }
         listOf<Route>(
-            Route.Settings.Auth(),
+            Route.Account.Auth(),
             Route.Overview(1),
-            Route.Settings.Register,
+            Route.Account.Register,
             Route.Saved,
             Route.SearchTours,
-            Route.Settings,
+            Route.Account,
             Route.Tours(null),
-            Route.Settings.EditPassword
+            Route.Account.EditPassword
         ).forEach { it.check() }
     }
 
@@ -60,10 +60,10 @@ class KoinDepsTest {
             is Route.Overview,
             Route.Saved,
             Route.SearchTours,
-            Route.Settings,
-            is Route.Settings.Auth,
-            Route.Settings.EditPassword,
-            Route.Settings.Register,
+            Route.Account,
+            is Route.Account.Auth,
+            Route.Account.EditPassword,
+            Route.Account.Register,
             is Route.Tours -> {}
         }
     }

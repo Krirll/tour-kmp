@@ -1,12 +1,25 @@
 package ru.krirll.moscowtour.shared.presentation.overview
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -32,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +54,7 @@ import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.launch
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.back
+import moscowtour.moscow_tour.client.shared.generated.resources.broken_image
 import moscowtour.moscow_tour.client.shared.generated.resources.buy_ticket
 import moscowtour.moscow_tour.client.shared.generated.resources.copy
 import moscowtour.moscow_tour.client.shared.generated.resources.desc
@@ -84,8 +99,8 @@ fun OverviewScreen(component: OverviewComponent) {
                     onBuyClicked = {
                         details?.let { d ->
                             scope.launch {
-                            //todo переделать на покупку билета
-                            //component.movieUrl?.let { component.videoLauncher.launch(it) }
+                                //todo переделать на покупку билета
+                                //component.movieUrl?.let { component.videoLauncher.launch(it) }
                             }
                         }
                     }
@@ -108,7 +123,15 @@ private fun OverviewAppBar(
     val isSaved by component.isSaved.collectAsState(null)
 
     TopAppBar(
-        title = { details?.title?.let { Text(it, maxLines = 1, overflow = TextOverflow.Ellipsis) } },
+        title = {
+            details?.title?.let {
+                Text(
+                    it,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        },
         navigationIcon = {
             IconButton(onClick = { component.doBack() }) {
                 Icon(painterResource(Res.drawable.back), contentDescription = null)
@@ -118,7 +141,10 @@ private fun OverviewAppBar(
             details?.let {
                 if (component.shareManager.canShare()) {
                     IconButton(onClick = { component.shareManager.shareDetails(it) }) {
-                        Icon(painterResource(Res.drawable.share), contentDescription = stringResource(Res.string.share))
+                        Icon(
+                            painterResource(Res.drawable.share),
+                            contentDescription = stringResource(Res.string.share)
+                        )
                     }
                 }
                 isSaved?.let { saved ->
@@ -138,6 +164,7 @@ private fun OverviewAppBar(
     )
 }
 
+@Suppress("DEPRECATION")
 @Composable
 private fun AdditionalAppBarMenu(snack: SnackbarHostState, url: String?) {
     url ?: return
@@ -172,7 +199,7 @@ fun DetailsInfo(
         modifier = Modifier.applyColumnPadding(paddingValues),
         contentPadding = paddingValues.asColumnPadding()
     ) {
-        item { OverviewTitle(details) }
+        item { ImageCarousel(details.imagesUrls) }
         item { OverviewDescription(details, showDetails) }
         item {
             Button(
@@ -204,18 +231,67 @@ private fun OverviewDescription(
     }
 }
 
+//todo сделать карусель но на весь экран (чтоб можно было растягивать и листать)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun OverviewTitle(details: Tour) {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-        //todo переделать на карусель
-        details.imagesUrls?.get(0)?.let {
-            Image(
-                painter = rememberImagePainter(it),
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8)),
-                contentScale = ContentScale.Crop,
-            )
+fun ImageCarousel(
+    images: List<String>
+) {
+    val pagerState = rememberPagerState { images.size }
+    val scope = rememberCoroutineScope()
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp)
+                .clip(RoundedCornerShape(12.dp))
+        ) { page ->
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = rememberImagePainter(
+                        url = images[page],
+                        errorPainter = { painterResource(Res.drawable.broken_image) }
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8))
+                        .fillMaxHeight(),
+                    contentScale = ContentScale.Fit
+                )
+            }
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            repeat(images.size) { index ->
+                val selected = pagerState.currentPage == index
+                Box(
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .size(if (selected) 12.dp else 8.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (selected) Color.White
+                            else Color.LightGray.copy(alpha = 0.5f)
+                        )
+                        .clickable {
+                            scope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        }
+                )
+            }
         }
     }
 }

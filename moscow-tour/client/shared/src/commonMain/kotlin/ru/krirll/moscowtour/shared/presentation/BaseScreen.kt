@@ -20,9 +20,9 @@ import ru.krirll.moscowtour.shared.presentation.loading.LoadingScreen
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 import ru.krirll.moscowtour.shared.presentation.overview.OverviewScreen
-import ru.krirll.moscowtour.shared.presentation.settings.auth.AuthScreen
-import ru.krirll.moscowtour.shared.presentation.settings.pass.EditPasswordScreen
-import ru.krirll.moscowtour.shared.presentation.settings.register.RegisterScreen
+import ru.krirll.moscowtour.shared.presentation.account.auth.AuthScreen
+import ru.krirll.moscowtour.shared.presentation.account.pass.EditPasswordScreen
+import ru.krirll.moscowtour.shared.presentation.account.register.RegisterScreen
 import ru.krirll.ui.nav.Nav
 
 @Composable
@@ -51,7 +51,7 @@ private fun NavInternal(rootComponent: RootComponent) {
             is Child.LoadingChild -> LoadingScreen(child.component)
             is Child.ToursChild,
             is Child.SearchChild,
-            is Child.SettingsChild,
+            is Child.AccountChild,
             is Child.SavedToursChild -> {
                 if (child is Child.ToursChild && child.component.search != null) {
                     ToursScreen(child.component)

@@ -26,7 +26,7 @@ fun createNavigationList(): List<NavigationEntry<Route>> {
             painterResource(Res.drawable.star)
         ),
         NavigationEntry(
-            Route.Settings,
+            Route.Account,
             stringResource(Res.string.account),
             painterResource(Res.drawable.account)
         )

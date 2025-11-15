@@ -13,5 +13,5 @@ data class Tour(
     val dateEnd: Long,
     val canBuy: Boolean,
     val price: Double,
-    val imagesUrls: List<String>?
+    val imagesUrls: List<String>
 )

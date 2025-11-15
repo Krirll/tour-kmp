@@ -1,6 +1,7 @@
 package ru.krirll.moscowtour.shared.presentation.saved
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnStart
 import com.arkivanov.essenty.lifecycle.doOnStop
 import kotlinx.coroutines.Job
@@ -15,7 +16,6 @@ import ru.krirll.moscowtour.shared.domain.SavedToursRepository
 import ru.krirll.moscowtour.shared.domain.model.SavedTour
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.RootComponent
-import ru.krirll.moscowtour.shared.presentation.componentScope
 import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
@@ -29,12 +29,16 @@ class SavedMovieScreenComponent(
     val doBack: () -> Unit,
     val showOverview: (Long) -> Unit
 ) : ComponentContext by context {
+
+    private val scope = coroutineScope()
     private val _errorMsg = MutableStateFlow<String?>(null)
-    val errorMsg = _errorMsg.asStateFlow()
-    private val exceptionHandler = createErrorHandler { _errorMsg.emit(it) }
+    private val exceptionHandler = createErrorHandler(scope) { _errorMsg.emit(it) }
     private val _all = MutableStateFlow<List<Tour>?>(null)
-    val all = _all.asStateFlow()
+
     private var prevJob: Job? = null
+
+    val errorMsg = _errorMsg.asStateFlow()
+    val all = _all.asStateFlow()
 
     init {
         lifecycle.doOnStop { prevJob?.cancel() }
@@ -43,7 +47,7 @@ class SavedMovieScreenComponent(
 
     fun load() {
         prevJob?.cancel()
-        prevJob = componentScope.launch(dispatcherProvider.main + exceptionHandler) {
+        prevJob = scope.launch(dispatcherProvider.main + exceptionHandler) {
             _errorMsg.emit(null)
             _all.emitAll(repo.getAll().map { it.map() })
         }

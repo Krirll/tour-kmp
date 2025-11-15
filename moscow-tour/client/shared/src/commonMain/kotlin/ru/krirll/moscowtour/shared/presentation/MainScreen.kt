@@ -14,18 +14,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import ru.krirll.ui.BaseScreen
-import ru.krirll.ui.USE_EXPERIMENTAL_RAIL
-import ru.krirll.ui.currentWindowType
-import ru.krirll.ui.isCompact
-import ru.krirll.ui.isExpanded
+import ru.krirll.moscowtour.shared.presentation.account.AccountContent
 import ru.krirll.moscowtour.shared.presentation.list.TourContent
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 import ru.krirll.moscowtour.shared.presentation.saved.SavedMovieContent
 import ru.krirll.moscowtour.shared.presentation.search.SearchAppBar
-import ru.krirll.moscowtour.shared.presentation.search.SearchVideoContent
-import ru.krirll.moscowtour.shared.presentation.settings.SettingsContent
+import ru.krirll.moscowtour.shared.presentation.search.SearchTourContent
+import ru.krirll.ui.BaseScreen
+import ru.krirll.ui.currentWindowType
+import ru.krirll.ui.isCompact
+import ru.krirll.ui.isExpanded
 
 @Composable
 fun MainScreen(
@@ -73,7 +72,7 @@ private fun SearchScreenInternal(
     }
     BaseScreen(
         appBar = {
-            if (windowType.isCompact || !USE_EXPERIMENTAL_RAIL) searchAppBar()
+            if (windowType.isCompact) searchAppBar()
         },
         currentRoute = route,
         onSelectNavigation = { rootComponent.nav(it, true) },
@@ -82,11 +81,11 @@ private fun SearchScreenInternal(
         scrollBehavior = scrollBehavior
     ) {
         val content: @Composable () -> Unit = {
-            SearchVideoContent(child.component, it, requester) {
+            SearchTourContent(child.component, it, requester) {
                 textFieldValue = it
             }
         }
-        if (windowType.isExpanded && USE_EXPERIMENTAL_RAIL) {
+        if (windowType.isExpanded) {
             Column {
                 searchAppBar()
                 content()
@@ -105,7 +104,7 @@ fun MainScreenInternal(route: Route, child: Child, rootComponent: RootComponent)
     val windowType = currentWindowType()
     BaseScreen(
         appBar = {
-            if (windowType.isCompact || !USE_EXPERIMENTAL_RAIL) {
+            if (windowType.isCompact) {
                 navList.firstOrNull { it.route == route }?.title?.let {
                     LargeTopAppBar(title = { Text(it) }, scrollBehavior = scrollBehavior)
                 }
@@ -119,7 +118,7 @@ fun MainScreenInternal(route: Route, child: Child, rootComponent: RootComponent)
     ) { padding ->
         when (child) {
             is Child.ToursChild -> TourContent(child.component, padding)
-            is Child.SettingsChild -> SettingsContent(child.component, padding)
+            is Child.AccountChild -> AccountContent(child.component, padding)
             is Child.SavedToursChild -> SavedMovieContent(child.component, padding)
             else -> {}
         }

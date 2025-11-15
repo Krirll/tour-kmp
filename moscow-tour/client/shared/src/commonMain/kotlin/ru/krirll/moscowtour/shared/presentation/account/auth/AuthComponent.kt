@@ -1,6 +1,7 @@
-package ru.krirll.moscowtour.shared.presentation.settings.auth
+package ru.krirll.moscowtour.shared.presentation.account.auth
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -11,7 +12,6 @@ import ru.krirll.moscowtour.shared.domain.AuthTokenRepository
 import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.domain.model.LoginInfo
 import ru.krirll.moscowtour.shared.presentation.RootComponent
-import ru.krirll.moscowtour.shared.presentation.componentScope
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
@@ -24,11 +24,13 @@ class AuthComponent(
     private val dispatcherProvider: DispatcherProvider,
     private val log: Log
 ) : ComponentContext by context {
+
+    private val scope = coroutineScope()
     private val _state = MutableSharedFlow<AuthState>()
     val state = _state.asSharedFlow()
 
     fun login(login: String, password: String) {
-        componentScope.launch(dispatcherProvider.main) {
+        scope.launch(dispatcherProvider.main) {
             _state.emit(AuthState.Loading)
             try {
                 authTokenRepository.login(LoginInfo(login, password))
@@ -50,17 +52,17 @@ class AuthComponentFactory(
     private val authTokenRepository: AuthTokenRepository,
     private val dispatcherProvider: DispatcherProvider,
     private val log: Log
-) : ComponentFactory<Child.AuthChild, Route.Settings.Auth> {
+) : ComponentFactory<Child.AuthChild, Route.Account.Auth> {
 
     override fun create(
-        route: Route.Settings.Auth,
+        route: Route.Account.Auth,
         child: ComponentContext,
         root: RootComponent
     ): Child.AuthChild {
         val comp = AuthComponent(
             child,
             doBack = { root.onBack() },
-            doRegister = { root.nav(Route.Settings.Register) },
+            doRegister = { root.nav(Route.Account.Register) },
             authTokenRepository,
             dispatcherProvider,
             log

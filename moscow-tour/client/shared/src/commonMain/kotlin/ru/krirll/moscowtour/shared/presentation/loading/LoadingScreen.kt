@@ -1,8 +1,11 @@
 package ru.krirll.moscowtour.shared.presentation.loading
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.base.Loading
 
@@ -14,6 +17,6 @@ fun LoadingScreen(component: LoadingComponent) {
     }
     BaseScreen(
         appBar = {},
-        content = { Loading() }
+        content = { Loading(Modifier.fillMaxSize().padding(it)) }
     )
 }

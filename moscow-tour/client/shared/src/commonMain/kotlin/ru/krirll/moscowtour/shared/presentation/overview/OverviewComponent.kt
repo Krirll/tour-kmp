@@ -3,6 +3,7 @@ package ru.krirll.moscowtour.shared.presentation.overview
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnStart
 import com.arkivanov.essenty.lifecycle.doOnStop
 import kotlinx.coroutines.Job
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
@@ -21,7 +21,6 @@ import ru.krirll.moscowtour.shared.domain.ToursApi
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.ShareManager
-import ru.krirll.moscowtour.shared.presentation.componentScope
 import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
@@ -38,7 +37,8 @@ class OverviewComponent(
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
 
-    private val exceptionHandler = createErrorHandler {
+    private val scope = coroutineScope()
+    private val exceptionHandler = createErrorHandler(scope) {
         snapshot.errorCode.emit(it)
     }
     private var isSavedJob: Job? = null
@@ -75,14 +75,14 @@ class OverviewComponent(
 
     private fun listenIsSavedIfNeeded() {
         if (isSavedJob == null || isSavedJob?.isActive == false) {
-            isSavedJob = componentScope.launch(dispatcherProvider.main + exceptionHandler) {
+            isSavedJob = scope.launch(dispatcherProvider.main + exceptionHandler) {
                 _isSaved.emitAll(savedToursRepository.isSaved(id))
             }
         }
     }
 
     private fun exec(callback: suspend () -> Unit): Job {
-        return componentScope.launch(dispatcherProvider.main + exceptionHandler) {
+        return scope.launch(dispatcherProvider.main + exceptionHandler) {
             snapshot.errorCode.emit(null)
             callback.invoke()
         }

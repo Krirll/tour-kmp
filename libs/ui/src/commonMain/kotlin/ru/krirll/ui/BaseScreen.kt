@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
@@ -31,8 +32,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import ru.krirll.ui.nav.Route
 import ru.krirll.ui.theme.getColorScheme
-
-const val USE_EXPERIMENTAL_RAIL = false
 
 @Immutable
 data class NavigationEntry<out T : Route>(
@@ -61,7 +60,7 @@ fun BaseScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun <T : Route> BaseScreen(
     modifier: Modifier = Modifier,
@@ -75,17 +74,17 @@ fun <T : Route> BaseScreen(
     content: @Composable (padding: PaddingValues) -> Unit,
 ) {
     val windowType = currentWindowType()
-    MaterialTheme(colorScheme = colorScheme) {
+    MaterialExpressiveTheme(colorScheme = colorScheme) {
         Scaffold(
             bottomBar = {
-                if (windowType.isCompact || !USE_EXPERIMENTAL_RAIL) {
+                if (windowType.isCompact) {
                     BottomBar(navigationEntries, currentRoute, onSelectNavigation)
                 }
             },
             topBar = {
                 appBar(scrollBehavior)
             }, content = {
-                if (windowType.isExpanded && navigationEntries?.isNotEmpty() == true && USE_EXPERIMENTAL_RAIL) {
+                if (windowType.isExpanded && navigationEntries?.isNotEmpty() == true) {
                     ExpandedContent(it, navigationEntries, currentRoute, onSelectNavigation, content)
                 } else {
                     content(it)

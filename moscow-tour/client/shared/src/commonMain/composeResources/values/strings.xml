@@ -19,6 +19,12 @@
     <string name="account_login">Логин</string>
     <string name="account_password">Пароль</string>
     <string name="account_reg_hint">У меня нет аккаунта</string>
+    <string name="account_delete">Удалить аккаунт</string>
+    <string name="account_delete_confirm">Подтверждение</string>
+    <string name="account_delete_confirm_long">Вы уверены, что хотите удалить аккаунт?</string>
+    <string name="yes">Да</string>
+    <string name="cancel">Отмена</string>
+    <string name="account_tickets">Билеты</string>
     <string name="empty_login">Логин не может быть пустым</string>
     <string name="empty_pass">Пароль не может быть пустым</string>
     <string name="saved_tours">Сохранённые</string>

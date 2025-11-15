@@ -112,39 +112,39 @@ object UrlRoutes {
 
         // "/settings"
         rule(
-            match = { it === Route.Settings },
+            match = { it === Route.Account },
             build = { Built("/${Seg.SETTINGS}") },
             parse = { segs, _ ->
-                if (segs.size == 1 && segs[0] == Seg.SETTINGS) Route.Settings else null
+                if (segs.size == 1 && segs[0] == Seg.SETTINGS) Route.Account else null
             }
         ),
 
         // "/settings/auth"
         rule(
-            match = { it is Route.Settings.Auth },
+            match = { it is Route.Account.Auth },
             build = { Built("/${Seg.SETTINGS}/${Seg.AUTH}") },
             parse = { segs, _ ->
                 if (segs.size == 2 && segs[0] == Seg.SETTINGS && segs[1] == Seg.AUTH) {
-                    Route.Settings.Auth()
+                    Route.Account.Auth()
                 } else null
             }
         ),
 
         // "/settings/register"
         rule(
-            match = { it === Route.Settings.Register },
+            match = { it === Route.Account.Register },
             build = { Built("/${Seg.SETTINGS}/${Seg.REGISTER}") },
             parse = { segs, _ ->
-                if (segs.size == 2 && segs[0] == Seg.SETTINGS && segs[1] == Seg.REGISTER) Route.Settings.Register else null
+                if (segs.size == 2 && segs[0] == Seg.SETTINGS && segs[1] == Seg.REGISTER) Route.Account.Register else null
             }
         ),
 
         // "/settings/editPassword"
         rule(
-            match = { it === Route.Settings.EditPassword },
+            match = { it === Route.Account.EditPassword },
             build = { Built("/${Seg.SETTINGS}/${Seg.EDIT_PASSWORD}") },
             parse = { segs, _ ->
-                if (segs.size == 2 && segs[0] == Seg.SETTINGS && segs[1] == Seg.EDIT_PASSWORD) Route.Settings.EditPassword else null
+                if (segs.size == 2 && segs[0] == Seg.SETTINGS && segs[1] == Seg.EDIT_PASSWORD) Route.Account.EditPassword else null
             }
         ),
     )

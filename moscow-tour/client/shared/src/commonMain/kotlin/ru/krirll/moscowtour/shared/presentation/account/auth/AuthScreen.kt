@@ -1,4 +1,4 @@
-package ru.krirll.moscowtour.shared.presentation.settings.auth
+package ru.krirll.moscowtour.shared.presentation.account.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

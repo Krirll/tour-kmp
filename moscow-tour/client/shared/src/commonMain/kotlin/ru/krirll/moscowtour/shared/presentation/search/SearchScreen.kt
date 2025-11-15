@@ -23,9 +23,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -66,8 +67,9 @@ import ru.krirll.moscowtour.shared.presentation.base.ExpressiveLazyColumn
 import ru.krirll.moscowtour.shared.presentation.imePaddingInternal
 import ru.krirll.moscowtour.shared.presentation.list.ErrorAndRetry
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SearchVideoContent(
+fun SearchTourContent(
     component: SearchScreenComponent,
     paddingValues: PaddingValues,
     focusRequester: FocusRequester,
@@ -82,7 +84,7 @@ fun SearchVideoContent(
         modifier = Modifier.focusGroup().focusRequester(focusRequester).fillMaxSize()
     ) {
         if (isLoading) {
-            LinearProgressIndicator(
+            LinearWavyProgressIndicator(
                 modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
                     .fillMaxWidth()
             )
