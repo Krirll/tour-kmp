@@ -34,7 +34,6 @@ class AccountComponent(
     fun delete() {
         scope.launch {
             logoutUseCase.logout(true)
-
         }
     }
 }

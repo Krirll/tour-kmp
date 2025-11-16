@@ -45,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.style.TextOverflow
@@ -282,8 +281,8 @@ fun ImageCarousel(
                         .size(if (selected) 12.dp else 8.dp)
                         .clip(CircleShape)
                         .background(
-                            if (selected) Color.White
-                            else Color.LightGray.copy(alpha = 0.5f)
+                            if (selected) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                         )
                         .clickable {
                             scope.launch {
