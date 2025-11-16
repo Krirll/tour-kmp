@@ -1,5 +1,8 @@
 package ru.krirll.moscowtour.shared.data
 
+import io.ktor.util.toJsArray
+import org.khronos.webgl.Int8Array
+
 @JsFun("""
     function saveFileFromBytes(bytes, fileName) {
         var uint8Array = Uint8Array.from(bytes);
@@ -17,8 +20,8 @@ package ru.krirll.moscowtour.shared.data
         URL.revokeObjectURL(url);
     }
 """)
-private external fun saveFileFromBytes(bytes: ByteArray, fileName: String)
+private external fun saveFileFromBytes(bytes: Int8Array, fileName: String)
 
 actual suspend fun saveFileFromResponse(byteArray: ByteArray, fileName: String) {
-    saveFileFromBytes(byteArray, fileName)
+    saveFileFromBytes(byteArray.toJsArray(), fileName)
 }

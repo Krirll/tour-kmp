@@ -26,6 +26,7 @@ class AccountComponent(
     val tokenInfo = logoutUseCase.token
 
     fun logout() {
+        //todo сделать статус с загрузкой (как на главном экране)
         scope.launch(dispatcherProvider.main) {
             logoutUseCase.logout()
         }
@@ -33,6 +34,7 @@ class AccountComponent(
 
     fun delete() {
         scope.launch {
+            //todo сделать статус с загрузкой (как на главном экране)
             logoutUseCase.logout(true)
         }
     }

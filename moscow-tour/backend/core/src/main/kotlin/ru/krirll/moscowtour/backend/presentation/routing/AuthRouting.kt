@@ -34,10 +34,6 @@ fun Routing.setupAuthMethods(
         repo.revoke(call.receive())
         call.respond(HttpStatusCode.OK)
     }
-    delete(AuthTokenRepository.DELETE_PATH) {
-        repo.delete(call.receive())
-        call.respond(HttpStatusCode.OK)
-    }
     authenticate(AUTH_JWT_NAME) {
 
         get("/chech") { call.respond(HttpStatusCode.OK) }
@@ -46,6 +42,12 @@ fun Routing.setupAuthMethods(
         post(AuthTokenRepository.CHANGE_PASS_PATH) {
             authEntryPoint.authTokenRepositoryFactory.create(call.obtainAccountId())
                 .changePassword(call.receive())
+            call.respond(HttpStatusCode.OK)
+        }
+
+        delete(AuthTokenRepository.DELETE_PATH) {
+            authEntryPoint.authTokenRepositoryFactory.create(call.obtainAccountId())
+                .delete(call.receive())
             call.respond(HttpStatusCode.OK)
         }
         setupSearch(routingEntryPoint.searchFactory)

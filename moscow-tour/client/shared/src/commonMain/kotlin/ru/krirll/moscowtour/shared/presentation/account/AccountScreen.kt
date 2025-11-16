@@ -48,7 +48,7 @@ fun AccountContent(comp: AccountComponent, paddingValues: PaddingValues) {
                     text = stringResource(Res.string.yes),
                     modifier = Modifier.padding(8.dp).clickable {
                         showDeleteDialog = false
-                        comp.delete() //todo проверить что воркает
+                        comp.delete()
                     }
                 )
             },
