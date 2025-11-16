@@ -15,10 +15,7 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     data object Saved : Route()
 
     @Serializable
-    data class Loading(
-        //todo придумать какое то ограничение, чтоб не перегружать сервак
-        val next: Collection<Route> = listOf(default)
-    ) : Route()
+    data class Loading(val next: Collection<Route> = listOf(default)) : Route()
 
     @Serializable
     data class Overview(val id: Long) : Route()
@@ -27,10 +24,7 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     data object Account : Route() {
 
         @Serializable
-        data class Auth(
-            //todo придумать какое то ограничение, чтоб не перегружать сервак
-            val next: Collection<Route> = listOf(default)
-        ) : Route()
+        data class Auth(val next: Collection<Route> = listOf(default)) : Route()
 
         @Serializable
         data object Register : Route()

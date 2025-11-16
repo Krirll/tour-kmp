@@ -11,12 +11,13 @@ import ru.krirll.domain.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.AuthTokenRepository
 import ru.krirll.moscowtour.shared.domain.ChangePasswordRequest
 import ru.krirll.moscowtour.shared.domain.model.LoginException
+import ru.krirll.moscowtour.shared.domain.model.PasswordsNotEqualsException
 import ru.krirll.moscowtour.shared.presentation.RootComponent
+import ru.krirll.moscowtour.shared.presentation.account.auth.AuthState
 import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
-import ru.krirll.moscowtour.shared.presentation.account.auth.AuthState
 
 class EditPasswordComponent(
     private val context: ComponentContext,
@@ -41,7 +42,7 @@ class EditPasswordComponent(
         scope.launch(errorHandler) {
             _state.emit(AuthState.Loading)
             if (new != repeatNew) {
-                throw IllegalStateException("Пароли не совпадают")
+                throw PasswordsNotEqualsException()
             }
             authTokenRepository.changePassword(
                 ChangePasswordRequest(old, new)

@@ -83,7 +83,7 @@ fun BaseLogin(
     buttonAction: (@Composable () -> Unit)? = null
 ) {
     val state by stateFlow.collectAsState(AuthState.Idle)
-    var errorInfo by remember { mutableStateOf<Exception?>(null) }
+    var errorInfo by remember { mutableStateOf<Throwable?>(null) }
     LaunchedEffect(state) {
         when (val s = state) {
             is AuthState.Error -> { errorInfo = s.e }
@@ -152,7 +152,7 @@ fun BaseLogin(
 }
 
 @Composable
-private fun Exception.toMessage(): String {
+private fun Throwable.toMessage(): String {
     return when (this) {
         is EmptyLoginException -> stringResource(Res.string.empty_login)
         is EmptyPasswordException -> stringResource(Res.string.empty_pass)

@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,18 +65,27 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                         if (s is AuthState.Succeed) {
                             val message = stringResource(Res.string.password_changed)
                             scope.launch {
-                                snackbarState.showSnackbar(message)
+                                snackbarState.showSnackbar(
+                                    message,
+                                    duration = SnackbarDuration.Short
+                                )
+                                component.onBack()
                                 component.resetState()
                             }
                         } else if (s is AuthState.Error) {
                             AlertDialog(
                                 onDismissRequest = { component.resetState() },
                                 title = { Text(stringResource(Res.string.error_title)) },
-                                text = { Text(s.e.message ?: stringResource(Res.string.unknown_error)) },
+                                text = {
+                                    Text(
+                                        s.e.message ?: stringResource(Res.string.unknown_error)
+                                    )
+                                },
                                 confirmButton = {
                                     Text(
                                         text = stringResource(Res.string.okay),
-                                        modifier = Modifier.padding(8.dp).clickable { component.resetState() }
+                                        modifier = Modifier.padding(8.dp)
+                                            .clickable { component.resetState() }
                                     )
                                 }
                             )
@@ -85,7 +95,8 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                                 PasswordTextField(
                                     old,
                                     onValueChange = { old = it },
-                                    labelRes = Res.string.old_password
+                                    labelRes = Res.string.old_password,
+                                    enabled = state == AuthState.Idle
                                 )
                             }
                             item {
@@ -93,7 +104,8 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                                     new,
                                     onValueChange = { new = it },
                                     labelRes = Res.string.new_password,
-                                    onDone = onDone
+                                    onDone = onDone,
+                                    enabled = state == AuthState.Idle
                                 )
                             }
                             item {
@@ -101,13 +113,15 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                                     repeat,
                                     onValueChange = { repeat = it },
                                     labelRes = Res.string.new_password_repeat,
-                                    onDone = onDone
+                                    onDone = onDone,
+                                    enabled = state == AuthState.Idle
                                 )
                             }
                             item {
                                 Button(
                                     onClick = { onDone() },
-                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                                    enabled = state == AuthState.Idle
                                 ) {
                                     Text(stringResource(Res.string.edit_password))
                                 }

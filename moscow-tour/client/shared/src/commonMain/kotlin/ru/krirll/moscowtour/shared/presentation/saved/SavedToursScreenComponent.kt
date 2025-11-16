@@ -22,7 +22,7 @@ import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 import kotlin.collections.map
 
-class SavedMovieScreenComponent(
+class SavedToursScreenComponent(
     private val context: ComponentContext,
     private val dispatcherProvider: DispatcherProvider,
     private val repo: SavedToursRepository,
@@ -73,8 +73,8 @@ class SavedMovieScreenComponent(
     }
 }
 
-@Factory(binds = [SavedMovieFactory::class])
-class SavedMovieFactory(
+@Factory(binds = [SavedToursFactory::class])
+class SavedToursFactory(
     private val repo: SavedToursRepository,
     private val dispatcherProvider: DispatcherProvider,
 ) : ComponentFactory<Child.SavedToursChild, Route.Saved> {
@@ -84,7 +84,7 @@ class SavedMovieFactory(
         child: ComponentContext,
         root: RootComponent
     ): Child.SavedToursChild {
-        val comp = SavedMovieScreenComponent(
+        val comp = SavedToursScreenComponent(
             child,
             dispatcherProvider,
             repo,

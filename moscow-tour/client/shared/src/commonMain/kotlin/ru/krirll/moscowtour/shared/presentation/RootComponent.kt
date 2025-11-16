@@ -18,7 +18,7 @@ import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 import ru.krirll.moscowtour.shared.presentation.overview.OverviewFactory
-import ru.krirll.moscowtour.shared.presentation.saved.SavedMovieFactory
+import ru.krirll.moscowtour.shared.presentation.saved.SavedToursFactory
 import ru.krirll.moscowtour.shared.presentation.search.SearchScreenFactory
 import ru.krirll.moscowtour.shared.presentation.account.AccountComponentFactory
 import ru.krirll.moscowtour.shared.presentation.account.auth.AuthComponentFactory
@@ -99,7 +99,7 @@ fun <T : Child, R : Route> Route.provideFactory(koin: Koin): ComponentFactory<T,
         is Route.Account.Register -> koin.get<RegisterComponentFactory>()
         is Route.Account.Tickets -> TODO()
         is Route.Account.EditPassword -> koin.get<EditPasswordComponentFactory>()
-        is Route.Saved -> koin.get<SavedMovieFactory>()
+        is Route.Saved -> koin.get<SavedToursFactory>()
         is Route.Loading -> koin.get<LoadingComponentFactory>()
     }
     @Suppress("UNCHECKED_CAST") return factory as ComponentFactory<T, R>

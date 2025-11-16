@@ -15,6 +15,7 @@ import org.jetbrains.compose.resources.getString
 import ru.krirll.domain.Log
 import ru.krirll.http.domain.HttpException
 import ru.krirll.moscowtour.shared.di.koin
+import ru.krirll.moscowtour.shared.domain.model.LoginException
 
 data class ListSnapshot<T>(
     val items: MutableStateFlow<List<T>?> = MutableStateFlow(null),
@@ -31,6 +32,10 @@ fun LifecycleOwner.createErrorHandler(
             when (throwable) {
                 is HttpException -> {
                     errorCallback(throwable.message ?: throwable.httpCode.toString())
+                }
+
+                is LoginException -> {
+                    errorCallback(throwable.message ?: getString(Res.string.unknown_error))
                 }
 
                 else -> {

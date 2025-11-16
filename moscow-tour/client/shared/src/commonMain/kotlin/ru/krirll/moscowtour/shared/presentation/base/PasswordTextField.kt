@@ -54,7 +54,10 @@ fun PasswordTextField(
             } else {
                 Res.drawable.visibility_off
             }
-            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+            IconButton(
+                onClick = { passwordVisible = !passwordVisible },
+                enabled = enabled
+            ) {
                 Icon(imageVector = vectorResource(image), contentDescription = null)
             }
         }
