@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
@@ -141,8 +142,10 @@ private fun <T : Route> ExpandedContent(
                     icon = {
                         Icon(entry.painter, contentDescription = entry.title)
                     },
-                    label = { Text(entry.title) }
+                    label = { Text(entry.title) },
+
                 )
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
         Spacer(Modifier.width(4.dp))

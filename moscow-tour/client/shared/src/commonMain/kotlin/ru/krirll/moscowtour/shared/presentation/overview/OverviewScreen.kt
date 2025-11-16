@@ -242,54 +242,56 @@ fun ImageCarousel(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(240.dp)
-                .clip(RoundedCornerShape(12.dp))
-        ) { page ->
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = rememberImagePainter(
-                        url = images[page],
-                        errorPainter = { painterResource(Res.drawable.broken_image) }
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8))
-                        .fillMaxHeight(),
-                    contentScale = ContentScale.Fit
-                )
-            }
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            repeat(images.size) { index ->
-                val selected = pagerState.currentPage == index
+        if (images.isNotEmpty()) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            ) { page ->
                 Box(
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .size(if (selected) 12.dp else 8.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (selected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                        )
-                        .clickable {
-                            scope.launch {
-                                pagerState.animateScrollToPage(index)
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = rememberImagePainter(
+                            url = images[page],
+                            errorPainter = { painterResource(Res.drawable.broken_image) }
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8))
+                            .fillMaxHeight(),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                repeat(images.size) { index ->
+                    val selected = pagerState.currentPage == index
+                    Box(
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .size(if (selected) 12.dp else 8.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (selected) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                            )
+                            .clickable {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
                             }
-                        }
-                )
+                    )
+                }
             }
         }
     }

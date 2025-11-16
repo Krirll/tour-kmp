@@ -49,6 +49,7 @@ private fun NavInternal(rootComponent: RootComponent) {
             is Child.RegisterChild -> RegisterScreen(child.component)
             is Child.EditPasswordChild -> EditPasswordScreen(child.component)
             is Child.LoadingChild -> LoadingScreen(child.component)
+
             is Child.ToursChild,
             is Child.SearchChild,
             is Child.AccountChild,

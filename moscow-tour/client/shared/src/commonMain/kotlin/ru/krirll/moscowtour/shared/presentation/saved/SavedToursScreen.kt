@@ -9,7 +9,7 @@ import moscowtour.moscow_tour.client.shared.generated.resources.saved_tours_not_
 import ru.krirll.moscowtour.shared.presentation.list.TourScreenContent
 
 @Composable
-fun SavedMovieContent(comp: SavedToursScreenComponent, paddingValues: PaddingValues) {
+fun SavedToursContent(comp: SavedToursScreenComponent, paddingValues: PaddingValues) {
     val error by comp.errorMsg.collectAsState(null)
     val items by comp.all.collectAsState(null)
     TourScreenContent(

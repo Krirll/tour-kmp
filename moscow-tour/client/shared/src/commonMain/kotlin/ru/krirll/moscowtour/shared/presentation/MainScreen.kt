@@ -18,7 +18,7 @@ import ru.krirll.moscowtour.shared.presentation.account.AccountContent
 import ru.krirll.moscowtour.shared.presentation.list.TourContent
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.Route
-import ru.krirll.moscowtour.shared.presentation.saved.SavedMovieContent
+import ru.krirll.moscowtour.shared.presentation.saved.SavedToursContent
 import ru.krirll.moscowtour.shared.presentation.search.SearchAppBar
 import ru.krirll.moscowtour.shared.presentation.search.SearchTourContent
 import ru.krirll.ui.BaseScreen
@@ -119,7 +119,7 @@ fun MainScreenInternal(route: Route, child: Child, rootComponent: RootComponent)
         when (child) {
             is Child.ToursChild -> TourContent(child.component, padding)
             is Child.AccountChild -> AccountContent(child.component, padding)
-            is Child.SavedToursChild -> SavedMovieContent(child.component, padding)
+            is Child.SavedToursChild -> SavedToursContent(child.component, padding)
             else -> {}
         }
     }

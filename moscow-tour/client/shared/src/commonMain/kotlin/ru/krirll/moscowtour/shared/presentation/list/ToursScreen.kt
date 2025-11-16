@@ -1,21 +1,24 @@
 package ru.krirll.moscowtour.shared.presentation.list
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,28 +27,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focus.onFocusEvent
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
+import moscowtour.moscow_tour.client.shared.generated.resources.broken_image
 import moscowtour.moscow_tour.client.shared.generated.resources.main
 import moscowtour.moscow_tour.client.shared.generated.resources.not_found
 import moscowtour.moscow_tour.client.shared.generated.resources.retry
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
@@ -132,23 +128,21 @@ fun TourInfo(
     items: List<Tour>,
     paddingValues: PaddingValues,
     emptyResource: StringResource,
-    load: Boolean = true,
-    onClick: (item: Tour) -> Unit
+    onClick: (Tour) -> Unit
 ) {
     if (items.isNotEmpty()) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 125.dp),
+            columns = GridCells.Adaptive(minSize = 320.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .focusGroup()
         ) {
             items(items) { item ->
-                Poster(
-                    imageUrl = item.imagesUrls?.firstOrNull() ?: "", //todo дефолтную картинку надо
-                    label = item.title,
-                    load = load,
-                    onClick = { onClick(item) },
+                TourItem(
+                    tour = item,
+                    onClick = onClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
             }
         }
@@ -157,62 +151,77 @@ fun TourInfo(
     }
 }
 
+
 @Composable
-fun Poster(
-    imageUrl: String,
-    label: String,
-    load: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+fun TourItem(
+    tour: Tour,
+    modifier: Modifier = Modifier,
+    onClick: (Tour) -> Unit
 ) {
-    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
-
-    var focusState by remember { mutableStateOf<FocusState?>(null) }
-    val isFocused = focusState?.isFocused == true
-
-    val gradient = Brush.verticalGradient(
-        colors = listOf(Color.Transparent, Color.Black),
-        startY = sizeImage.height.toFloat() / 3,
-        endY = sizeImage.height.toFloat()
-    )
-    Box(
+    Card(
         modifier = modifier
-            .aspectRatio(0.8f)
-            .onFocusEvent { focusState = it }
-            .border(
-                width = if (isFocused) 6.dp else 0.dp,
-                color = if (isFocused) {
-                    MaterialTheme.colorScheme.secondaryContainer
-                } else {
-                    Color.Transparent
-                }
-            )
-            .clickable(onClick = onClick)
+            .padding(4.dp)
+            .fillMaxWidth()
+            .clickable(onClick = { onClick(tour) }),
+        shape = RoundedCornerShape(16.dp)
     ) {
-        //todo если картинки нет то показывать drawable.broken_image
-        val painter = if (load) rememberImagePainter(imageUrl) else ColorPainter(Color.Red)
-        Image(
-            painter = painter,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+        Row(
             modifier = Modifier
-                .onGloballyPositioned {
-                    sizeImage = it.size
-                }.matchParentSize()
-        )
-        Box(modifier = Modifier.matchParentSize().background(gradient))
+                .padding(4.dp)
+        ) {
+            val painter = rememberImagePainter(
+                tour.imagesUrls.firstOrNull() ?: "",
+                errorPainter = { painterResource(Res.drawable.broken_image) }
+            )
 
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall.copy(color = Color.White),
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(8.dp)
-        )
+            Image(
+                painter = painter,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(160.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+
+            Spacer(Modifier.width(12.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = tour.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = tour.city,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                Text(
+                    text = tour.country,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                Text(
+                    text = "${tour.price} ₽",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+        }
     }
 }
+
 
 @Composable
 fun ErrorAndRetry(errorMsg: String, retry: () -> Unit) {
