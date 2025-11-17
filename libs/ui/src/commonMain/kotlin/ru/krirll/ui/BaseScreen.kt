@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import ru.krirll.ui.nav.Route
+import ru.krirll.ui.theme.ComponentDefaults
 import ru.krirll.ui.theme.getColorScheme
 
 @Immutable
@@ -107,8 +108,12 @@ private fun <T : Route> BottomBar(
     currentRoute: T?,
     onSelectNavigation: ((T) -> Unit)?
 ) {
+    val blurState = LocalBlurState.current
     navigationEntries?.let {
-        NavigationBar {
+        NavigationBar(
+            containerColor = ComponentDefaults.navBarContentColor(),
+            modifier = Modifier.applyBlurEffect(blurState)
+        ) {
             it.forEach { entry ->
                 NavigationBarItem(
                     currentRoute == entry.route,

@@ -1,11 +1,5 @@
 package ru.krirll.moscowtour.shared.presentation.search
 
-import moscowtour.moscow_tour.client.shared.generated.resources.Res
-import moscowtour.moscow_tour.client.shared.generated.resources.back
-import moscowtour.moscow_tour.client.shared.generated.resources.clear
-import moscowtour.moscow_tour.client.shared.generated.resources.clear_text
-import moscowtour.moscow_tour.client.shared.generated.resources.search
-import moscowtour.moscow_tour.client.shared.generated.resources.search_empty_now
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -22,6 +16,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AppBarWithSearch
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -30,9 +25,9 @@ import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -57,15 +52,24 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import moscowtour.moscow_tour.client.shared.generated.resources.Res
+import moscowtour.moscow_tour.client.shared.generated.resources.back
+import moscowtour.moscow_tour.client.shared.generated.resources.clear
+import moscowtour.moscow_tour.client.shared.generated.resources.clear_text
+import moscowtour.moscow_tour.client.shared.generated.resources.search
+import moscowtour.moscow_tour.client.shared.generated.resources.search_empty_now
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import ru.krirll.ui.collectAsStateWithLifecycle
 import ru.krirll.moscowtour.shared.presentation.base.ExpressiveLazyColumn
 import ru.krirll.moscowtour.shared.presentation.imePaddingInternal
 import ru.krirll.moscowtour.shared.presentation.list.ErrorAndRetry
+import ru.krirll.ui.LocalBlurState
+import ru.krirll.ui.applyBlurEffect
+import ru.krirll.ui.applyBlurSource
+import ru.krirll.ui.collectAsStateWithLifecycle
+import ru.krirll.ui.theme.ComponentDefaults
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -127,13 +131,19 @@ fun OldSearchInfo(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val nestedScrollConnection = remember { HideKeyboardConnection { keyboardController } }
+    val blur = LocalBlurState.current
     ExpressiveLazyColumn(
-        modifier = Modifier.nestedScroll(nestedScrollConnection).padding(contentPaddingValues)
-            .imePaddingInternal(), contentPadding = PaddingValues(0.dp), items = info.map {
+        modifier = Modifier.applyBlurSource(blur)
+            .nestedScroll(nestedScrollConnection)
+            .padding(contentPaddingValues)
+            .imePaddingInternal(),
+        contentPadding = PaddingValues(0.dp),
+        items = info.map {
             {
                 OldSearchInfo(it, onDeleteRequested, onClick)
             }
-        })
+        }
+    )
 }
 
 private class HideKeyboardConnection(
@@ -173,7 +183,6 @@ expect fun Modifier.requestFocusOnDownEvent(focusRequester: FocusRequester): Mod
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SearchAppBar(
-    scrollBehavior: TopAppBarScrollBehavior? = null,
     textFieldValue: TextFieldValue,
     focusRequester: FocusRequester,
     onDone: () -> Unit,
@@ -187,51 +196,53 @@ fun SearchAppBar(
             inputFocusRequester.freeFocus()
         }
     }
-    Box {
-        TopAppBar(
-            title = {
-                TextField(
-                    value = textFieldValue,
-                    onValueChange = {
-                        onValueChange(it)
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { onDone() }),
-                    modifier = Modifier.fillMaxWidth()
-                        .focusRequester(inputFocusRequester)
-                        .onFocusChanged {
-                            if (it.isFocused) {
-                                keyboardController?.show()
-                            }
-                        }.requestFocusOnDownEvent(focusRequester),
-                    trailingIcon = {
-                        if (textFieldValue.text.isNotEmpty()) {
-                            IconButton(onClick = {
-                                onValueChange(TextFieldValue(""))
-                            }) {
-                                Icon(painterResource(Res.drawable.clear_text), null)
-                            }
+    val blur = LocalBlurState.current
+    AppBarWithSearch(
+        modifier = Modifier.applyBlurEffect(blur),
+        state = rememberSearchBarState(),
+        colors = ComponentDefaults.appBarWithSearchDefaults(),
+        inputField = {
+            TextField(
+                value = textFieldValue,
+                onValueChange = { onValueChange(it) },
+                colors = getTextFieldsColors(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { onDone() }),
+                modifier = Modifier.fillMaxWidth()
+                    .focusRequester(inputFocusRequester)
+                    .onFocusChanged {
+                        if (it.isFocused) keyboardController?.show()
+                    }.requestFocusOnDownEvent(focusRequester),
+                trailingIcon = {
+                    if (textFieldValue.text.isNotEmpty()) {
+                        IconButton(onClick = {
+                            onValueChange(TextFieldValue(""))
+                        }) {
+                            Icon(painterResource(Res.drawable.clear_text), null)
                         }
-                    },
-                    singleLine = true,
-                    label = { Text(stringResource(Res.string.search)) }
-                )
-            }, scrollBehavior = scrollBehavior
-        )
-        LaunchedEffect("focus") {
-            delay(500)
-            inputFocusRequester.requestFocus()
+                    }
+                },
+                singleLine = true,
+                label = { Text(stringResource(Res.string.search)) }
+            )
         }
+    )
+    LaunchedEffect("focus") {
+        delay(500)
+        inputFocusRequester.requestFocus()
     }
+}
 
+@Composable
+private fun getTextFieldsColors(): TextFieldColors {
+    return TextFieldDefaults.colors(
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        disabledContainerColor = Color.Transparent,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent,
+    )
 }
 
 @Composable
@@ -243,25 +254,34 @@ private fun keyboardAsState(): State<Boolean> {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarWithSearch(
-    scrollBehavior: TopAppBarScrollBehavior? = null,
     title: String,
     isDefault: Boolean = false,
     actions: @Composable RowScope.() -> Unit = {},
     onBack: (() -> Unit)
 ) {
-    TopAppBar(actions = {
-        actions(this)
-    }, title = {
-        Text(
-            text = title,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.clickable(!isDefault) { onBack() })
-    }, navigationIcon = {
-        if (!isDefault) {
-            IconButton(onClick = { onBack() }) {
-                Icon(painterResource(Res.drawable.back), null)
-            }
+    val blur = LocalBlurState.current
+    AppBarWithSearch(
+        modifier = Modifier.applyBlurEffect(blur),
+        state = rememberSearchBarState(),
+        colors = ComponentDefaults.appBarWithSearchDefaults(),
+        actions = { actions(this) },
+        navigationIcon = {},
+        inputField = {
+            TextField(
+                value = title,
+                onValueChange = {},
+                maxLines = 1,
+                readOnly = true,
+                leadingIcon = {
+                    if (!isDefault) {
+                        IconButton(onClick = { onBack() }) {
+                            Icon(painterResource(Res.drawable.back), null)
+                        }
+                    }
+                },
+                colors = getTextFieldsColors(),
+                modifier = Modifier.fillMaxWidth().clickable(!isDefault) { onBack() }
+            )
         }
-    }, scrollBehavior = scrollBehavior)
+    )
 }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -24,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,6 +50,9 @@ import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.search.AppBarWithSearch
 import ru.krirll.moscowtour.shared.presentation.state.rememberTopAppBarStateByHolder
+import ru.krirll.ui.LocalBlurState
+import ru.krirll.ui.applyBlurSource
+import ru.krirll.ui.rememberBlurState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,30 +61,32 @@ fun ToursScreen(component: ToursScreenComponent) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(appBarState)
     val error by component.errorCode.collectAsState(null)
     val items by component.items.collectAsState()
-    BaseScreen(
-        content = { paddingValues ->
-            TourScreenContent(
-                paddingValues,
-                error,
-                items,
-                onRefresh = { component.load() },
-                onShowOverview = { component.showOverview(it) },
-                emptyResource = Res.string.not_found,
-                onLoad = { component.load() }
-            )
-        },
-        appBar = {
-            val appName = stringResource(Res.string.main)
-            val title = component.search ?: appName
-            AppBarWithSearch(
-                scrollBehavior,
-                title,
-                isDefault = title == appName,
-                onBack = { component.doBack() }
-            )
-        },
-        scrollBehavior = scrollBehavior
-    )
+    val blurState = rememberBlurState()
+    CompositionLocalProvider(LocalBlurState provides blurState) {
+        BaseScreen(
+            content = { paddingValues ->
+                TourScreenContent(
+                    paddingValues,
+                    error,
+                    items,
+                    onRefresh = { component.load() },
+                    onShowOverview = { component.showOverview(it) },
+                    emptyResource = Res.string.not_found,
+                    onLoad = { component.load() }
+                )
+            },
+            appBar = {
+                val appName = stringResource(Res.string.main)
+                val title = component.search ?: appName
+                AppBarWithSearch(
+                    title,
+                    isDefault = title == appName,
+                    onBack = { component.doBack() }
+                )
+            },
+            scrollBehavior = scrollBehavior
+        )
+    }
 }
 
 @Composable
@@ -130,12 +137,16 @@ fun TourInfo(
     emptyResource: StringResource,
     onClick: (Tour) -> Unit
 ) {
+    val blur = LocalBlurState.current
     if (items.isNotEmpty()) {
+        val gridState = rememberLazyGridState()
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 320.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .applyBlurSource(blur),
+            contentPadding = paddingValues,
+            state = gridState
         ) {
             items(items) { item ->
                 TourItem(

@@ -33,6 +33,8 @@ import ru.krirll.moscowtour.shared.presentation.applyColumnPadding
 import ru.krirll.moscowtour.shared.presentation.asColumnPadding
 import ru.krirll.moscowtour.shared.presentation.base.ExpressiveLazyColumn
 import ru.krirll.moscowtour.shared.presentation.base.TextPreference
+import ru.krirll.ui.LocalBlurState
+import ru.krirll.ui.applyBlurSource
 
 @Composable
 fun AccountContent(comp: AccountComponent, paddingValues: PaddingValues) {
@@ -60,10 +62,11 @@ fun AccountContent(comp: AccountComponent, paddingValues: PaddingValues) {
             }
         )
     }
+    val blur = LocalBlurState.current
     Column(modifier = Modifier.applyColumnPadding(paddingValues).fillMaxSize()) {
         val needAuth = tokenInfo == null
         ExpressiveLazyColumn(
-            Modifier.padding(top = 8.dp),
+            Modifier.padding(top = 8.dp).applyBlurSource(blur),
             contentPadding = paddingValues.asColumnPadding(),
             mutableListOf<@Composable () -> Unit>().apply {
                 if (!needAuth) {

@@ -38,7 +38,6 @@ fun AppBarWithSearchWithBackPreview() {
 @Composable
 fun InternalAppBarPreview() {
     SearchAppBar(
-        null,
         TextFieldValue(""),
         FocusRequester(),
         {},

@@ -6,4 +6,15 @@ plugins {
     alias(libs.plugins.convention.compose)
 }
 
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.haze)
+                implementation(libs.haze.materials)
+            }
+        }
+    }
+}
+
 android { namespace = "ru.krirll.ui" }

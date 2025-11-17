@@ -5,6 +5,8 @@ appcompat = "1.7.1"
 coil-compose = "3.3.0"
 compose-gradle-plugin = "1.10.0-alpha02"
 desugar_jdk_libs = "2.1.5"
+haze = "1.7.0"
+hazeMaterials = "1.7.0"
 java-jwt = "4.5.0"
 kotlin-version = "2.2.0"
 agp = "8.12.3"
@@ -63,6 +65,8 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil-compose" }
 com-android-application-gradle-plugin = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "agp" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "hazeMaterials" }
 java-jwt = { module = "com.auth0:java-jwt", version.ref = "java-jwt" }
 jdbc-driver = { module = "app.cash.sqldelight:jdbc-driver", version.ref = "sqlite-driver" }
 koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }

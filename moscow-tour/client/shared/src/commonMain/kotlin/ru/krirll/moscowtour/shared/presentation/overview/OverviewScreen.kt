@@ -34,6 +34,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -71,6 +72,11 @@ import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.clipboardUrl
 import ru.krirll.moscowtour.shared.presentation.getClipboardText
 import ru.krirll.moscowtour.shared.presentation.list.ErrorAndRetry
+import ru.krirll.ui.LocalBlurState
+import ru.krirll.ui.applyBlurEffect
+import ru.krirll.ui.applyBlurSource
+import ru.krirll.ui.rememberBlurState
+import ru.krirll.ui.theme.ComponentDefaults
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,36 +85,33 @@ fun OverviewScreen(component: OverviewComponent) {
     val errorState by component.errorCode.collectAsState(initial = null)
     val details by component.details.collectAsState()
     val snackbarState = remember { SnackbarHostState() }
+    val blurState = rememberBlurState()
+    CompositionLocalProvider(LocalBlurState provides blurState) {
+        BaseScreen(
+            appBar = { OverviewAppBar(details, snackbarState, component, scrollBehavior) },
+            scrollBehavior = scrollBehavior,
+            snackbarState = snackbarState,
+            content = {
+                when {
+                    errorState != null -> ErrorAndRetry(
+                        errorMsg = errorState!!
+                    ) { component.loadIfNeeded() }
 
-    val scope = rememberCoroutineScope()
-
-    BaseScreen(
-        appBar = { OverviewAppBar(details, snackbarState, component, scrollBehavior) },
-        scrollBehavior = scrollBehavior,
-        snackbarState = snackbarState,
-        content = {
-            when {
-                errorState != null -> ErrorAndRetry(
-                    errorMsg = errorState!!
-                ) { component.loadIfNeeded() }
-
-                details != null -> DetailsInfo(
-                    details = details!!,
-                    paddingValues = it,
-                    onBuyClicked = {
-                        details?.let { d ->
-                            scope.launch {
-                                //todo переделать на покупку билета
-                                //component.movieUrl?.let { component.videoLauncher.launch(it) }
+                    details != null -> DetailsInfo(
+                        details = details!!,
+                        paddingValues = it,
+                        onBuyClicked = {
+                            details?.let { d ->
+                                component.buy(d)
                             }
                         }
-                    }
-                )
+                    )
 
-                else -> Loading()
+                    else -> Loading()
+                }
             }
-        }
-    )
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,7 +123,7 @@ private fun OverviewAppBar(
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     val isSaved by component.isSaved.collectAsState(null)
-
+    val blur = LocalBlurState.current
     TopAppBar(
         title = {
             details?.title?.let {
@@ -136,6 +139,7 @@ private fun OverviewAppBar(
                 Icon(painterResource(Res.drawable.back), contentDescription = null)
             }
         },
+        colors = ComponentDefaults.topAppBarColors(),
         actions = {
             details?.let {
                 if (component.shareManager.canShare()) {
@@ -155,11 +159,14 @@ private fun OverviewAppBar(
                         }
                     }
                 }
-                //todo генерировать ссылку чтоб можно было поделиться
-                AdditionalAppBarMenu(snackbarHostState, "component.movieUrl" as String?)
+                AdditionalAppBarMenu(
+                    snackbarHostState,
+                    "https://tour.krirll.ru/overview/${it.id}"
+                )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
+        modifier = Modifier.applyBlurEffect(blur)
     )
 }
 
@@ -194,10 +201,12 @@ fun DetailsInfo(
     onBuyClicked: () -> Unit
 ) {
     val showDetails = rememberSaveable { mutableStateOf(false) }
+    val blur = LocalBlurState.current
     LazyColumn(
-        modifier = Modifier.applyColumnPadding(paddingValues),
+        modifier = Modifier.applyBlurSource(blur).applyColumnPadding(paddingValues),
         contentPadding = paddingValues.asColumnPadding()
     ) {
+        item { Spacer(modifier = Modifier.height(8.dp)) }
         item { ImageCarousel(details.imagesUrls) }
         item { OverviewDescription(details, showDetails) }
         item {

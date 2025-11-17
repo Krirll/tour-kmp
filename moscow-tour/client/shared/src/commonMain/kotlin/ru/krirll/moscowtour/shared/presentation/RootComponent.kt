@@ -24,6 +24,8 @@ import ru.krirll.moscowtour.shared.presentation.account.AccountComponentFactory
 import ru.krirll.moscowtour.shared.presentation.account.auth.AuthComponentFactory
 import ru.krirll.moscowtour.shared.presentation.account.pass.EditPasswordComponentFactory
 import ru.krirll.moscowtour.shared.presentation.account.register.RegisterComponentFactory
+import ru.krirll.moscowtour.shared.presentation.account.tickets.TicketsFactory
+import ru.krirll.moscowtour.shared.presentation.overview.buy.BuyFactory
 import ru.krirll.ui.nav.BaseRootComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -94,10 +96,11 @@ fun <T : Child, R : Route> Route.provideFactory(koin: Koin): ComponentFactory<T,
         is Route.Tours -> koin.get<ToursChildFactory>()
         is Route.SearchTours -> koin.get<SearchScreenFactory>()
         is Route.Overview -> koin.get<OverviewFactory>()
+        is Route.Overview.BuyTicket -> koin.get<BuyFactory>()
         is Route.Account -> koin.get<AccountComponentFactory>()
         is Route.Account.Auth -> koin.get<AuthComponentFactory>()
         is Route.Account.Register -> koin.get<RegisterComponentFactory>()
-        is Route.Account.Tickets -> TODO()
+        is Route.Account.Tickets -> koin.get<TicketsFactory>()
         is Route.Account.EditPassword -> koin.get<EditPasswordComponentFactory>()
         is Route.Saved -> koin.get<SavedToursFactory>()
         is Route.Loading -> koin.get<LoadingComponentFactory>()

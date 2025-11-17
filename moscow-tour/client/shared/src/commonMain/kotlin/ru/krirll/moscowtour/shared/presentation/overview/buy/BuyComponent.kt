@@ -1,4 +1,4 @@
-package ru.krirll.moscowtour.shared.presentation.account.tickets
+package ru.krirll.moscowtour.shared.presentation.overview.buy
 
 import com.arkivanov.decompose.ComponentContext
 import org.koin.core.annotation.Factory
@@ -11,19 +11,19 @@ import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 
-class TicketsComponent(
+class BuyComponent(
     private val context: ComponentContext,
 ) : ComponentContext by context {
 
 }
 
-@Factory(binds = [TicketsFactory::class])
-class TicketsFactory(
+@Factory(binds = [BuyFactory::class])
+class BuyFactory(
     private val savedToursRepository: SavedToursRepository,
     private val toursApi: ToursApi,
     private val shareManager: ShareManager,
     private val dispatcherProvider: DispatcherProvider
-) : ComponentFactory<Child.TicketsChild, Route.Account.Tickets> {
+) : ComponentFactory<Child.BuyChild, Route.Overview.BuyTicket> {
 
 /*    override fun create(
         route: Route.Overview,
@@ -43,10 +43,10 @@ class TicketsFactory(
     }*/
 
     override fun create(
-        route: Route.Account.Tickets,
+        route: Route.Overview.BuyTicket,
         child: ComponentContext,
         root: RootComponent
-    ): Child.TicketsChild {
+    ): Child.BuyChild {
         TODO("Not yet implemented")
     }
 }

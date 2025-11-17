@@ -63,6 +63,10 @@ class OverviewComponent(
         exec { savedToursRepository.remove(details.id) }
     }
 
+    fun buy(tour: Tour) {
+
+    }
+
     fun loadIfNeeded() {
         listenIsSavedIfNeeded()
         if (snapshot.details.value != null) {

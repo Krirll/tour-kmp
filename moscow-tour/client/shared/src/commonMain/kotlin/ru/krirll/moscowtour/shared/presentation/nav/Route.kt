@@ -18,7 +18,11 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     data class Loading(val next: Collection<Route> = listOf(default)) : Route()
 
     @Serializable
-    data class Overview(val id: Long) : Route()
+    data class Overview(val id: Long) : Route() {
+
+        @Serializable
+        data class BuyTicket(val id: Long) : Route()
+    }
 
     @Serializable
     data object Account : Route() {
