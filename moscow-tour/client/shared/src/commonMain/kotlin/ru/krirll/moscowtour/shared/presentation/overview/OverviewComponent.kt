@@ -33,6 +33,7 @@ class OverviewComponent(
     private val context: ComponentContext,
     private val id: Long,
     val doBack: () -> Unit,
+    val buy: (Long) -> Unit,
     val shareManager: ShareManager,
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
@@ -61,10 +62,6 @@ class OverviewComponent(
     fun remove() {
         val details = snapshot.details.value ?: return
         exec { savedToursRepository.remove(details.id) }
-    }
-
-    fun buy(tour: Tour) {
-
     }
 
     fun loadIfNeeded() {
@@ -117,6 +114,7 @@ class OverviewFactory(
             dispatcherProvider,
             child,
             route.id,
+            buy = { root.nav(Route.Overview.BuyTicket(it)) },
             doBack = { root.onBack() },
             shareManager = shareManager,
         )

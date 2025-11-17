@@ -11,11 +11,13 @@ import ru.krirll.moscowtour.shared.presentation.account.pass.EditPasswordCompone
 import ru.krirll.moscowtour.shared.presentation.account.register.RegisterComponent
 import ru.krirll.moscowtour.shared.presentation.account.tickets.TicketsComponent
 import ru.krirll.moscowtour.shared.presentation.overview.buy.BuyComponent
+import ru.krirll.moscowtour.shared.presentation.overview.person.PersonComponent
 
 sealed class Child : ru.krirll.ui.nav.Child {
     class ToursChild(val component: ToursScreenComponent) : Child()
     class SearchChild(val component: SearchScreenComponent) : Child()
     class OverviewChild(val component: OverviewComponent) : Child()
+    class PersonChild(val component: PersonComponent) : Child()
     class BuyChild(val component: BuyComponent) : Child()
     class AccountChild(val component: AccountComponent) : Child()
     class AuthChild(val component: AuthComponent) : Child()

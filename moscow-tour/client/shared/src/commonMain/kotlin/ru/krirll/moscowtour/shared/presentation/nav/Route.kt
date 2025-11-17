@@ -21,7 +21,10 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     data class Overview(val id: Long) : Route() {
 
         @Serializable
-        data class BuyTicket(val id: Long) : Route()
+        data class PersonScreen(val id: Long) : Route() //todo передавать тур а не айди
+
+        @Serializable
+        data class BuyTicket(val id: Long) : Route() //todo передавать данные юзера и тура а не айди
     }
 
     @Serializable

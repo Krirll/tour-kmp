@@ -1,4 +1,4 @@
-package ru.krirll.moscowtour.shared.presentation.overview.buy
+package ru.krirll.moscowtour.shared.presentation.overview.person
 
 import com.arkivanov.decompose.ComponentContext
 import org.koin.core.annotation.Factory
@@ -11,42 +11,43 @@ import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 
-class BuyComponent(
+class PersonComponent(
     private val context: ComponentContext,
 ) : ComponentContext by context {
 
 }
 
-@Factory(binds = [BuyFactory::class])
-class BuyFactory(
+@Factory(binds = [PersonFactory::class])
+class PersonFactory(
     private val savedToursRepository: SavedToursRepository,
     private val toursApi: ToursApi,
     private val shareManager: ShareManager,
     private val dispatcherProvider: DispatcherProvider
-) : ComponentFactory<Child.BuyChild, Route.Overview.BuyTicket> {
+) : ComponentFactory<Child.OverviewChild, Route.Account.Tickets> {
 
-/*    override fun create(
-        route: Route.Overview,
+    /*    override fun create(
+            route: Route.Overview,
+            child: ComponentContext,
+            root: RootComponent
+        ): Child.OverviewChild {
+            val comp = OverviewComponent(
+                savedToursRepository,
+                toursApi,
+                dispatcherProvider,
+                child,
+                route.id,
+                doBack = { root.onBack() },
+                shareManager = shareManager,
+            )
+            return Child.OverviewChild(comp)
+        }*/
+
+    override fun create(
+        route: Route.Account.Tickets,
         child: ComponentContext,
         root: RootComponent
     ): Child.OverviewChild {
-        val comp = OverviewComponent(
-            savedToursRepository,
-            toursApi,
-            dispatcherProvider,
-            child,
-            route.id,
-            doBack = { root.onBack() },
-            shareManager = shareManager,
-        )
-        return Child.OverviewChild(comp)
-    }*/
-
-    override fun create(
-        route: Route.Overview.BuyTicket,
-        child: ComponentContext,
-        root: RootComponent
-    ): Child.BuyChild {
         TODO("Not yet implemented")
     }
+
 }

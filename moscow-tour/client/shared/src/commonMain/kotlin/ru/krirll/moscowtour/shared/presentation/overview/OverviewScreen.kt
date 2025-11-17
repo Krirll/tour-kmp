@@ -102,7 +102,7 @@ fun OverviewScreen(component: OverviewComponent) {
                         paddingValues = it,
                         onBuyClicked = {
                             details?.let { d ->
-                                component.buy(d)
+                                component.buy(d.id)
                             }
                         }
                     )
