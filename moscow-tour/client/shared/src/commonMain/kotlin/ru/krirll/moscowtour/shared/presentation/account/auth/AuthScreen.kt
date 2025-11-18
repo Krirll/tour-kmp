@@ -45,6 +45,7 @@ import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.SimpleAppBar
 import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.base.PasswordTextField
+import ru.krirll.moscowtour.shared.presentation.base.ScreenState
 
 @Composable
 fun AuthScreen(comp: AuthComponent) {
@@ -74,7 +75,7 @@ fun AuthScreen(comp: AuthComponent) {
 fun BaseLogin(
     login: MutableState<String>,
     password: MutableState<String>,
-    stateFlow: Flow<AuthState>,
+    stateFlow: Flow<ScreenState>,
     title: String,
     doBack: (() -> Unit)?,
     onDone: () -> Unit,
@@ -82,19 +83,19 @@ fun BaseLogin(
     repeatPassword: MutableState<String>? = null,
     buttonAction: (@Composable () -> Unit)? = null
 ) {
-    val state by stateFlow.collectAsState(AuthState.Idle)
+    val state by stateFlow.collectAsState(ScreenState.Idle)
     var errorInfo by remember { mutableStateOf<Throwable?>(null) }
     LaunchedEffect(state) {
         when (val s = state) {
-            is AuthState.Error -> { errorInfo = s.e }
-            AuthState.Succeed -> onFinish()
+            is ScreenState.Error -> { errorInfo = s.e }
+            ScreenState.Succeed -> onFinish()
             else -> {}
         }
     }
     BaseScreen(
         appBar = { SimpleAppBar(title, doBack) },
         content = {
-            if (state is AuthState.Loading) {
+            if (state is ScreenState.Loading) {
                 Loading()
             } else {
                 Box(Modifier.padding(it).fillMaxSize()) {
@@ -102,7 +103,7 @@ fun BaseLogin(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(8.dp)
                     ) {
-                        if (errorInfo != null && state is AuthState.Error) {
+                        if (errorInfo != null && state is ScreenState.Error) {
                             AlertDialog(
                                 onDismissRequest = { errorInfo = null },
                                 title = { Text(stringResource(Res.string.error_title)) },

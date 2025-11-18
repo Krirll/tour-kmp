@@ -23,6 +23,7 @@ import ru.krirll.moscowtour.shared.presentation.overview.OverviewScreen
 import ru.krirll.moscowtour.shared.presentation.account.auth.AuthScreen
 import ru.krirll.moscowtour.shared.presentation.account.pass.EditPasswordScreen
 import ru.krirll.moscowtour.shared.presentation.account.register.RegisterScreen
+import ru.krirll.moscowtour.shared.presentation.overview.person.PersonScreen
 import ru.krirll.ui.nav.Nav
 
 @Composable
@@ -49,6 +50,7 @@ private fun NavInternal(rootComponent: RootComponent) {
             is Child.RegisterChild -> RegisterScreen(child.component)
             is Child.EditPasswordChild -> EditPasswordScreen(child.component)
             is Child.LoadingChild -> LoadingScreen(child.component)
+            is Child.PersonChild -> PersonScreen(child.component)
 
             is Child.ToursChild,
             is Child.SearchChild,

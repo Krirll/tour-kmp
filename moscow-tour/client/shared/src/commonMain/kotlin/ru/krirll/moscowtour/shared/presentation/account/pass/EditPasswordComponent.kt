@@ -13,7 +13,7 @@ import ru.krirll.moscowtour.shared.domain.ChangePasswordRequest
 import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.domain.model.PasswordsNotEqualsException
 import ru.krirll.moscowtour.shared.presentation.RootComponent
-import ru.krirll.moscowtour.shared.presentation.account.auth.AuthState
+import ru.krirll.moscowtour.shared.presentation.base.ScreenState
 import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
@@ -28,26 +28,26 @@ class EditPasswordComponent(
 
     private val scope = coroutineScope(SupervisorJob() + dispatcherProvider.main)
     private val errorHandler = createErrorHandler(scope) {
-        _state.emit(AuthState.Error(LoginException(it)))
+        _state.emit(ScreenState.Error(LoginException(it)))
     }
 
-    private val _state = MutableStateFlow<AuthState>(AuthState.Idle)
+    private val _state = MutableStateFlow<ScreenState>(ScreenState.Idle)
     val state = _state.asStateFlow()
 
     fun resetState() {
-        _state.tryEmit(AuthState.Idle)
+        _state.tryEmit(ScreenState.Idle)
     }
 
     fun changePassword(old: String, new: String, repeatNew: String) {
         scope.launch(errorHandler) {
-            _state.emit(AuthState.Loading)
+            _state.emit(ScreenState.Loading)
             if (new != repeatNew) {
                 throw PasswordsNotEqualsException()
             }
             authTokenRepository.changePassword(
                 ChangePasswordRequest(old, new)
             )
-            _state.emit(AuthState.Succeed)
+            _state.emit(ScreenState.Succeed)
         }
     }
 }

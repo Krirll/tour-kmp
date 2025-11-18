@@ -1,6 +1,8 @@
 package ru.krirll.moscowtour.shared.presentation.nav
 
 import kotlinx.serialization.Serializable
+import ru.krirll.moscowtour.shared.domain.model.PersonData
+import ru.krirll.moscowtour.shared.domain.model.Tour
 
 @Serializable
 sealed class Route : ru.krirll.ui.nav.Route() {
@@ -21,10 +23,10 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     data class Overview(val id: Long) : Route() {
 
         @Serializable
-        data class PersonScreen(val id: Long) : Route() //todo передавать тур а не айди
+        data class PersonScreen(val tour: Tour) : Route()
 
         @Serializable
-        data class BuyTicket(val id: Long) : Route() //todo передавать данные юзера и тура а не айди
+        data class BuyTicket(val tour: Tour, val personData: PersonData) : Route()
     }
 
     @Serializable

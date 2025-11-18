@@ -33,7 +33,7 @@ class OverviewComponent(
     private val context: ComponentContext,
     private val id: Long,
     val doBack: () -> Unit,
-    val buy: (Long) -> Unit,
+    val buy: (Tour) -> Unit,
     val shareManager: ShareManager,
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
@@ -45,7 +45,7 @@ class OverviewComponent(
     private var isSavedJob: Job? = null
     private val _isSaved = MutableStateFlow<Boolean?>(null)
 
-    val details = snapshot.details.asStateFlow()
+    val details = snapshot.tour.asStateFlow()
     val errorCode = snapshot.errorCode.asSharedFlow()
     val isSaved = _isSaved.filterNotNull()
 
@@ -55,22 +55,22 @@ class OverviewComponent(
     }
 
     fun save() {
-        val details = snapshot.details.value ?: return
+        val details = snapshot.tour.value ?: return
         exec { savedToursRepository.save(details) }
     }
 
     fun remove() {
-        val details = snapshot.details.value ?: return
+        val details = snapshot.tour.value ?: return
         exec { savedToursRepository.remove(details.id) }
     }
 
     fun loadIfNeeded() {
         listenIsSavedIfNeeded()
-        if (snapshot.details.value != null) {
+        if (snapshot.tour.value != null) {
             return
         }
         exec {
-            snapshot.details.emit(toursApi.fetchTours().first { it.id == id })
+            snapshot.tour.emit(toursApi.fetchTours().first { it.id == id })
         }
     }
 
@@ -90,7 +90,7 @@ class OverviewComponent(
     }
 
     data class Snapshot(
-        val details: MutableStateFlow<Tour?> = MutableStateFlow(null),
+        val tour: MutableStateFlow<Tour?> = MutableStateFlow(null),
         val errorCode: MutableSharedFlow<String?> = MutableSharedFlow(),
     ) : InstanceKeeper.Instance
 }
@@ -114,7 +114,7 @@ class OverviewFactory(
             dispatcherProvider,
             child,
             route.id,
-            buy = { root.nav(Route.Overview.BuyTicket(it)) },
+            buy = { root.nav(Route.Overview.PersonScreen(it)) },
             doBack = { root.onBack() },
             shareManager = shareManager,
         )

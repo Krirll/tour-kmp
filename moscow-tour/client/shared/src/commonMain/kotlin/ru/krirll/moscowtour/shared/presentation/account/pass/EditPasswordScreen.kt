@@ -1,13 +1,5 @@
 package ru.krirll.moscowtour.shared.presentation.account.pass
 
-import moscowtour.moscow_tour.client.shared.generated.resources.Res
-import moscowtour.moscow_tour.client.shared.generated.resources.edit_password
-import moscowtour.moscow_tour.client.shared.generated.resources.error_title
-import moscowtour.moscow_tour.client.shared.generated.resources.new_password
-import moscowtour.moscow_tour.client.shared.generated.resources.okay
-import moscowtour.moscow_tour.client.shared.generated.resources.old_password
-import moscowtour.moscow_tour.client.shared.generated.resources.password_changed
-import moscowtour.moscow_tour.client.shared.generated.resources.unknown_error
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,13 +23,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import moscowtour.moscow_tour.client.shared.generated.resources.Res
+import moscowtour.moscow_tour.client.shared.generated.resources.edit_password
+import moscowtour.moscow_tour.client.shared.generated.resources.error_title
+import moscowtour.moscow_tour.client.shared.generated.resources.new_password
 import moscowtour.moscow_tour.client.shared.generated.resources.new_password_repeat
+import moscowtour.moscow_tour.client.shared.generated.resources.okay
+import moscowtour.moscow_tour.client.shared.generated.resources.old_password
+import moscowtour.moscow_tour.client.shared.generated.resources.password_changed
+import moscowtour.moscow_tour.client.shared.generated.resources.unknown_error
 import org.jetbrains.compose.resources.stringResource
-import ru.krirll.moscowtour.shared.presentation.base.PasswordTextField
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.SimpleAppBar
 import ru.krirll.moscowtour.shared.presentation.base.Loading
-import ru.krirll.moscowtour.shared.presentation.account.auth.AuthState
+import ru.krirll.moscowtour.shared.presentation.base.PasswordTextField
+import ru.krirll.moscowtour.shared.presentation.base.ScreenState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +49,7 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
         appBar = {
             SimpleAppBar(
                 stringResource(Res.string.edit_password),
-                doBack = { component.onBack() }
+                doBack = { component.onBack() },
             )
         },
         snackbarState = snackbarState,
@@ -60,9 +60,9 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
             val onDone: () -> Unit = { component.changePassword(old, new, repeat) }
             Box(modifier = Modifier.padding(it)) {
                 when (val s = state) {
-                    is AuthState.Loading -> Loading()
+                    is ScreenState.Loading -> Loading()
                     else -> {
-                        if (s is AuthState.Succeed) {
+                        if (s is ScreenState.Succeed) {
                             val message = stringResource(Res.string.password_changed)
                             scope.launch {
                                 snackbarState.showSnackbar(
@@ -72,7 +72,7 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                                 component.onBack()
                                 component.resetState()
                             }
-                        } else if (s is AuthState.Error) {
+                        } else if (s is ScreenState.Error) {
                             AlertDialog(
                                 onDismissRequest = { component.resetState() },
                                 title = { Text(stringResource(Res.string.error_title)) },
@@ -96,7 +96,7 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                                     old,
                                     onValueChange = { old = it },
                                     labelRes = Res.string.old_password,
-                                    enabled = state == AuthState.Idle
+                                    enabled = state == ScreenState.Idle
                                 )
                             }
                             item {
@@ -105,7 +105,7 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                                     onValueChange = { new = it },
                                     labelRes = Res.string.new_password,
                                     onDone = onDone,
-                                    enabled = state == AuthState.Idle
+                                    enabled = state == ScreenState.Idle
                                 )
                             }
                             item {
@@ -114,14 +114,14 @@ fun EditPasswordScreen(component: EditPasswordComponent) {
                                     onValueChange = { repeat = it },
                                     labelRes = Res.string.new_password_repeat,
                                     onDone = onDone,
-                                    enabled = state == AuthState.Idle
+                                    enabled = state == ScreenState.Idle
                                 )
                             }
                             item {
                                 Button(
                                     onClick = { onDone() },
                                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                                    enabled = state == AuthState.Idle
+                                    enabled = state == ScreenState.Idle
                                 ) {
                                     Text(stringResource(Res.string.edit_password))
                                 }

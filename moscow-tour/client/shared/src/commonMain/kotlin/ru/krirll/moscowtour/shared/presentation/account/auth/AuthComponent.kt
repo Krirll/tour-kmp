@@ -12,6 +12,7 @@ import ru.krirll.moscowtour.shared.domain.AuthTokenRepository
 import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.domain.model.LoginInfo
 import ru.krirll.moscowtour.shared.presentation.RootComponent
+import ru.krirll.moscowtour.shared.presentation.base.ScreenState
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
@@ -26,18 +27,18 @@ class AuthComponent(
 ) : ComponentContext by context {
 
     private val scope = coroutineScope()
-    private val _state = MutableSharedFlow<AuthState>()
+    private val _state = MutableSharedFlow<ScreenState>()
     val state = _state.asSharedFlow()
 
     fun login(login: String, password: String) {
         scope.launch(dispatcherProvider.main) {
-            _state.emit(AuthState.Loading)
+            _state.emit(ScreenState.Loading)
             try {
                 authTokenRepository.login(LoginInfo(login, password))
-                _state.emit(AuthState.Succeed)
+                _state.emit(ScreenState.Succeed)
             } catch (e: LoginException) {
                 log.d("AuthComponent", "", e)
-                _state.emit(AuthState.Error(e))
+                _state.emit(ScreenState.Error(e))
             }
         }
     }
@@ -69,11 +70,4 @@ class AuthComponentFactory(
         )
         return Child.AuthChild(comp)
     }
-}
-
-sealed interface AuthState {
-    data object Idle : AuthState
-    data object Loading : AuthState
-    data class Error(val e: Throwable) : AuthState
-    data object Succeed : AuthState
 }

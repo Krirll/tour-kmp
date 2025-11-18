@@ -13,7 +13,7 @@ import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.domain.model.LoginInfo
 import ru.krirll.moscowtour.shared.domain.model.PasswordsNotEqualsException
 import ru.krirll.moscowtour.shared.presentation.RootComponent
-import ru.krirll.moscowtour.shared.presentation.account.auth.AuthState
+import ru.krirll.moscowtour.shared.presentation.base.ScreenState
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
@@ -28,21 +28,21 @@ class RegisterComponent(
 
     private val scope = coroutineScope()
 
-    private val _state = MutableStateFlow<AuthState>(AuthState.Idle)
+    private val _state = MutableStateFlow<ScreenState>(ScreenState.Idle)
     val state = _state.asStateFlow()
 
     fun register(login: String, password: String, repeatPassword: String) {
         scope.launch(dispatcherProvider.main) {
-            _state.emit(AuthState.Loading)
+            _state.emit(ScreenState.Loading)
             try {
                 if (password != repeatPassword) {
                     throw PasswordsNotEqualsException()
                 }
                 authTokenRepository.register(LoginInfo(login, password))
-                _state.emit(AuthState.Succeed)
+                _state.emit(ScreenState.Succeed)
             } catch (e: LoginException) {
                 log.e("RegisterComponent", e)
-                _state.value = AuthState.Error(e)
+                _state.value = ScreenState.Error(e)
             }
         }
     }

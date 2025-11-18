@@ -9,7 +9,7 @@ import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.LogoutUseCase
 import ru.krirll.moscowtour.shared.presentation.RootComponent
-import ru.krirll.moscowtour.shared.presentation.account.auth.AuthState
+import ru.krirll.moscowtour.shared.presentation.base.ScreenState
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
@@ -25,7 +25,7 @@ class AccountComponent(
     val tickets: () -> Unit
 ) : ComponentContext by context {
 
-    private val _state = MutableSharedFlow<AuthState>()
+    private val _state = MutableSharedFlow<ScreenState>()
     val state = _state.asSharedFlow()
 
     private val scope = coroutineScope()
@@ -42,9 +42,9 @@ class AccountComponent(
 
     private fun logout(withDelete: Boolean) {
         scope.launch(dispatcherProvider.main) {
-            _state.emit(AuthState.Loading)
+            _state.emit(ScreenState.Loading)
             logoutUseCase.logout(withDelete)
-            _state.emit(AuthState.Succeed)
+            _state.emit(ScreenState.Succeed)
         }
     }
 }

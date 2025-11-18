@@ -83,12 +83,12 @@ import ru.krirll.ui.theme.ComponentDefaults
 fun OverviewScreen(component: OverviewComponent) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val errorState by component.errorCode.collectAsState(initial = null)
-    val details by component.details.collectAsState()
+    val tour by component.details.collectAsState()
     val snackbarState = remember { SnackbarHostState() }
     val blurState = rememberBlurState()
     CompositionLocalProvider(LocalBlurState provides blurState) {
         BaseScreen(
-            appBar = { OverviewAppBar(details, snackbarState, component, scrollBehavior) },
+            appBar = { OverviewAppBar(tour, snackbarState, component, scrollBehavior) },
             scrollBehavior = scrollBehavior,
             snackbarState = snackbarState,
             content = {
@@ -97,12 +97,13 @@ fun OverviewScreen(component: OverviewComponent) {
                         errorMsg = errorState!!
                     ) { component.loadIfNeeded() }
 
-                    details != null -> DetailsInfo(
-                        details = details!!,
+                    tour != null -> DetailsInfo(
+                        details = tour!!,
                         paddingValues = it,
                         onBuyClicked = {
-                            details?.let { d ->
-                                component.buy(d.id)
+                            tour?.let { t ->
+                                //todo перед покупкой убедиться что чел авторизован
+                                component.buy(t)
                             }
                         }
                     )

@@ -5,6 +5,7 @@
     <string name="recent">Недавнее</string>
     <string name="desc">Описание</string>
     <string name="okay">Понятно</string>
+    <string name="continue">Продолжить</string>
     <string name="error_title">Ошибка!</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="timeout_error">Превышено время ожидания ответа от сервера</string>
@@ -40,4 +41,11 @@
     <string name="new_password_repeat">Подтвердите новый пароль</string>
     <string name="password_changed">Пароль был успешно изменён</string>
     <string name="buy_ticket">Купить билет</string>
+    <string name="person_data">Данные</string>
+    <string name="last_name">Фамилия</string>
+    <string name="first_name">Имя</string>
+    <string name="middle_name">Отчество</string>
+    <string name="passport_series">Серия паспорта</string>
+    <string name="passport_number">Номер паспорта</string>
+    <string name="phone_number">Номер телефона</string>
 </resources>
