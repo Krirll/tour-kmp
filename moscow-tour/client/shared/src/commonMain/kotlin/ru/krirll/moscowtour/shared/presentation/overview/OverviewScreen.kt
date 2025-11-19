@@ -84,9 +84,11 @@ fun OverviewScreen(component: OverviewComponent) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val errorState by component.errorCode.collectAsState(initial = null)
     val tour by component.details.collectAsState()
+    val token by component.token.collectAsState(null)
     val snackbarState = remember { SnackbarHostState() }
     val blurState = rememberBlurState()
     CompositionLocalProvider(LocalBlurState provides blurState) {
+        val needAuth = token == null
         BaseScreen(
             appBar = { OverviewAppBar(tour, snackbarState, component, scrollBehavior) },
             scrollBehavior = scrollBehavior,
@@ -102,8 +104,11 @@ fun OverviewScreen(component: OverviewComponent) {
                         paddingValues = it,
                         onBuyClicked = {
                             tour?.let { t ->
-                                //todo перед покупкой убедиться что чел авторизован
-                                component.buy(t)
+                                if (needAuth) {
+                                    //todo "диалог - для покупки билета необходима авторизация"
+                                } else {
+                                    component.buy(t)
+                                }
                             }
                         }
                     )

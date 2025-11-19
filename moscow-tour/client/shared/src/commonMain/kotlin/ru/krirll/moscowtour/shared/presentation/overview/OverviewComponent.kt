@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
+import ru.krirll.http.domain.TokenStorage
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.SavedToursRepository
 import ru.krirll.moscowtour.shared.domain.ToursApi
@@ -32,6 +33,7 @@ class OverviewComponent(
     private val dispatcherProvider: DispatcherProvider,
     private val context: ComponentContext,
     private val id: Long,
+    tokenStorage: TokenStorage,
     val doBack: () -> Unit,
     val buy: (Tour) -> Unit,
     val shareManager: ShareManager,
@@ -48,6 +50,7 @@ class OverviewComponent(
     val details = snapshot.tour.asStateFlow()
     val errorCode = snapshot.errorCode.asSharedFlow()
     val isSaved = _isSaved.filterNotNull()
+    val token = tokenStorage.token
 
     init {
         doOnStart { loadIfNeeded() }
@@ -100,7 +103,8 @@ class OverviewFactory(
     private val savedToursRepository: SavedToursRepository,
     private val toursApi: ToursApi,
     private val shareManager: ShareManager,
-    private val dispatcherProvider: DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider,
+    private val tokenStorage: TokenStorage
 ) : ComponentFactory<Child.OverviewChild, Route.Overview> {
 
     override fun create(
@@ -117,6 +121,7 @@ class OverviewFactory(
             buy = { root.nav(Route.Overview.PersonScreen(it)) },
             doBack = { root.onBack() },
             shareManager = shareManager,
+            tokenStorage = tokenStorage
         )
         return Child.OverviewChild(comp)
     }

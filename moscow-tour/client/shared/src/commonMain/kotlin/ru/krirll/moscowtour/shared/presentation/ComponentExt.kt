@@ -16,7 +16,7 @@ import ru.krirll.domain.Log
 import ru.krirll.http.domain.HttpException
 import ru.krirll.moscowtour.shared.di.koin
 import ru.krirll.moscowtour.shared.domain.model.LoginException
-import ru.krirll.moscowtour.shared.domain.model.PersonValidationException
+import ru.krirll.moscowtour.shared.domain.model.PersonDataValidationException
 
 data class ListSnapshot<T>(
     val items: MutableStateFlow<List<T>?> = MutableStateFlow(null),
@@ -35,7 +35,7 @@ fun LifecycleOwner.createErrorHandler(
                     errorCallback(throwable.message ?: throwable.httpCode.toString())
                 }
 
-                is PersonValidationException,
+                is PersonDataValidationException,
                 is LoginException -> {
                     errorCallback(throwable.message ?: getString(Res.string.unknown_error))
                 }
