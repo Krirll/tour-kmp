@@ -36,6 +36,7 @@ class OverviewComponent(
     tokenStorage: TokenStorage,
     val doBack: () -> Unit,
     val buy: (Tour) -> Unit,
+    val onAuth: () -> Unit,
     val shareManager: ShareManager,
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
@@ -120,6 +121,7 @@ class OverviewFactory(
             route.id,
             buy = { root.nav(Route.Overview.PersonScreen(it)) },
             doBack = { root.onBack() },
+            onAuth = { root.nav(Route.Account.Auth()) },
             shareManager = shareManager,
             tokenStorage = tokenStorage
         )

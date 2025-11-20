@@ -13,6 +13,7 @@
     <string name="unknown_host">Нет доступа к серверу. Проверьте подключение к интернету</string>
     <string name="not_found">Ничего не найдено по вашему запросу</string>
     <string name="share">Поделиться</string>
+    <string name="warning">Предупреждение</string>
     <string name="account">Аккаунт</string>
     <string name="account_auth">Авторизация</string>
     <string name="account_reg">Регистрация</string>
@@ -48,4 +49,5 @@
     <string name="passport_series">Серия паспорта</string>
     <string name="passport_number">Номер паспорта</string>
     <string name="phone_number">Номер телефона</string>
+    <string name="buy_tour_warning_desc">Для того, чтобы приобрести билет, необходимо быть авторизированным пользователем. Хотите войти в свой аккаунт или зарегистрироваться?</string>
 </resources>

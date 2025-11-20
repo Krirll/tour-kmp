@@ -21,6 +21,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -56,12 +57,16 @@ import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.back
 import moscowtour.moscow_tour.client.shared.generated.resources.broken_image
 import moscowtour.moscow_tour.client.shared.generated.resources.buy_ticket
+import moscowtour.moscow_tour.client.shared.generated.resources.buy_tour_warning_desc
+import moscowtour.moscow_tour.client.shared.generated.resources.cancel
 import moscowtour.moscow_tour.client.shared.generated.resources.copy
 import moscowtour.moscow_tour.client.shared.generated.resources.desc
 import moscowtour.moscow_tour.client.shared.generated.resources.more
 import moscowtour.moscow_tour.client.shared.generated.resources.share
 import moscowtour.moscow_tour.client.shared.generated.resources.star_checked
 import moscowtour.moscow_tour.client.shared.generated.resources.star_unchecked
+import moscowtour.moscow_tour.client.shared.generated.resources.warning
+import moscowtour.moscow_tour.client.shared.generated.resources.yes
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.domain.model.Tour
@@ -89,11 +94,34 @@ fun OverviewScreen(component: OverviewComponent) {
     val blurState = rememberBlurState()
     CompositionLocalProvider(LocalBlurState provides blurState) {
         val needAuth = token == null
+        var showAuthDialog by rememberSaveable { mutableStateOf(false) }
         BaseScreen(
             appBar = { OverviewAppBar(tour, snackbarState, component, scrollBehavior) },
             scrollBehavior = scrollBehavior,
             snackbarState = snackbarState,
             content = {
+                if (showAuthDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showAuthDialog = false },
+                        title = { Text(stringResource(Res.string.warning)) },
+                        text = { Text(stringResource(Res.string.buy_tour_warning_desc)) },
+                        confirmButton = {
+                            Text(
+                                text = stringResource(Res.string.yes),
+                                modifier = Modifier.padding(8.dp).clickable {
+                                    showAuthDialog = false
+                                    component.onAuth()
+                                }
+                            )
+                        },
+                        dismissButton = {
+                            Text(
+                                text = stringResource(Res.string.cancel),
+                                modifier = Modifier.padding(8.dp).clickable { showAuthDialog = false }
+                            )
+                        }
+                    )
+                }
                 when {
                     errorState != null -> ErrorAndRetry(
                         errorMsg = errorState!!
@@ -105,7 +133,7 @@ fun OverviewScreen(component: OverviewComponent) {
                         onBuyClicked = {
                             tour?.let { t ->
                                 if (needAuth) {
-                                    //todo "диалог - для покупки билета необходима авторизация"
+                                    showAuthDialog = true
                                 } else {
                                     component.buy(t)
                                 }

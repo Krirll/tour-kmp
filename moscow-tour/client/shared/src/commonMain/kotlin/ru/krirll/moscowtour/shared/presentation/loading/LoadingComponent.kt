@@ -24,9 +24,7 @@ class LoadingComponentFactory : ComponentFactory<Child.LoadingChild, Route.Loadi
             LoadingComponent(
                 child,
                 onLoaded = {
-                    //todo авторизация тут не нужна, оставил для тестов
                     root.navReplace(*route.next.toTypedArray())
-                    //root.navReplace(Route.Settings.Auth(next = route.next))
                 }
             )
         )
