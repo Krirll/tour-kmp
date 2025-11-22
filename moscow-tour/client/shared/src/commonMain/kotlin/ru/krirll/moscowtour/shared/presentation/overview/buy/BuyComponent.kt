@@ -11,6 +11,7 @@ import ru.krirll.moscowtour.shared.presentation.nav.Route
 
 class BuyComponent(
     private val context: ComponentContext,
+    val doBack: () -> Unit
 ) : ComponentContext by context {
 
 }
@@ -28,7 +29,8 @@ class BuyFactory(
     ): Child.BuyChild {
         return Child.BuyChild(
             BuyComponent(
-                child
+                child,
+                doBack = { root.onBack() }
             )
         )
     }

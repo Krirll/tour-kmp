@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
@@ -56,12 +57,18 @@ import kotlinx.coroutines.launch
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.back
 import moscowtour.moscow_tour.client.shared.generated.resources.broken_image
+import moscowtour.moscow_tour.client.shared.generated.resources.buy_disabled
 import moscowtour.moscow_tour.client.shared.generated.resources.buy_ticket
 import moscowtour.moscow_tour.client.shared.generated.resources.buy_tour_warning_desc
 import moscowtour.moscow_tour.client.shared.generated.resources.cancel
+import moscowtour.moscow_tour.client.shared.generated.resources.city
 import moscowtour.moscow_tour.client.shared.generated.resources.copy
+import moscowtour.moscow_tour.client.shared.generated.resources.country
+import moscowtour.moscow_tour.client.shared.generated.resources.date_begin
+import moscowtour.moscow_tour.client.shared.generated.resources.date_end
 import moscowtour.moscow_tour.client.shared.generated.resources.desc
 import moscowtour.moscow_tour.client.shared.generated.resources.more
+import moscowtour.moscow_tour.client.shared.generated.resources.price
 import moscowtour.moscow_tour.client.shared.generated.resources.share
 import moscowtour.moscow_tour.client.shared.generated.resources.star_checked
 import moscowtour.moscow_tour.client.shared.generated.resources.star_unchecked
@@ -73,6 +80,7 @@ import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.applyColumnPadding
 import ru.krirll.moscowtour.shared.presentation.asColumnPadding
+import ru.krirll.moscowtour.shared.presentation.base.LabeledText
 import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.clipboardUrl
 import ru.krirll.moscowtour.shared.presentation.getClipboardText
@@ -138,6 +146,9 @@ fun OverviewScreen(component: OverviewComponent) {
                                     component.buy(t)
                                 }
                             }
+                        },
+                        onImageClick = { index ->
+                            tour?.imagesUrls?.let { t -> component.onImageClicked(index, t) }
                         }
                     )
 
@@ -232,7 +243,8 @@ private fun AdditionalAppBarMenu(snack: SnackbarHostState, url: String?) {
 fun DetailsInfo(
     details: Tour,
     paddingValues: PaddingValues,
-    onBuyClicked: () -> Unit
+    onBuyClicked: () -> Unit,
+    onImageClick: (Int) -> Unit
 ) {
     val showDetails = rememberSaveable { mutableStateOf(false) }
     val blur = LocalBlurState.current
@@ -241,13 +253,22 @@ fun DetailsInfo(
         contentPadding = paddingValues.asColumnPadding()
     ) {
         item { Spacer(modifier = Modifier.height(8.dp)) }
-        item { ImageCarousel(details.imagesUrls) }
+        item { ImageCarousel(details.imagesUrls) { onImageClick(it) } }
         item { OverviewDescription(details, showDetails) }
         item {
             Button(
                 onClick = onBuyClicked,
+                enabled = details.canBuy,
                 modifier = Modifier.fillMaxWidth().padding(8.dp)
-            ) { Text(stringResource(Res.string.buy_ticket)) }
+            ) {
+                Text(
+                    stringResource(if (details.canBuy) {
+                        Res.string.buy_ticket
+                    } else {
+                        Res.string.buy_disabled
+                    })
+                )
+            }
         }
     }
 }
@@ -270,14 +291,22 @@ private fun OverviewDescription(
             maxLines = if (showDetails.value) Int.MAX_VALUE else 3,
             overflow = TextOverflow.Ellipsis
         )
+        //val locale = Locale.of("ru", "RU")
+        //val datesFormatter = SimpleDateFormat("dd.MM.yyyy", locale)
+        //todo форматирование даты
+        LabeledText(stringResource(Res.string.city), details.city)
+        LabeledText(stringResource(Res.string.country), details.country)
+        LabeledText(stringResource(Res.string.date_begin), details.dateBegin.toString())
+        LabeledText(stringResource(Res.string.date_end), details.dateEnd.toString())
+        LabeledText(stringResource(Res.string.price), details.price.toString() + "₽")
     }
 }
 
-//todo сделать карусель но на весь экран (чтоб можно было растягивать и листать)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ImageCarousel(
-    images: List<String>
+    images: List<String>,
+    onClick: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState { images.size }
     val scope = rememberCoroutineScope()
@@ -305,7 +334,8 @@ fun ImageCarousel(
                         contentDescription = null,
                         modifier = Modifier
                             .clip(RoundedCornerShape(8))
-                            .fillMaxHeight(),
+                            .fillMaxHeight()
+                            .clickable { onClick(page) },
                         contentScale = ContentScale.Fit
                     )
                 }

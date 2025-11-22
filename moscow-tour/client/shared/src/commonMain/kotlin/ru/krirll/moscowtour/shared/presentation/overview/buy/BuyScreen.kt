@@ -57,61 +57,61 @@ fun BuyScreen(component: BuyComponent) {
     //  чел нажал подтвердить, вылезает диалог мол ты уверен?
     //  если да то идем скачивать и тд
     //  если нет то возвращаемся назад, на экран ввода данных юзера
-    val tour by component.details.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val blurState = rememberBlurState()
-    CompositionLocalProvider(LocalBlurState provides blurState) {
-        BaseScreen(
-            appBar = { BuyAppBar(tour, snackbarState, component, scrollBehavior) },
-            scrollBehavior = scrollBehavior,
-            snackbarState = snackbarState,
-            content = {
-                if (showAuthDialog) {
-                    AlertDialog(
-                        onDismissRequest = { showAuthDialog = false },
-                        title = { Text(stringResource(Res.string.warning)) },
-                        text = { Text(stringResource(Res.string.buy_tour_warning_desc)) },
-                        confirmButton = {
-                            Text(
-                                text = stringResource(Res.string.yes),
-                                modifier = Modifier.padding(8.dp).clickable {
-                                    showAuthDialog = false
-                                    component.onAuth()
-                                }
-                            )
-                        },
-                        dismissButton = {
-                            Text(
-                                text = stringResource(Res.string.cancel),
-                                modifier = Modifier.padding(8.dp).clickable { showAuthDialog = false }
-                            )
-                        }
-                    )
-                }
-                when {
-                    errorState != null -> ErrorAndRetry(
-                        errorMsg = errorState!!
-                    ) { component.loadIfNeeded() }
-
-                    tour != null -> DetailsInfo(
-                        details = tour!!,
-                        paddingValues = it,
-                        onBuyClicked = {
-                            tour?.let { t ->
-                                if (needAuth) {
-                                    showAuthDialog = true
-                                } else {
-                                    component.buy(t)
-                                }
-                            }
-                        }
-                    )
-
-                    else -> Loading()
-                }
-            }
-        )
-    }
+//    val tour by component.details.collectAsState()
+//    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+//    val blurState = rememberBlurState()
+//    CompositionLocalProvider(LocalBlurState provides blurState) {
+//        BaseScreen(
+//            appBar = { BuyAppBar(tour, snackbarState, component, scrollBehavior) },
+//            scrollBehavior = scrollBehavior,
+//            snackbarState = snackbarState,
+//            content = {
+//                if (showAuthDialog) {
+//                    AlertDialog(
+//                        onDismissRequest = { showAuthDialog = false },
+//                        title = { Text(stringResource(Res.string.warning)) },
+//                        text = { Text(stringResource(Res.string.buy_tour_warning_desc)) },
+//                        confirmButton = {
+//                            Text(
+//                                text = stringResource(Res.string.yes),
+//                                modifier = Modifier.padding(8.dp).clickable {
+//                                    showAuthDialog = false
+//                                    component.onAuth()
+//                                }
+//                            )
+//                        },
+//                        dismissButton = {
+//                            Text(
+//                                text = stringResource(Res.string.cancel),
+//                                modifier = Modifier.padding(8.dp).clickable { showAuthDialog = false }
+//                            )
+//                        }
+//                    )
+//                }
+//                when {
+//                    errorState != null -> ErrorAndRetry(
+//                        errorMsg = errorState!!
+//                    ) { component.loadIfNeeded() }
+//
+//                    tour != null -> DetailsInfo(
+//                        details = tour!!,
+//                        paddingValues = it,
+//                        onBuyClicked = {
+//                            tour?.let { t ->
+//                                if (needAuth) {
+//                                    showAuthDialog = true
+//                                } else {
+//                                    component.buy(t)
+//                                }
+//                            }
+//                        }
+//                    )
+//
+//                    else -> Loading()
+//                }
+//            }
+//        )
+//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

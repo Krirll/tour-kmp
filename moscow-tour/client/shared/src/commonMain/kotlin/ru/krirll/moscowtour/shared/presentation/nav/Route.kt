@@ -23,6 +23,9 @@ sealed class Route : ru.krirll.ui.nav.Route() {
     data class Overview(val id: Long) : Route() {
 
         @Serializable
+        data class FullscreenImages(val startIndex: Int, val images: List<String>) : Route()
+
+        @Serializable
         data class PersonScreen(val tour: Tour) : Route()
 
         @Serializable

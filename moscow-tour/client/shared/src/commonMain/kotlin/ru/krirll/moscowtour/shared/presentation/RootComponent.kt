@@ -25,6 +25,7 @@ import ru.krirll.moscowtour.shared.presentation.account.auth.AuthComponentFactor
 import ru.krirll.moscowtour.shared.presentation.account.pass.EditPasswordComponentFactory
 import ru.krirll.moscowtour.shared.presentation.account.register.RegisterComponentFactory
 import ru.krirll.moscowtour.shared.presentation.account.tickets.TicketsFactory
+import ru.krirll.moscowtour.shared.presentation.overview.FullscreenImageCarouselChildFactory
 import ru.krirll.moscowtour.shared.presentation.overview.buy.BuyFactory
 import ru.krirll.moscowtour.shared.presentation.overview.person.PersonFactory
 import ru.krirll.ui.nav.BaseRootComponent
@@ -99,6 +100,7 @@ fun <T : Child, R : Route> Route.provideFactory(koin: Koin): ComponentFactory<T,
         is Route.Overview -> koin.get<OverviewFactory>()
         is Route.Overview.PersonScreen -> koin.get<PersonFactory>()
         is Route.Overview.BuyTicket -> koin.get<BuyFactory>()
+        is Route.Overview.FullscreenImages -> koin.get<FullscreenImageCarouselChildFactory>()
         is Route.Account -> koin.get<AccountComponentFactory>()
         is Route.Account.Auth -> koin.get<AuthComponentFactory>()
         is Route.Account.Register -> koin.get<RegisterComponentFactory>()

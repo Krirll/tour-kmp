@@ -50,4 +50,10 @@
     <string name="passport_number">Номер паспорта</string>
     <string name="phone_number">Номер телефона</string>
     <string name="buy_tour_warning_desc">Для того, чтобы приобрести билет, необходимо быть авторизированным пользователем. Хотите войти в свой аккаунт или зарегистрироваться?</string>
+    <string name="city">Город</string>
+    <string name="country">Страна</string>
+    <string name="date_begin">Дата начала</string>
+    <string name="date_end">Дата завершения</string>
+    <string name="price">Стоимость</string>
+    <string name="buy_disabled">К сожалению, билеты закончились</string>
 </resources>

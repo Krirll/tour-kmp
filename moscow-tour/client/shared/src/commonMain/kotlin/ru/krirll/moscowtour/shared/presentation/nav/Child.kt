@@ -17,6 +17,7 @@ sealed class Child : ru.krirll.ui.nav.Child {
     class ToursChild(val component: ToursScreenComponent) : Child()
     class SearchChild(val component: SearchScreenComponent) : Child()
     class OverviewChild(val component: OverviewComponent) : Child()
+    class FullscreenImages : Child()
     class PersonChild(val component: PersonComponent) : Child()
     class BuyChild(val component: BuyComponent) : Child()
     class AccountChild(val component: AccountComponent) : Child()
