@@ -12,6 +12,7 @@ data class PersonData(
     val phone: String
 )
 
+class TicketBuyingException(override val message: String?) : IllegalStateException()
 open class PersonDataValidationException(override val message: String?) : IllegalStateException()
 
 class EmptyPersonDataException : PersonDataValidationException("Все поля обязательны и должны быть заполнены!")

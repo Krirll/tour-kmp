@@ -23,24 +23,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,12 +43,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
+import kotlinx.datetime.toLocalDateTime
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.back
 import moscowtour.moscow_tour.client.shared.generated.resources.broken_image
@@ -62,34 +58,38 @@ import moscowtour.moscow_tour.client.shared.generated.resources.buy_ticket
 import moscowtour.moscow_tour.client.shared.generated.resources.buy_tour_warning_desc
 import moscowtour.moscow_tour.client.shared.generated.resources.cancel
 import moscowtour.moscow_tour.client.shared.generated.resources.city
-import moscowtour.moscow_tour.client.shared.generated.resources.copy
 import moscowtour.moscow_tour.client.shared.generated.resources.country
 import moscowtour.moscow_tour.client.shared.generated.resources.date_begin
 import moscowtour.moscow_tour.client.shared.generated.resources.date_end
 import moscowtour.moscow_tour.client.shared.generated.resources.desc
-import moscowtour.moscow_tour.client.shared.generated.resources.more
+import moscowtour.moscow_tour.client.shared.generated.resources.first_name
+import moscowtour.moscow_tour.client.shared.generated.resources.last_name
+import moscowtour.moscow_tour.client.shared.generated.resources.middle_name
+import moscowtour.moscow_tour.client.shared.generated.resources.passport_number
+import moscowtour.moscow_tour.client.shared.generated.resources.passport_series
+import moscowtour.moscow_tour.client.shared.generated.resources.phone_number
 import moscowtour.moscow_tour.client.shared.generated.resources.price
-import moscowtour.moscow_tour.client.shared.generated.resources.share
 import moscowtour.moscow_tour.client.shared.generated.resources.star_checked
 import moscowtour.moscow_tour.client.shared.generated.resources.star_unchecked
 import moscowtour.moscow_tour.client.shared.generated.resources.warning
 import moscowtour.moscow_tour.client.shared.generated.resources.yes
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import ru.krirll.moscowtour.shared.domain.model.PersonData
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
 import ru.krirll.moscowtour.shared.presentation.applyColumnPadding
 import ru.krirll.moscowtour.shared.presentation.asColumnPadding
 import ru.krirll.moscowtour.shared.presentation.base.LabeledText
 import ru.krirll.moscowtour.shared.presentation.base.Loading
-import ru.krirll.moscowtour.shared.presentation.clipboardUrl
-import ru.krirll.moscowtour.shared.presentation.getClipboardText
 import ru.krirll.moscowtour.shared.presentation.list.ErrorAndRetry
 import ru.krirll.ui.LocalBlurState
 import ru.krirll.ui.applyBlurEffect
 import ru.krirll.ui.applyBlurSource
 import ru.krirll.ui.rememberBlurState
 import ru.krirll.ui.theme.ComponentDefaults
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,15 +98,13 @@ fun OverviewScreen(component: OverviewComponent) {
     val errorState by component.errorCode.collectAsState(initial = null)
     val tour by component.details.collectAsState()
     val token by component.token.collectAsState(null)
-    val snackbarState = remember { SnackbarHostState() }
     val blurState = rememberBlurState()
     CompositionLocalProvider(LocalBlurState provides blurState) {
         val needAuth = token == null
         var showAuthDialog by rememberSaveable { mutableStateOf(false) }
         BaseScreen(
-            appBar = { OverviewAppBar(tour, snackbarState, component, scrollBehavior) },
+            appBar = { OverviewAppBar(tour, component, scrollBehavior) },
             scrollBehavior = scrollBehavior,
-            snackbarState = snackbarState,
             content = {
                 if (showAuthDialog) {
                     AlertDialog(
@@ -125,7 +123,8 @@ fun OverviewScreen(component: OverviewComponent) {
                         dismissButton = {
                             Text(
                                 text = stringResource(Res.string.cancel),
-                                modifier = Modifier.padding(8.dp).clickable { showAuthDialog = false }
+                                modifier = Modifier.padding(8.dp)
+                                    .clickable { showAuthDialog = false }
                             )
                         }
                     )
@@ -163,7 +162,6 @@ fun OverviewScreen(component: OverviewComponent) {
 @Composable
 private fun OverviewAppBar(
     details: Tour?,
-    snackbarHostState: SnackbarHostState,
     component: OverviewComponent,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
@@ -187,14 +185,6 @@ private fun OverviewAppBar(
         colors = ComponentDefaults.topAppBarColors(),
         actions = {
             details?.let {
-                if (component.shareManager.canShare()) {
-                    IconButton(onClick = { component.shareManager.shareDetails(it) }) {
-                        Icon(
-                            painterResource(Res.drawable.share),
-                            contentDescription = stringResource(Res.string.share)
-                        )
-                    }
-                }
                 isSaved?.let { saved ->
                     IconButton(onClick = if (saved) component::remove else component::save) {
                         if (saved) {
@@ -204,39 +194,11 @@ private fun OverviewAppBar(
                         }
                     }
                 }
-                AdditionalAppBarMenu(
-                    snackbarHostState,
-                    "https://tour.krirll.ru/overview/${it.id}"
-                )
             }
         },
         scrollBehavior = scrollBehavior,
         modifier = Modifier.applyBlurEffect(blur)
     )
-}
-
-@Suppress("DEPRECATION")
-@Composable
-private fun AdditionalAppBarMenu(snack: SnackbarHostState, url: String?) {
-    url ?: return
-    var expanded by rememberSaveable { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-    val clipboardManager = LocalClipboardManager.current
-    Box {
-        IconButton(onClick = { expanded = true }) {
-            Icon(painterResource(Res.drawable.more), null)
-        }
-        val clipboardText = getClipboardText()
-        DropdownMenu(expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.copy)) },
-                onClick = {
-                    snack.clipboardUrl(url, scope, clipboardManager, clipboardText)
-                    expanded = false
-                }
-            )
-        }
-    }
 }
 
 @Composable
@@ -246,7 +208,6 @@ fun DetailsInfo(
     onBuyClicked: () -> Unit,
     onImageClick: (Int) -> Unit
 ) {
-    val showDetails = rememberSaveable { mutableStateOf(false) }
     val blur = LocalBlurState.current
     LazyColumn(
         modifier = Modifier.applyBlurSource(blur).applyColumnPadding(paddingValues),
@@ -254,7 +215,7 @@ fun DetailsInfo(
     ) {
         item { Spacer(modifier = Modifier.height(8.dp)) }
         item { ImageCarousel(details.imagesUrls) { onImageClick(it) } }
-        item { OverviewDescription(details, showDetails) }
+        item { OverviewDescription(details) }
         item {
             Button(
                 onClick = onBuyClicked,
@@ -262,11 +223,13 @@ fun DetailsInfo(
                 modifier = Modifier.fillMaxWidth().padding(8.dp)
             ) {
                 Text(
-                    stringResource(if (details.canBuy) {
-                        Res.string.buy_ticket
-                    } else {
-                        Res.string.buy_disabled
-                    })
+                    stringResource(
+                        if (details.canBuy) {
+                            Res.string.buy_ticket
+                        } else {
+                            Res.string.buy_disabled
+                        }
+                    )
                 )
             }
         }
@@ -274,9 +237,9 @@ fun DetailsInfo(
 }
 
 @Composable
-private fun OverviewDescription(
+fun OverviewDescription(
     details: Tour,
-    showDetails: MutableState<Boolean>
+    personData: PersonData? = null,
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
         Text(
@@ -288,18 +251,37 @@ private fun OverviewDescription(
         Text(
             text = details.description,
             style = MaterialTheme.typography.bodyLarge,
-            maxLines = if (showDetails.value) Int.MAX_VALUE else 3,
             overflow = TextOverflow.Ellipsis
         )
-        //val locale = Locale.of("ru", "RU")
-        //val datesFormatter = SimpleDateFormat("dd.MM.yyyy", locale)
-        //todo форматирование даты
         LabeledText(stringResource(Res.string.city), details.city)
         LabeledText(stringResource(Res.string.country), details.country)
-        LabeledText(stringResource(Res.string.date_begin), details.dateBegin.toString())
-        LabeledText(stringResource(Res.string.date_end), details.dateEnd.toString())
+        LabeledText(stringResource(Res.string.date_begin), formatDate(details.dateBegin))
+        LabeledText(stringResource(Res.string.date_end), formatDate(details.dateEnd))
         LabeledText(stringResource(Res.string.price), details.price.toString() + "₽")
+
+        personData?.let {
+            LabeledText(stringResource(Res.string.last_name), it.lastName)
+            LabeledText(stringResource(Res.string.first_name), it.firstName)
+            LabeledText(stringResource(Res.string.middle_name), it.middleName)
+            LabeledText(stringResource(Res.string.passport_series), it.passportSeries.toString())
+            LabeledText(stringResource(Res.string.passport_number), it.passportNumber.toString())
+            LabeledText(stringResource(Res.string.phone_number), it.phone)
+        }
+
     }
+}
+
+@OptIn(ExperimentalTime::class)
+private fun formatDate(timestamp: Long): String {
+    val date = Instant
+        .fromEpochMilliseconds(timestamp * 1000)
+        .toLocalDateTime(TimeZone.UTC)
+
+    val day = date.day.toString().padStart(2, '0')
+    val month = date.month.number.toString().padStart(2, '0')
+    val year = date.year.toString()
+
+    return "$day.$month.$year"
 }
 
 @OptIn(ExperimentalFoundationApi::class)

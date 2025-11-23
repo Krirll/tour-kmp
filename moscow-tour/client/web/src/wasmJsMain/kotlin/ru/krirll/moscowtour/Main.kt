@@ -25,7 +25,6 @@ import ru.krirll.moscowtour.shared.di.newKoinModules
 import ru.krirll.moscowtour.shared.presentation.Nav
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.RootFactory
-import ru.krirll.moscowtour.shared.presentation.UrlRoutes
 import ru.krirll.moscowtour.shared.presentation.nav.Route
 
 fun main() {
@@ -44,19 +43,17 @@ fun mainInternal() {
 
     var rootRef: RootComponent? = null
 
-    val root: RootComponent = withWebHistory { stateKeeper: StateKeeper, deepLinkUrl: String? ->
-        if (rootRef == null) {
-            val ctx = DefaultComponentContext(
-                lifecycle = lifecycle, stateKeeper = stateKeeper
-            )
-            val deep = deepLinkUrl?.let { runCatching { UrlRoutes.parseUrl(it) }.getOrNull() }
+    val root: RootComponent = if (rootRef == null) {
+        val ctx = DefaultComponentContext(
+            lifecycle = lifecycle
+        )
+        val initRoute: Route = Route.default
 
-            val initRoute: Route = deep ?: Route.default
-
-            rootRef = koin.get<RootFactory>().create(
-                context = ctx, initStack = initRoute
-            )
-        }
+        rootRef = koin.get<RootFactory>().create(
+            context = ctx, initStack = initRoute
+        )
+        rootRef
+    } else {
         rootRef
     }
 

@@ -8,13 +8,14 @@ desugar_jdk_libs = "2.1.5"
 haze = "1.7.0"
 hazeMaterials = "1.7.0"
 java-jwt = "4.5.0"
-kotlin-version = "2.2.0"
+kotlin-version = "2.2.21"
 agp = "8.12.3"
 
 coroutines-extensions = "1.5.5"
 decompose-version = "3.3.0"
 image-loader = "1.10.0"
 junit = "4.13.2"
+kotlinxDatetime = "0.7.1"
 lifecycleCoroutines = "2.5.0"
 material = "1.9.1"
 mockk = "1.14.5"
@@ -43,7 +44,7 @@ proj-server-java = "21"
 proj-version-name = "1.11.0"
 proj-version-code = "20"
 datastore-preferences-core = "1.1.7"
-ksp-version = "2.2.0-2.0.2"
+ksp-version = "2.3.2"
 koin-core = "4.1.1"
 koin-annotations = "2.1.0"
 kotlin-dsl-version = "5.1.2"
@@ -71,6 +72,7 @@ java-jwt = { module = "com.auth0:java-jwt", version.ref = "java-jwt" }
 jdbc-driver = { module = "app.cash.sqldelight:jdbc-driver", version.ref = "sqlite-driver" }
 koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor-plugin" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt" }

@@ -51,12 +51,12 @@ fun PersonScreen(component: PersonComponent) {
             )
         },
         content = {
-            var lastName by rememberSaveable { mutableStateOf("") }
-            var firstName by rememberSaveable { mutableStateOf("") }
-            var middleName by rememberSaveable { mutableStateOf("") }
-            var series by rememberSaveable { mutableStateOf("") }
-            var number by rememberSaveable { mutableStateOf("") }
-            var phone by rememberSaveable { mutableStateOf("") }
+            var lastName by rememberSaveable { mutableStateOf("Ян") }
+            var firstName by rememberSaveable { mutableStateOf("Ян") }
+            var middleName by rememberSaveable { mutableStateOf("Ян") }
+            var series by rememberSaveable { mutableStateOf("4444") }
+            var number by rememberSaveable { mutableStateOf("555666") }
+            var phone by rememberSaveable { mutableStateOf("+79008007060") }
             Box(modifier = Modifier.padding(it)) {
                 if (state is ScreenState.Succeed) {
                     component.goNext()

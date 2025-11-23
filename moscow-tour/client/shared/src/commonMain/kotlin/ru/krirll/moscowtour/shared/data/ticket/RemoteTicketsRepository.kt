@@ -2,7 +2,7 @@ package ru.krirll.moscowtour.shared.data.ticket
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
-import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.client.statement.bodyAsBytes
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.flow.Flow
@@ -54,7 +54,7 @@ class RemoteTicketsRepository(
         time: Long
     ): TicketFile {
         tokenCache.token.first() ?: return TicketFile("", byteArrayOf())
-        val response = httpClient.get {
+        val response = httpClient.post {
             obtainConfig().apply(this, TicketsRepository.CREATE_AND_DOWNLOAD)
             setJsonBody(CreateTicketRequest(tourId, personData, time))
         }

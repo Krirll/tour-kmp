@@ -21,7 +21,6 @@ import ru.krirll.moscowtour.shared.domain.SavedToursRepository
 import ru.krirll.moscowtour.shared.domain.ToursApi
 import ru.krirll.moscowtour.shared.domain.model.Tour
 import ru.krirll.moscowtour.shared.presentation.RootComponent
-import ru.krirll.moscowtour.shared.presentation.ShareManager
 import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
@@ -38,7 +37,6 @@ class OverviewComponent(
     val buy: (Tour) -> Unit,
     val onAuth: () -> Unit,
     val onImageClicked: (Int, List<String>) -> Unit,
-    val shareManager: ShareManager,
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
 
@@ -104,7 +102,6 @@ class OverviewComponent(
 class OverviewFactory(
     private val savedToursRepository: SavedToursRepository,
     private val toursApi: ToursApi,
-    private val shareManager: ShareManager,
     private val dispatcherProvider: DispatcherProvider,
     private val tokenStorage: TokenStorage
 ) : ComponentFactory<Child.OverviewChild, Route.Overview> {
@@ -126,7 +123,6 @@ class OverviewFactory(
             onImageClicked = { index, images ->
                 root.nav(Route.Overview.FullscreenImages(index, images))
             },
-            shareManager = shareManager,
             tokenStorage = tokenStorage
         )
         return Child.OverviewChild(comp)

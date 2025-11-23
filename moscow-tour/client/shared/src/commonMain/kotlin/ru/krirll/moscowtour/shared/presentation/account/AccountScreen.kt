@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.account_auth
 import moscowtour.moscow_tour.client.shared.generated.resources.account_delete
-import moscowtour.moscow_tour.client.shared.generated.resources.account_delete_confirm
+import moscowtour.moscow_tour.client.shared.generated.resources.confirm
 import moscowtour.moscow_tour.client.shared.generated.resources.account_delete_confirm_long
 import moscowtour.moscow_tour.client.shared.generated.resources.account_logout_auth
 import moscowtour.moscow_tour.client.shared.generated.resources.account_reg
@@ -43,7 +43,7 @@ fun AccountContent(comp: AccountComponent, paddingValues: PaddingValues) {
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(Res.string.account_delete_confirm)) },
+            title = { Text(stringResource(Res.string.confirm)) },
             text = { Text(stringResource(Res.string.account_delete_confirm_long)) },
             confirmButton = {
                 Text(

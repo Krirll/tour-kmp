@@ -10,6 +10,7 @@ import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import ru.krirll.moscowtour.backend.di.RoutingEntryPoint
@@ -34,7 +35,7 @@ fun Routing.setupTickets(
             .remove(request.ticketId)
         call.respond(HttpStatusCode.OK)
     }
-    get(TicketsRepository.CREATE_AND_DOWNLOAD) {
+    post(TicketsRepository.CREATE_AND_DOWNLOAD) {
         val request = call.receive<CreateTicketRequest>()
         val result = routingEntryPoint.ticketsFactory.create(call.obtainAccountId())
             .createAndDownload(request.tourId, request.personData, request.time)

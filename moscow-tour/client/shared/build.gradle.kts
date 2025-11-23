@@ -25,6 +25,7 @@ kotlin {
             implementation(project(":libs:base"))
             implementation(project(":libs:ui"))
             implementation(project(":libs:http-client"))
+            implementation(libs.kotlinx.datetime)
         }
         androidMain.dependencies {
             implementation(libs.androidx.appcompat)
