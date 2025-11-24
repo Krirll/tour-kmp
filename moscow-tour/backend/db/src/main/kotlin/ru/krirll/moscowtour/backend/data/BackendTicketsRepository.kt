@@ -38,7 +38,8 @@ class BackendTicketsRepository(
                 .executeAsOneOrNull() ?: return@mapNotNull null
             Ticket(
                 ticketId = ticket.ticket_id,
-                tour = tour.toModel(),
+                tourId  = tour.tour_id,
+                tourTitle = tour.title,
                 accountId = ticket.account_id,
                 date = ticket.date
             )

@@ -56,6 +56,7 @@
     <string name="country">Страна</string>
     <string name="date_begin">Дата начала</string>
     <string name="date_end">Дата завершения</string>
+    <string name="date_buy">Дата приобретения</string>
     <string name="price">Стоимость</string>
     <string name="buy_disabled">К сожалению, билеты закончились</string>
     <string name="success_ticket_title">Успешно!</string>

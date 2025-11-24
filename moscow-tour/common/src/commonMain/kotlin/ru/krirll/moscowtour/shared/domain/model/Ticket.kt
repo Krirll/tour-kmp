@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Ticket(
     val ticketId: Long,
-    val tour: Tour,
+    val tourId: Long,
+    val tourTitle: String,
     val accountId: Long,
     val date: Long
 )

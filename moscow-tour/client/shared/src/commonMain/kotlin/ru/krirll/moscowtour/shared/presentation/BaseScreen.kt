@@ -23,6 +23,7 @@ import ru.krirll.moscowtour.shared.presentation.overview.OverviewScreen
 import ru.krirll.moscowtour.shared.presentation.account.auth.AuthScreen
 import ru.krirll.moscowtour.shared.presentation.account.pass.EditPasswordScreen
 import ru.krirll.moscowtour.shared.presentation.account.register.RegisterScreen
+import ru.krirll.moscowtour.shared.presentation.account.tickets.TicketsScreen
 import ru.krirll.moscowtour.shared.presentation.overview.FullscreenImageCarouselScreen
 import ru.krirll.moscowtour.shared.presentation.overview.buy.BuyScreen
 import ru.krirll.moscowtour.shared.presentation.overview.person.PersonScreen
@@ -54,12 +55,14 @@ private fun NavInternal(rootComponent: RootComponent) {
             is Child.LoadingChild -> LoadingScreen(child.component)
             is Child.PersonChild -> PersonScreen(child.component)
             is Child.BuyChild -> BuyScreen(child.component)
+            is Child.TicketsChild -> TicketsScreen(child.component)
             is Child.FullscreenImages -> {
                 val typedRoute = route as Route.Overview.FullscreenImages
                 FullscreenImageCarouselScreen(typedRoute.images, typedRoute.startIndex) {
                     rootComponent.onBack()
                 }
             }
+
 
             is Child.ToursChild,
             is Child.SearchChild,

@@ -158,7 +158,7 @@ fun TourInfo(
             }
         }
     } else {
-        ToursNotFound(emptyResource)
+        NotFound(emptyResource)
     }
 }
 
@@ -257,7 +257,7 @@ fun ErrorAndRetry(errorMsg: String, retry: () -> Unit) {
 }
 
 @Composable
-fun ToursNotFound(emptyResource: StringResource) {
+fun NotFound(emptyResource: StringResource) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

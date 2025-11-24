@@ -47,9 +47,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.number
-import kotlinx.datetime.toLocalDateTime
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
 import moscowtour.moscow_tour.client.shared.generated.resources.back
 import moscowtour.moscow_tour.client.shared.generated.resources.broken_image
@@ -82,14 +79,13 @@ import ru.krirll.moscowtour.shared.presentation.applyColumnPadding
 import ru.krirll.moscowtour.shared.presentation.asColumnPadding
 import ru.krirll.moscowtour.shared.presentation.base.LabeledText
 import ru.krirll.moscowtour.shared.presentation.base.Loading
+import ru.krirll.moscowtour.shared.presentation.base.formatDate
 import ru.krirll.moscowtour.shared.presentation.list.ErrorAndRetry
 import ru.krirll.ui.LocalBlurState
 import ru.krirll.ui.applyBlurEffect
 import ru.krirll.ui.applyBlurSource
 import ru.krirll.ui.rememberBlurState
 import ru.krirll.ui.theme.ComponentDefaults
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -269,19 +265,6 @@ fun OverviewDescription(
         }
 
     }
-}
-
-@OptIn(ExperimentalTime::class)
-private fun formatDate(timestamp: Long): String {
-    val date = Instant
-        .fromEpochMilliseconds(timestamp * 1000)
-        .toLocalDateTime(TimeZone.UTC)
-
-    val day = date.day.toString().padStart(2, '0')
-    val month = date.month.number.toString().padStart(2, '0')
-    val year = date.year.toString()
-
-    return "$day.$month.$year"
 }
 
 @OptIn(ExperimentalFoundationApi::class)

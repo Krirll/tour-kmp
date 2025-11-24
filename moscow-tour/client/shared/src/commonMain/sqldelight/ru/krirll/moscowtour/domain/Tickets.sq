@@ -1,18 +1,8 @@
 CREATE TABLE Tickets (
-	`ticket_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	`tour_id` INTEGER NOT NULL,
-    `title` TEXT NOT NULL,
-    `description` TEXT NOT NULL,
-    `city_name` TEXT NOT NULL,
-    `country_name` TEXT NOT NULL,
-    `date_begin` TEXT NOT NULL,
-    `date_end` TEXT NOT NULL,
-    `can_buy` INTEGER NOT NULL CHECK(can_buy IN (0,1)),
-    `price` REAL NOT NULL,
-    `image_url` TEXT NOT NULL,
-    `account_id` INTEGER NOT NULL,
-    `date_buy` TEXT NOT NULL,
-    `download_url` TEXT NOT NULL
+	ticket_id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	tour_id INTEGER NOT NULL,
+    account_id INTEGER NOT NULL,
+    date_buy TEXT NOT NULL
 );
 
 selectAll:
@@ -25,7 +15,7 @@ selectByTourId:
     SELECT * FROM Tickets WHERE tour_id = ?;
 
 insertTickets:
-    INSERT INTO Tickets (ticket_id, tour_id, title, description, city_name, country_name, date_begin, date_end, can_buy, price, image_url, account_id, date_buy, download_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    INSERT INTO Tickets (ticket_id, tour_id, account_id, date_buy) VALUES (?, ?, ?, ?);
 
 deleteByTicketId:
     DELETE FROM Tickets WHERE ticket_id = ?;

@@ -4,7 +4,7 @@ import kotlinx.coroutines.withContext
 import org.apache.poi.xwpf.usermodel.XWPFDocument
 import org.apache.poi.xwpf.usermodel.XWPFTableCell
 import org.koin.core.annotation.Factory
-import ru.krirll.moscowtour.backend.domain.normalizeTimestamp
+import ru.krirll.moscowtour.shared.domain.normalizeTimestamp
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.TicketFactory
 import ru.krirll.moscowtour.shared.domain.model.PersonData
