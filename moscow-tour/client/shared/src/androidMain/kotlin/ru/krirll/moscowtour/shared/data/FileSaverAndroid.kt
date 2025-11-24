@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import kotlinx.coroutines.suspendCancellableCoroutine
+import ru.krirll.moscowtour.shared.domain.model.TicketSavingException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -21,7 +22,7 @@ object FileSaverAndroid {
         ) { uri ->
             continuation?.let { cont ->
                 if (uri != null) cont.resume(uri)
-                else cont.resumeWithException(Exception("File save canceled"))
+                else cont.resumeWithException(TicketSavingException("Для продолжения необходимо сохранить файл"))
                 continuation = null
             }
         }

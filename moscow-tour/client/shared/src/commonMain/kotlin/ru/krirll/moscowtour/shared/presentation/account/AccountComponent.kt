@@ -2,14 +2,17 @@ package ru.krirll.moscowtour.shared.presentation.account
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.LogoutUseCase
+import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.presentation.RootComponent
 import ru.krirll.moscowtour.shared.presentation.base.ScreenState
+import ru.krirll.moscowtour.shared.presentation.createErrorHandler
 import ru.krirll.moscowtour.shared.presentation.nav.Child
 import ru.krirll.moscowtour.shared.presentation.nav.ComponentFactory
 import ru.krirll.moscowtour.shared.presentation.nav.Route
@@ -28,7 +31,10 @@ class AccountComponent(
     private val _state = MutableSharedFlow<ScreenState>()
     val state = _state.asSharedFlow()
 
-    private val scope = coroutineScope()
+    private val scope = coroutineScope(SupervisorJob())
+    private val exceptionHandler = createErrorHandler(scope) {
+        _state.emit(ScreenState.Error(LoginException(it)))
+    }
 
     val tokenInfo = logoutUseCase.token
 
@@ -41,7 +47,7 @@ class AccountComponent(
     }
 
     private fun logout(withDelete: Boolean) {
-        scope.launch(dispatcherProvider.main) {
+        scope.launch(dispatcherProvider.main + exceptionHandler) {
             _state.emit(ScreenState.Loading)
             logoutUseCase.logout(withDelete)
             _state.emit(ScreenState.Succeed)

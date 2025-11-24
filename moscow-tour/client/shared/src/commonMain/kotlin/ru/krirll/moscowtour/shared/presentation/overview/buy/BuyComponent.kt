@@ -2,6 +2,7 @@ package ru.krirll.moscowtour.shared.presentation.overview.buy
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -33,7 +34,7 @@ class BuyComponent(
     private val _state = MutableSharedFlow<ScreenState>()
     val state = _state.asSharedFlow()
 
-    private val scope = coroutineScope()
+    private val scope = coroutineScope(SupervisorJob())
     private val exceptionHandler = createErrorHandler(scope) {
         _state.emit(ScreenState.Error(TicketBuyingException(it)))
     }
@@ -71,8 +72,8 @@ class BuyFactory(
                 tour = route.tour,
                 personData = route.personData,
                 doBack = { root.onBack() },
-                navTours = {  },
-                navTickets = {  }
+                navTours = { root.navReplace(Route.Tours()) },
+                navTickets = { root.navReplace(Route.Account, Route.Account.Tickets) }
             )
         )
     }

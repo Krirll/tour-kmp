@@ -4,5 +4,6 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun TicketsScreen() {
-//todo blur
+    //todo blur
+    //todo повторный ввод для скачивания билета
 }

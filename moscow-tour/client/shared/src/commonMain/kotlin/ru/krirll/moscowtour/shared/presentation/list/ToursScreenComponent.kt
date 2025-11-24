@@ -3,6 +3,7 @@ package ru.krirll.moscowtour.shared.presentation.list
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
@@ -27,7 +28,7 @@ class ToursScreenComponent(
     val doBack: () -> Unit
 ) : ComponentContext by context {
 
-    private val scope = coroutineScope()
+    private val scope = coroutineScope(SupervisorJob())
     private val snapshot = instanceKeeper.getOrCreate { ListSnapshot<Tour>() }
     private val exceptionHandler = createErrorHandler(scope) {
         snapshot.errorCode.emit(it)

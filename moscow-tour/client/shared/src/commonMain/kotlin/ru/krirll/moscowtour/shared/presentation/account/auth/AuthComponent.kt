@@ -2,6 +2,7 @@ package ru.krirll.moscowtour.shared.presentation.account.auth
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class AuthComponent(
     private val log: Log
 ) : ComponentContext by context {
 
-    private val scope = coroutineScope()
+    private val scope = coroutineScope(SupervisorJob())
     private val _state = MutableSharedFlow<ScreenState>()
     val state = _state.asSharedFlow()
 

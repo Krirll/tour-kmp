@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,7 +48,7 @@ class SearchScreenComponent(
 
     val isLoading get() = snapshot.isLoading
 
-    private val scope = coroutineScope()
+    private val scope = coroutineScope(SupervisorJob())
     private var lastCmd: (suspend () -> Unit)? = null
     private val exceptionHandler = createErrorHandler(scope) {
         snapshot.errorMsg.emit(it)

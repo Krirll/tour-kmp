@@ -7,6 +7,7 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnStart
 import com.arkivanov.essenty.lifecycle.doOnStop
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -40,7 +41,7 @@ class OverviewComponent(
     private val snapshot: Snapshot = context.instanceKeeper.getOrCreate { Snapshot() }
 ) : ComponentContext by context {
 
-    private val scope = coroutineScope()
+    private val scope = coroutineScope(SupervisorJob())
     private val exceptionHandler = createErrorHandler(scope) {
         snapshot.errorCode.emit(it)
     }

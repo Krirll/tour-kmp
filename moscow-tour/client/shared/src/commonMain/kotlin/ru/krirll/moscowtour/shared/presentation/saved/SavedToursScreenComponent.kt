@@ -5,6 +5,7 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnStart
 import com.arkivanov.essenty.lifecycle.doOnStop
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emitAll
@@ -30,7 +31,7 @@ class SavedToursScreenComponent(
     val showOverview: (Long) -> Unit
 ) : ComponentContext by context {
 
-    private val scope = coroutineScope()
+    private val scope = coroutineScope(SupervisorJob())
     private val _errorMsg = MutableStateFlow<String?>(null)
     private val exceptionHandler = createErrorHandler(scope) { _errorMsg.emit(it) }
     private val _all = MutableStateFlow<List<Tour>?>(null)

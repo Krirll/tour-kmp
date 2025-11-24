@@ -1,7 +1,6 @@
 package ru.krirll.moscowtour.shared.presentation
 
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,13 +16,14 @@ import ru.krirll.http.domain.HttpException
 import ru.krirll.moscowtour.shared.di.koin
 import ru.krirll.moscowtour.shared.domain.model.LoginException
 import ru.krirll.moscowtour.shared.domain.model.PersonDataValidationException
+import ru.krirll.moscowtour.shared.domain.model.TicketSavingException
 
 data class ListSnapshot<T>(
     val items: MutableStateFlow<List<T>?> = MutableStateFlow(null),
     val errorCode: MutableSharedFlow<String?> = MutableSharedFlow()
 ) : InstanceKeeper.Instance
 
-fun LifecycleOwner.createErrorHandler(
+fun createErrorHandler(
     scope: CoroutineScope,
     errorCallback: suspend (String) -> Unit
 ): CoroutineExceptionHandler {
@@ -35,6 +35,7 @@ fun LifecycleOwner.createErrorHandler(
                     errorCallback(throwable.message ?: throwable.httpCode.toString())
                 }
 
+                is TicketSavingException,
                 is PersonDataValidationException,
                 is LoginException -> {
                     errorCallback(throwable.message ?: getString(Res.string.unknown_error))
