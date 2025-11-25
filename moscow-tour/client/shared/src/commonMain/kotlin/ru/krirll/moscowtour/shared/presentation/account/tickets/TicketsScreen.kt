@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,6 +40,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ru.krirll.moscowtour.shared.domain.model.Ticket
 import ru.krirll.moscowtour.shared.presentation.BaseScreen
+import ru.krirll.moscowtour.shared.presentation.applyColumnPadding
+import ru.krirll.moscowtour.shared.presentation.asColumnPadding
 import ru.krirll.moscowtour.shared.presentation.base.LabeledText
 import ru.krirll.moscowtour.shared.presentation.base.Loading
 import ru.krirll.moscowtour.shared.presentation.base.formatDate
@@ -47,6 +50,7 @@ import ru.krirll.moscowtour.shared.presentation.list.NotFound
 import ru.krirll.ui.LocalBlurState
 import ru.krirll.ui.applyBlurEffect
 import ru.krirll.ui.applyBlurSource
+import ru.krirll.ui.rememberBlurState
 import ru.krirll.ui.theme.ComponentDefaults
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,23 +59,26 @@ fun TicketsScreen(component: TicketsComponent) {
     val error by component.errorMsg.collectAsState(null)
     val items by component.all.collectAsState(null)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    BaseScreen(
-        content = { paddingValues ->
-            TicketsScreenContent(
-                paddingValues,
-                error,
-                items,
-                onRefresh = { component.load() },
-                onShowOverview = { component.onOverview(it) },
-                emptyResource = Res.string.not_found,
-                onLoad = { component.load() }
-            )
-        },
-        appBar = {
-            TicketsAppBar(component, scrollBehavior)
-        },
-        scrollBehavior = scrollBehavior
-    )
+    val blurState = rememberBlurState()
+    CompositionLocalProvider(LocalBlurState provides blurState) {
+        BaseScreen(
+            content = { paddingValues ->
+                TicketsScreenContent(
+                    paddingValues,
+                    error,
+                    items,
+                    onRefresh = { component.load() },
+                    onShowOverview = { component.onOverview(it) },
+                    emptyResource = Res.string.not_found,
+                    onLoad = { component.load() }
+                )
+            },
+            appBar = {
+                TicketsAppBar(component, scrollBehavior)
+            },
+            scrollBehavior = scrollBehavior
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -171,7 +178,7 @@ fun TicketItem(
             .clickable(onClick = { onClick(ticket) }),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Row(modifier = Modifier.padding(4.dp)) {
+        Row(modifier = Modifier.padding(8.dp)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

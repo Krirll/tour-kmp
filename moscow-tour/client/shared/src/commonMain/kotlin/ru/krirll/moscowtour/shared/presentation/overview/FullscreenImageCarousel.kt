@@ -11,17 +11,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,15 +40,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import moscowtour.moscow_tour.client.shared.generated.resources.Res
+import moscowtour.moscow_tour.client.shared.generated.resources.account_tickets
 import moscowtour.moscow_tour.client.shared.generated.resources.back
 import moscowtour.moscow_tour.client.shared.generated.resources.broken_image
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import ru.krirll.moscowtour.shared.presentation.BaseScreen
+import ru.krirll.ui.LocalBlurState
+import ru.krirll.ui.applyBlurEffect
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FullscreenImageCarouselScreen(
     images: List<String>,
@@ -52,12 +64,82 @@ fun FullscreenImageCarouselScreen(
 ) {
     val pagerState = rememberPagerState { images.size }
     val scope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val isAppBarVisible = remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(startIndex)
     }
-    //todo сделать через BaseScreen, чтобы учитывался паддинг, и кастомный апп бар
+    BaseScreen(
+        content = {
+            FullscreenImagesContent(scope, pagerState, isAppBarVisible, images)
+        },
+        appBar = {
+            FullscreenImagesAppBar(isAppBarVisible, scrollBehavior) { onBack() }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FullscreenImagesAppBar(
+    isAppBarVisible: MutableState<Boolean>,
+    scrollBehavior: TopAppBarScrollBehavior,
+    onBack: () -> Unit
+) {
+    val blur = LocalBlurState.current
+    AnimatedVisibility(
+        visible = isAppBarVisible.value,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        // Box нужен, чтобы дать фон и высоту как у кастомного аппбара
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.Black.copy(alpha = 0.9f),
+                            Color.Black.copy(alpha = 0.5f),
+                            Color.Transparent
+                        )
+                    )
+                )
+        ) {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = { onBack() }) {
+                        Icon(
+                            painterResource(Res.drawable.back),
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    navigationIconContentColor = Color.White,
+                    titleContentColor = Color.White,
+                ),
+                scrollBehavior = scrollBehavior,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .applyBlurEffect(blur) // твой эффект
+            )
+        }
+    }
+}
+
+@Composable
+private fun FullscreenImagesContent(
+    scope: CoroutineScope,
+    pagerState: PagerState,
+    isAppBarVisible: MutableState<Boolean>,
+    images: List<String>
+) {
     Box(modifier = Modifier.fillMaxSize()) {
-        var isAppBarVisible by remember { mutableStateOf(true) }
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
@@ -84,7 +166,7 @@ fun FullscreenImageCarouselScreen(
             }.pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
-                        isAppBarVisible = !isAppBarVisible
+                        isAppBarVisible.value = !isAppBarVisible.value
                     },
                     onDoubleTap = {
                         scope.launch {
@@ -121,43 +203,6 @@ fun FullscreenImageCarouselScreen(
                         .then(transform),
                     contentScale = ContentScale.Fit
                 )
-            }
-        }
-
-        AnimatedVisibility(
-            visible = isAppBarVisible,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .align(Alignment.TopCenter)
-                    .background(
-                        Brush.verticalGradient(
-                            listOf(
-                                Color.Black.copy(alpha = 0.9f),
-                                Color.Black.copy(alpha = 0.5f),
-                                Color.Transparent
-                            )
-                        )
-                    )
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 12.dp)
-                ) {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            painterResource(Res.drawable.back),
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    }
-                }
             }
         }
     }

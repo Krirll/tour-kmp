@@ -14,8 +14,6 @@ const val IS_SERVER = "is_server"
 @ComponentScan
 class MoscowTourCommon
 
-//todo FileProvider - удалил, хуй знает надо или нет, если нет то модули desktopMain и wasmJsMain надо удалить тоже, андроид нужен
-
 fun newCommonModulesList(isServer: Boolean) = listOf(
     MoscowTourCommon().module,
     module {
