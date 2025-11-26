@@ -35,7 +35,6 @@ class LogoutUseCase(
         localSavedToursRepository.clear()
         syncRepository.setSearchSynchronized(false)
         syncRepository.setSavedToursSynchronized(false)
-        //todo возможно для билетов тоже нужна синхронизация, но при условии авторизации
         bearerAuthProvider.clearToken()
     }
 }

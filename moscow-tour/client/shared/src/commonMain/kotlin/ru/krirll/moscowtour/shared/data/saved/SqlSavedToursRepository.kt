@@ -33,7 +33,7 @@ class SqlSavedToursRepository(
 
     override suspend fun save(tour: Tour) {
         val canSave = dbProvider.get().savedToursQueries.selectAll().awaitAsList()
-            .none { it.saved_tour_id == tour.id }
+            .none { it.tour_id == tour.id }
         if (canSave) {
             dbProvider.get().savedToursQueries.insertSavedTour(
                 tour.id,
@@ -45,7 +45,7 @@ class SqlSavedToursRepository(
                 tour.dateEnd.toString(),
                 if (tour.canBuy) 1 else 0,
                 tour.price,
-                tour.imagesUrls?.joinToString(",") ?: ""
+                tour.imagesUrls.joinToString(",")
             )
         }
     }

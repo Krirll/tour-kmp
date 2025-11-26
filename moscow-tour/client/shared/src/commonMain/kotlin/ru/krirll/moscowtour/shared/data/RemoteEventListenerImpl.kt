@@ -101,6 +101,6 @@ private class RemoteEventListenerImpl(
     }
 
     private companion object {
-        const val TAG = "RemoteSearchEventListener"
+        const val TAG = "RemoteEventListener"
     }
 }

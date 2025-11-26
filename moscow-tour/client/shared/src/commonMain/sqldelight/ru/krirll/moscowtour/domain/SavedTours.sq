@@ -19,7 +19,7 @@ insertSavedTour:
     INSERT INTO SavedTours (tour_id, title, description, city_name, country_name, date_begin, date_end, can_buy, price, image_urls) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteSavedTour:
-    DELETE FROM SavedTours WHERE saved_tour_id = ?;
+    DELETE FROM SavedTours WHERE tour_id = ?;
 
 deleteAll:
     DELETE FROM SavedTours;
