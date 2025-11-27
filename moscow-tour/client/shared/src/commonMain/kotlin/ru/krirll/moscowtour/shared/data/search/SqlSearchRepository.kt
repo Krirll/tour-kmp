@@ -1,14 +1,8 @@
 package ru.krirll.moscowtour.shared.data.search
 
-import app.cash.sqldelight.Query
 import app.cash.sqldelight.async.coroutines.awaitAsList
 import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
-import ru.krirll.moscowtour.domain.SearchInfo
 import ru.krirll.moscowtour.shared.data.AppDatabaseProvider
 import ru.krirll.moscowtour.shared.domain.SearchRepository
 
@@ -17,16 +11,18 @@ class SqlSearchRepository(
     private val dbProvider: AppDatabaseProvider
 ) : SearchRepository {
 
-    override fun getAll(): Flow<List<String>> {
-        return callbackFlow {
-            val listener = Query.Listener {
-                launch { send(obtain()) }
-            }
-            val request = getRequest()
-            request.addListener(listener)
-            send(obtain())
-            awaitClose { request.removeListener(listener) }
-        }
+    override suspend fun search(query: String): List<String> {
+        return if (query.isNotEmpty()) {
+            dbProvider.get().searchInfoQueries
+                .selectByQuery(query.addWildcard())
+                .awaitAsList()
+                .map { it.query }
+        } else {
+            dbProvider.get().searchInfoQueries
+                .selectAll()
+                .awaitAsList()
+                .map { it.query }
+        }.filter { it.isNotBlank() }
     }
 
     override suspend fun addToSearch(query: String) {
@@ -46,12 +42,7 @@ class SqlSearchRepository(
         dbProvider.get().searchInfoQueries.deleteAll()
     }
 
-    private suspend fun obtain(): List<String> {
-        val request = getRequest()
-        return request.awaitAsList().map { it.query }
-    }
-
-    private suspend fun getRequest(): Query<SearchInfo> {
-        return dbProvider.get().searchInfoQueries.selectAll()
+    private fun String.addWildcard(): String {
+        return if (this.endsWith("%")) this else "%$this%"
     }
 }

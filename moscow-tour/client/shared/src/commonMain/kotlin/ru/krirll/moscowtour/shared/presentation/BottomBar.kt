@@ -6,6 +6,7 @@ import moscowtour.moscow_tour.client.shared.generated.resources.account
 import moscowtour.moscow_tour.client.shared.generated.resources.home
 import moscowtour.moscow_tour.client.shared.generated.resources.main
 import moscowtour.moscow_tour.client.shared.generated.resources.saved_tours
+import moscowtour.moscow_tour.client.shared.generated.resources.search
 import moscowtour.moscow_tour.client.shared.generated.resources.star
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -24,6 +25,11 @@ fun createNavigationList(): List<NavigationEntry<Route>> {
             Route.Saved,
             stringResource(Res.string.saved_tours),
             painterResource(Res.drawable.star)
+        ),
+        NavigationEntry(
+            Route.SearchTours,
+            stringResource(Res.string.search),
+            painterResource(Res.drawable.search)
         ),
         NavigationEntry(
             Route.Account,

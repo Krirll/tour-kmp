@@ -1,10 +1,7 @@
 package ru.krirll.moscowtour.backend.data
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import ru.krirll.moscowtour.backend.AppDatabase
-import ru.krirll.moscowtour.server.Search_info
 import ru.krirll.moscowtour.shared.di.factory.DispatcherProvider
 import ru.krirll.moscowtour.shared.domain.RemoteEvent
 import ru.krirll.moscowtour.shared.domain.RemoteEventHandler
@@ -18,17 +15,21 @@ class BackendSearchRepository(
     private val eventHandler: RemoteEventHandler
 ) : SearchRepository {
 
-    override fun getAll(): Flow<List<String>> {
-        val request = db.searchQueries.selectAll(accountId)
-        return flow {
-            emit(request.executeAsList().parse())
+    override suspend fun search(query: String): List<String> {
+        return withContext(dispatcherProvider.io) {
+            if (query.trim().isEmpty()) {
+                db.searchQueries.selectAll(accountId)
+            } else {
+                //todo доделать локальную и удаленную бд
+                //  прослушивание вебсокета по поиску
+                //  опустить немного апп бар поиска
+                db.searchQueries.selectByQuery(query.addWilcard(), accountId)
+            }.executeAsList().map { it.query }
         }
     }
 
-    private suspend fun List<Search_info>.parse(): List<String> = withContext(dispatcherProvider.io) {
-        mapNotNull { queries ->
-            queries.query
-        }
+    private fun String.addWilcard(): String {
+        return if (this.endsWith("%")) this else "%$this%"
     }
 
     override suspend fun addToSearch(query: String) {
@@ -36,7 +37,7 @@ class BackendSearchRepository(
             try {
                 db.searchQueries.insertSearchInfo(query, accountId)
                 notifyChanged()
-            } catch (ignored: SQLException) {
+            } catch (_: SQLException) {
             }
         }
     }
