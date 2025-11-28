@@ -9,9 +9,6 @@ selectAll:
 selectByQuery:
     SELECT * FROM SearchInfo WHERE query LIKE ?;
 
-selectTop5:
-    SELECT * FROM SearchInfo WHERE query LIKE ? LIMIT 5;
-
 insertSearchInfo:
     INSERT INTO SearchInfo (query) VALUES (?);
 

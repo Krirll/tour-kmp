@@ -12,7 +12,8 @@ import java.io.File
 
 fun Routing.setupBaseMethods(api: ToursApi, dispatcherProvider: DispatcherProvider) {
     get(ToursApi.TOURS_PATH) {
-        call.respond(api.fetchTours())
+        val p = call.parameters
+        call.respond(api.fetchTours(p[ToursApi.SEARCH_ARG]))
     }
     get(ToursApi.TOUR_IMAGES) {
         val filename = call.parameters[ToursApi.IMAGE_NAME_ARG]

@@ -16,7 +16,6 @@ CREATE TABLE tours (
 
 INSERT INTO tours (title, description, city_id, date_begin, date_end, count_trips, price) VALUES
 ('Тур по барселоне', 'Потужный тур', 5, 1762263242, 1763638440, 50, 10);
---('', '', 0, 0, 0, 0, 0);
 
 -- Создание таблицы images
 
@@ -25,9 +24,7 @@ CREATE TABLE images (
   path TEXT NOT NULL
 );
 
-INSERT INTO images (image_id, path) VALUES
-(1, '');
---(1, '');
+INSERT INTO images (image_id, path) VALUES (1, '');
 
 -- Создание таблицы tour_images
 
@@ -43,9 +40,7 @@ CREATE TABLE tour_images (
     ON UPDATE CASCADE
 );
 
-INSERT INTO tour_images (tour_id, image_id) VALUES
-(1, 1);
---(0, 0);
+INSERT INTO tour_images (tour_id, image_id) VALUES (1, 1);
 
 -- Создание таблицы cities
 
@@ -58,32 +53,12 @@ CREATE TABLE cities (
     ON UPDATE CASCADE
 );
 
-INSERT INTO cities (city_id, name, country_id) VALUES
-(1, 'Санкт-Петербург', 2),
-(2, 'Владимир', 2),
-(3, 'Лондон', 1),
-(4, 'Ливерпуль', 1),
-(5, 'Барселона', 6),
-(6, 'Ливерпуль', 6),
-(7, 'Нью-Йорк', 3),
-(8, 'Шанхай', 4),
-(9, 'Пекин', 4),
-(10, 'Баку', 5);
-
 -- Создание таблицы countries
 
 CREATE TABLE countries (
   country_id BIGSERIAL PRIMARY KEY,
   name VARCHAR(256) NOT NULL
 );
-
-INSERT INTO countries (country_id, name) VALUES
-(1, 'Англия'),
-(2, 'Россия'),
-(3, 'США'),
-(4, 'Китай'),
-(5, 'Азербайджан'),
-(6, 'Испания');
 
 -- Создание таблицы tickets
 

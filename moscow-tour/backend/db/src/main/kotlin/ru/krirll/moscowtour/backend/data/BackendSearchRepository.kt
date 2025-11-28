@@ -20,15 +20,12 @@ class BackendSearchRepository(
             if (query.trim().isEmpty()) {
                 db.searchQueries.selectAll(accountId)
             } else {
-                //todo доделать локальную и удаленную бд
-                //  прослушивание вебсокета по поиску
-                //  опустить немного апп бар поиска
-                db.searchQueries.selectByQuery(query.addWilcard(), accountId)
+                db.searchQueries.selectByQuery(query.addWildcard(), accountId)
             }.executeAsList().map { it.query }
         }
     }
 
-    private fun String.addWilcard(): String {
+    private fun String.addWildcard(): String {
         return if (this.endsWith("%")) this else "%$this%"
     }
 

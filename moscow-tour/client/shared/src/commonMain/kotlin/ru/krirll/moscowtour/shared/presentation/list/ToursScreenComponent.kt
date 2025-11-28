@@ -39,7 +39,7 @@ class ToursScreenComponent(
     fun load() {
         scope.launch(dispatcherProvider.main + exceptionHandler) {
             snapshot.errorCode.emit(null)
-            val rsp = toursApi.fetchTours() //todo сделать отбор по поиску и фильтрам
+            val rsp = toursApi.fetchTours(search)
             snapshot.items.emit(rsp)
         }
     }

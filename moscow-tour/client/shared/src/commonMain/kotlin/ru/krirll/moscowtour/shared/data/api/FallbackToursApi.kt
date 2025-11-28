@@ -13,19 +13,15 @@ class FallbackToursApi(
     private val json: Json
 ) : ToursApi {
 
-    override suspend fun fetchTours(): List<Tour> {
-        val key = "fetchTours;"
+    override suspend fun fetchTours(search: String?): List<Tour> {
+        val key = "fetchTours_$search;"
         return try {
-            wrapper.fetchTours().apply {
+            wrapper.fetchTours(search).apply {
                 writeByKey(key, this)
             }
         } catch (e: Exception) {
             getByKey(key) ?: throw e
         }
-    }
-
-    private suspend fun getCache(): ApiCacheQueries {
-        return dbProvider.get().apiCacheQueries
     }
 
     private suspend inline fun <reified T> getByKey(key: String): T? {
@@ -40,5 +36,9 @@ class FallbackToursApi(
             key,
             json.encodeToString(value)
         )
+    }
+
+    private suspend fun getCache(): ApiCacheQueries {
+        return dbProvider.get().apiCacheQueries
     }
 }

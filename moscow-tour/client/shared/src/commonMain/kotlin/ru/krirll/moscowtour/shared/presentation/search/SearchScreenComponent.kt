@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Named
@@ -55,7 +54,7 @@ class SearchScreenComponent(
     }
 
     fun refresh() {
-        exec { snapshot.oldSearch.emit(searchRepository.getAll().first()) }
+        exec { snapshot.oldSearch.emit(searchRepository.search("")) }
     }
 
     fun restart() {
@@ -85,7 +84,7 @@ class SearchScreenComponent(
 
     fun removeFromSearch(item: String) = exec {
         searchRepository.delete(item)
-        snapshot.oldSearch.emit(searchRepository.getAll().first())
+        snapshot.oldSearch.emit(searchRepository.search(""))
     }
 
     private fun exec(callback: suspend () -> Unit) {
@@ -135,4 +134,3 @@ class SearchScreenFactory(
         return Child.SearchChild(comp)
     }
 }
-
