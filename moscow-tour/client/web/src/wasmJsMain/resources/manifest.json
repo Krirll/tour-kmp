@@ -1,6 +1,6 @@
 {
   "name": "MoscowTour",
-  "short_name": "moscowtour",
+  "short_name": "Mtour",
   "start_url": "/",
   "display": "standalone",
   "icons": [
@@ -11,5 +11,3 @@
     }
   ]
 }
-
-//todo добавить иконки свои нормально
