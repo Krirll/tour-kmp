@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -27,6 +30,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -86,7 +90,7 @@ fun <T : Route> BaseScreen(
             topBar = {
                 appBar(scrollBehavior)
             }, content = {
-                if (windowType.isExpanded && navigationEntries?.isNotEmpty() == true) {
+                if (windowType.isExpanded) {
                     ExpandedContent(it, navigationEntries, currentRoute, onSelectNavigation, content)
                 } else {
                     content(it)
@@ -132,30 +136,41 @@ private fun <T : Route> BottomBar(
 @Composable
 private fun <T : Route> ExpandedContent(
     values: PaddingValues,
-    navigationEntries: List<NavigationEntry<T>>,
+    navigationEntries: List<NavigationEntry<T>>?,
     currentRoute: T?,
     onSelectNavigation: ((T) -> Unit)?,
     content: @Composable ((PaddingValues) -> Unit)
 ) {
     Row(Modifier.fillMaxSize().padding(values)) {
         Spacer(Modifier.width(4.dp))
-        NavigationRail {
-            navigationEntries.forEach { entry ->
-                NavigationRailItem(
-                    selected = currentRoute == entry.route,
-                    onClick = { onSelectNavigation?.invoke(entry.route) },
-                    icon = {
-                        Icon(entry.painter, contentDescription = entry.title)
-                    },
-                    label = { Text(entry.title) },
+        navigationEntries?.let {
+            NavigationRail {
+                it.forEach { entry ->
+                    NavigationRailItem(
+                        selected = currentRoute == entry.route,
+                        onClick = { onSelectNavigation?.invoke(entry.route) },
+                        icon = {
+                            Icon(entry.painter, contentDescription = entry.title)
+                        },
+                        label = { Text(entry.title) },
 
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+                        )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
         Spacer(Modifier.width(4.dp))
-        Box(Modifier.weight(1f)) {
-            content(PaddingValues(0.dp))
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Box(
+                modifier = Modifier.widthIn(max = 900.dp)
+            ) {
+                content(PaddingValues(0.dp))
+            }
         }
     }
 }
