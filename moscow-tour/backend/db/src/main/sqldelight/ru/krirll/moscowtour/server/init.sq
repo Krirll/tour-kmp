@@ -14,11 +14,6 @@ CREATE TABLE tours (
     ON UPDATE CASCADE
 );
 
---todo дозаполнить бд картинками и добавить туры на все города
-
-INSERT INTO tours (title, description, city_id, date_begin, date_end, count_trips, price) VALUES
-('Тур по барселоне', 'Потужный тур', 5, 1762263242, 1763638440, 50, 10);
-
 -- Создание таблицы images
 
 CREATE TABLE images (
