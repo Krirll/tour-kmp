@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -285,7 +284,7 @@ fun ImageCarousel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .padding(horizontal = 8.dp)
             ) { page ->
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -298,7 +297,6 @@ fun ImageCarousel(
                         ),
                         contentDescription = null,
                         modifier = Modifier
-                            .clip(RoundedCornerShape(8))
                             .fillMaxHeight()
                             .clickable { onClick(page) },
                         contentScale = ContentScale.Fit

@@ -144,7 +144,7 @@ fun TicketInfo(
     if (items.isNotEmpty()) {
         val gridState = rememberLazyGridState()
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 320.dp),
+            columns = GridCells.Adaptive(minSize = 300.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .applyBlurSource(blur),
